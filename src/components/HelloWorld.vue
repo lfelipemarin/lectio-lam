@@ -1,59 +1,132 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa" target="_blank" rel="noopener">pwa</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <v-container>
+    <v-layout text-center wrap>
+      <v-flex xs12>
+        <div>
+          <p v-for="(reading, index) in readings" :key="index">
+            {{reading.text}}
+          </p>
+
+          <div class="my-4 text-right" v-show="showReset">
+            <button type="button" @click="reset" class="button is-info rounded-full text-base">
+              Reset Demo
+            </button>
+          </div>
+
+          <vue-context ref="menu">
+            <template slot-scope="child" v-if="child.data">
+              <li>
+                <a href="#" @click.prevent="alertName(child.data)">
+                  Alert name
+                </a>
+              </li>
+              <li>
+                <a href="#" @click.prevent="remove(child.data.index)">
+                  Delete "{{ child.data.name }}"
+                </a>
+              </li>
+            </template>
+          </vue-context>
+        </div>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
+import { VueContext } from 'vue-context'
+import _ from 'lodash'
+import evgService from '../services/evangelizoService'
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+const items = [
+  'Cras justo odio',
+  'Dapibus ac facilisis in',
+  'Morbi leo risus',
+  'Porta ac consectetur ac',
+  'Vestibulum at eros'
+];
+
+export default {
+  components: { VueContext },
+  async mounted () {
+    let loading = true
+    console.log(loading)
+    await this.getTodaysGospel()
+    this.addListeners()
+    loading = false
+    console.log(loading)
+  },
+
+  data () {
+    return {
+      items: [...items],
+      textSelection: window.getSelection(),
+      evgDetails: {},
+      readings: []
+    }
+  },
+  computed: {
+    showReset () {
+      return this.items.length < items.length;
+    }
+  },
+  watch: {
+
+  },
+
+  methods: {
+    // getSelection () {
+    //   const para = document.querySelector('p');
+
+    //   para.addEventListener('pointerup', (event) => {
+    //     console.log('Pointer down event');
+    //     alert(window.getSelection())
+    //   });
+    // },
+    async getTodaysGospel () {
+      const response = await evgService.getTodaysGospel()
+      this.evgDetails = response.data
+      this.readings = response.data.data.readings
+      this.addListeners()
+    },
+    addListeners () {
+      const para = document.querySelectorAll('p');
+      this.textSelection = window.getSelection()
+      let tEvents = ['mouseup']
+
+      _.each(para, (par) => {
+        _.each(tEvents, (tEvent) => {
+          par.addEventListener(tEvent, (e) => {
+            console.log(e.type);
+            var selection;
+
+            if (window.getSelection) {
+              selection = window.getSelection();
+            } else if (document.selection) {
+              selection = document.selection.createRange();
+            }
+
+            if (selection.toString() !== '') {
+              setTimeout(() => {
+                this.$refs.menu.open(e, selection.toString())
+              }, 0);
+            }
+
+          });
+        })
+      })
+    },
+    alertName (name) {
+      alert(`You clicked on "${name}"!`);
+    },
+
+    remove (index) {
+      this.$delete(this.items, index);
+    },
+
+    reset () {
+      this.items = [...items];
+    }
+  }
+};
+</script>
