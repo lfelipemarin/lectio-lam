@@ -26,6 +26,14 @@
         </template>
         <span>Login</span>
       </v-tooltip>
+      <v-tooltip bottom v-if="!$store.state.isUserLoggedIn">
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" to="/signup">
+            <v-icon>mdi-account-plus</v-icon>
+          </v-btn>
+        </template>
+        <span>Register</span>
+      </v-tooltip>
       <div v-if="$store.state.isUserLoggedIn">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">

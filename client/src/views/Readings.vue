@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid v-if="!loading">
     <v-row>
       <v-col v-for="(reading, index) in readings" :key="index" cols="12">
         <v-card>
@@ -39,6 +39,14 @@
       </vue-context>
     </v-flex>
   </v-container>
+  <v-container fill-height v-else>
+    <v-layout align-center>
+      <!-- Horizontal: text-xs-center -->
+      <v-flex xs12 text-center>
+        <v-progress-circular :size="70" :width="7" color="amber" indeterminate></v-progress-circular>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -49,18 +57,17 @@ import evgService from '../services/EvangelizoService'
 export default {
   components: { VueContext },
   async mounted () {
-    let loading = true
-    console.log(loading)
+    console.log(this.loading)
     await this.getTodaysGospel()
     this.addListeners()
-    loading = false
-    console.log(loading)
+    this.loading = false
   },
 
   data () {
     return {
       evgDetails: {},
-      readings: []
+      readings: [],
+      loading: true
     }
   },
   computed: {
