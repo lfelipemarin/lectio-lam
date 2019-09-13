@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import AuthenticationService from '@/services/AuthenticationService'
 
 export default {
   props: {
@@ -53,19 +54,34 @@ export default {
     validate () {
       if (this.$refs.form.validate()) {
         this.snackbar = true
-        this.loginWithFirebase()
+        this.login()
       }
     },
     reset () {
       this.$refs.form.reset()
     },
-    loginWithFirebase () {
-      const user = {
-        email: this.email,
-        password: this.password
+    async login () {
+      try {
+        const response = await AuthenticationService.login({
+          email: this.email,
+          password: this.password
+        })
+        this.$store.dispatch('setToken', response.data.token)
+        this.$store.dispatch('setUser', response.data.user)
+        this.$router.push({
+          name: 'home'
+        })
+      } catch (error) {
+        this.error = error.response.data.error
       }
-      this.$store.dispatch('signInAction', user)
     }
+    // loginWithFirebase () {
+    //   const user = {
+    //     email: this.email,
+    //     password: this.password
+    //   }
+    //   this.$store.dispatch('signInAction', user)
+    // }
   }
 };
 </script>
