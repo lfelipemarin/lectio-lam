@@ -10,6 +10,12 @@
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field v-model="email" :rules="emailRules" required label="Email" name="login"
                             prepend-icon="mdi-account" type="text"></v-text-field>
+              <v-text-field id="firstName" label="First Name" name="firstName" prepend-icon="mdi-lock"
+                            v-model="firstName" :rules="nameRules" required>
+              </v-text-field>
+              <v-text-field id="lastName" label="Last Name" name="lastName" prepend-icon="mdi-lock" v-model="lastName"
+                            :rules="nameRules" required>
+              </v-text-field>
               <v-text-field id="password" label="Password" name="password" prepend-icon="mdi-lock" v-model="password"
                             :rules="passwordRules" required :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
                             :type="passwordShow ? 'text' : 'password'" @click:append="passwordShow = !passwordShow">
@@ -36,6 +42,7 @@
 </template>
 
 <script>
+import AuthenticationService from '@/services/AuthenticationService'
 
 export default {
   props: {
@@ -51,6 +58,11 @@ export default {
       v => !!v || 'E-mail is required',
       v => /.+@.+/.test(v) || 'E-mail must be valid'
     ],
+    firstName: '',
+    nameRules: [
+      v => !!v || 'First Name and Last Name Required'
+    ],
+    lastName: '',
     password: '',
     confirmPassword: '',
     passwordRules: [
@@ -61,11 +73,29 @@ export default {
     validate () {
       if (this.$refs.form.validate()) {
         this.snackbar = true
-        this.registerWithFirebase()
+        // this.registerWithFirebase()
+        this.register()
       }
     },
     reset () {
       this.$refs.form.reset()
+    },
+    async register () {
+      try {
+        const response = await AuthenticationService.register({
+          email: this.email,
+          password: this.password,
+          firstName: this.firstName,
+          lastName: this.lastName
+        })
+        this.$store.dispatch('setToken', response.data.token)
+        this.$store.dispatch('setUser', response.data.user)
+        this.$router.push({
+          name: 'home'
+        })
+      } catch (error) {
+        this.error = error.response.data.error
+      }
     },
     registerWithFirebase () {
       const user = {

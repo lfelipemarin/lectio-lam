@@ -17,19 +17,31 @@ function hashPassword (user, options) {
 }
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
-    email: {
-      type: DataTypes.STRING,
-      unique: true
+  const User = sequelize.define('User',
+    {
+      email: {
+        type: DataTypes.STRING,
+        unique: true
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
     },
-    password: DataTypes.STRING
-  }, {
-    hooks: {
-      beforeCreate: hashPassword,
-      beforeUpdate: hashPassword,
-      beforeSave: hashPassword
-    }
-  })
+    {
+      hooks: {
+        beforeCreate: hashPassword,
+        beforeUpdate: hashPassword
+      }
+    })
 
   User.prototype.comparePassword = function (password) {
     return bcrypt.compareAsync(password, this.password)
