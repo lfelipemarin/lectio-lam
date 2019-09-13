@@ -1,10 +1,14 @@
-import axios from 'axios'
-import config from '../conf'
-// let moment = require('moment')
+import Api from '@/services/Api'
 
 export default {
+    register (credentials) {
+        return Api().post('register', credentials)
+    },
+    login (credentials) {
+        return Api().post('login', credentials)
+    },
     getTodaysGospel () {
         // let today = moment().format('YYYY-MM-DD')
-        return axios.get(config.apiConfig.baseUrl + 'users')
+        return Api().get('readings')
     }
 }

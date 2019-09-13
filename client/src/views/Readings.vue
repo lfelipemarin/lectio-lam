@@ -44,7 +44,7 @@
 <script>
 import { VueContext } from 'vue-context'
 import _ from 'lodash'
-import evgService from '../services/evangelizoService'
+import evgService from '../services/EvangelizoService'
 
 export default {
   components: { VueContext },
