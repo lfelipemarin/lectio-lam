@@ -3,8 +3,12 @@
     <v-row>
       <v-col v-for="(reading, index) in readings" :key="index" cols="12">
         <v-card>
-          <v-img src="//placehold.it/800x200" class="white--text" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
-            <v-card-title class="fill-height align-end" v-text="title"></v-card-title>
+          <v-img
+            src="//placehold.it/800x200"
+            class="white--text"
+            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+          >
+            <v-card-title class="fill-height align-end"></v-card-title>
           </v-img>
           <v-card-text>
             <p>{{reading.text}}</p>
@@ -31,9 +35,7 @@
       <vue-context ref="menu">
         <template slot-scope="child" v-if="child.data">
           <li>
-            <a href="#" @click.prevent="alertName(child.data)">
-              Agregar a Lectio de hoy
-            </a>
+            <a href="#" @click.prevent="alertName(child.data)">Agregar a Lectio de hoy</a>
           </li>
         </template>
       </vue-context>
@@ -50,34 +52,35 @@
 </template>
 
 <script>
-import { VueContext } from 'vue-context'
-import _ from 'lodash'
-import evgService from '../services/EvangelizoService'
+import { VueContext } from "vue-context";
+import _ from "lodash";
+import evgService from "../services/EvangelizoService";
 
 export default {
   components: { VueContext },
-  async mounted () {
-    console.log(this.loading)
-    await this.getTodaysGospel()
-    this.addListeners()
-    this.loading = false
+  async mounted() {
+    console.log(this.loading);
+    await this.getTodaysGospel();
+    //Fix listeners
+    this.$nextTick(() => {
+      this.addListeners();
+    });
+    this.loading = false;
   },
 
-  data () {
+  data() {
     return {
       evgDetails: {},
       readings: [],
       loading: true
-    }
+    };
   },
   computed: {
     // showReset () {
     //   return this.items.length < items.length
     // }
   },
-  watch: {
-
-  },
+  watch: {},
 
   methods: {
     // getSelection () {
@@ -88,48 +91,47 @@ export default {
     //     alert(window.getSelection())
     //   })
     // },
-    async getTodaysGospel () {
-      const response = await evgService.getTodaysGospel()
-      this.evgDetails = response.data
-      this.readings = response.data.data.readings
-      this.addListeners()
+    async getTodaysGospel() {
+      const response = await evgService.getTodaysGospel();
+      this.evgDetails = response.data;
+      this.readings = response.data.data.readings;
+      // this.addListeners();
     },
-    addListeners () {
-      const para = document.querySelectorAll('p')
-      this.textSelection = window.getSelection()
-      let tEvents = ['mouseup']
+    addListeners() {
+      const para = document.querySelectorAll("p");
+      this.textSelection = window.getSelection();
+      let tEvents = ["mouseup"];
 
-      _.each(para, (par) => {
-        _.each(tEvents, (tEvent) => {
-          par.addEventListener(tEvent, (e) => {
-            console.log(e.type)
-            var selection
+      _.each(para, par => {
+        _.each(tEvents, tEvent => {
+          par.addEventListener(tEvent, e => {
+            console.log(e.type);
+            var selection;
 
             if (window.getSelection) {
-              selection = window.getSelection()
+              selection = window.getSelection();
             } else if (document.selection) {
-              selection = document.selection.createRange()
+              selection = document.selection.createRange();
             }
 
-            if (selection.toString() !== '') {
+            if (selection.toString() !== "") {
               setTimeout(() => {
-                this.$refs.menu.open(e, selection.toString())
-              }, 0)
+                this.$refs.menu.open(e, selection.toString());
+              }, 0);
             }
-
-          })
-        })
-      })
+          });
+        });
+      });
     },
-    alertName (name) {
-      alert(`You clicked on "${name}"!`)
+    alertName(name) {
+      alert(`You clicked on "${name}"!`);
     },
 
-    remove (index) {
-      this.$delete(this.items, index)
+    remove(index) {
+      this.$delete(this.items, index);
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 ul {
