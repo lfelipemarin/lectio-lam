@@ -15,7 +15,7 @@
 
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-if="$store.state.isUserLoggedIn"></v-app-bar-nav-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>Lectio LAM</v-toolbar-title>
       <div class="flex-grow-1"></div>
 
       <v-tooltip bottom v-if="!$store.state.isUserLoggedIn">
@@ -63,7 +63,7 @@
       <router-view></router-view>
     </v-content>
 
-    <v-footer app>
+    <v-footer>
       <span>&copy; 2019</span>
     </v-footer>
   </v-app>
@@ -79,17 +79,17 @@ export default {
     paths: [
       {
         path: '/',
-        title: 'Home',
+        title: 'Inicio',
         icon: 'mdi-church'
       },
       {
         path: '/readings',
-        title: 'Daily Readings',
+        title: 'Liturgia del Día',
         icon: 'mdi-bible'
       },
       {
         path: '/saints',
-        title: 'Daily Saints',
+        title: 'Santos del Día',
         icon: 'mdi-account-heart'
       },
       {

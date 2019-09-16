@@ -10,6 +10,9 @@
             <p>{{reading.text}}</p>
           </v-card-text>
           <v-card-actions>
+            <v-btn class="white--text" color="amber accent-4" @click="sendSelectionToLectio">
+              Lectio Divina</v-btn>
+
             <div class="flex-grow-1"></div>
 
             <v-btn icon>
@@ -25,13 +28,20 @@
             </v-btn>
           </v-card-actions>
         </v-card>
+        <v-snackbar v-model="snackbar" multi-line color="info" timeout=4000>
+          Por favor selecciona una parte del texto
+          <v-btn color="white" text @click="snackbar = false">
+            Cerrar
+          </v-btn>
+        </v-snackbar>
+
       </v-col>
     </v-row>
     <v-flex xs12>
       <vue-context ref="menu">
         <template slot-scope="child" v-if="child.data">
           <li>
-            <a href="#" @click.prevent="alertName(child.data)">Agregar a Lectio de hoy</a>
+            <a href="#" @click.prevent="sendSelectionToLectio()">Agregar a Lectio de hoy</a>
           </li>
         </template>
       </vue-context>
@@ -58,13 +68,13 @@ export default {
     await this.getTodaysGospel();
     this.loading = false;
   },
-
   data () {
     return {
       evgDetails: {},
       readings: [],
       loading: true,
-      selection: ''
+      selection: '',
+      snackbar: false
     };
   },
   computed: {
@@ -122,8 +132,13 @@ export default {
         });
       });
     },
-    alertName (name) {
-      alert(`You clicked on "${name}"!`);
+    sendSelectionToLectio () {
+      this.selection = window.getSelection().toString()
+      if (this.selection) {
+        this.$router.push({ name: 'lectio', params: { copiedLectioText: this.selection } })
+      } else {
+        this.snackbar = true
+      }
     },
 
     remove (index) {
