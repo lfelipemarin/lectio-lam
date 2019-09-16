@@ -3,11 +3,7 @@
     <v-row>
       <v-col v-for="(reading, index) in readings" :key="index" cols="12">
         <v-card>
-          <v-img
-            src="//placehold.it/800x200"
-            class="white--text"
-            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-          >
+          <v-img src="//placehold.it/800x200" class="white--text" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
             <v-card-title class="fill-height align-end"></v-card-title>
           </v-img>
           <v-card-text>
@@ -43,7 +39,6 @@
   </v-container>
   <v-container fill-height v-else>
     <v-layout align-center>
-      <!-- Horizontal: text-xs-center -->
       <v-flex xs12 text-center>
         <v-progress-circular :size="70" :width="7" color="amber" indeterminate></v-progress-circular>
       </v-flex>
@@ -58,17 +53,13 @@ import evgService from "../services/EvangelizoService";
 
 export default {
   components: { VueContext },
-  async mounted() {
+  async mounted () {
     console.log(this.loading);
     await this.getTodaysGospel();
-    //Fix listeners
-    this.$nextTick(() => {
-      this.addListeners();
-    });
     this.loading = false;
   },
 
-  data() {
+  data () {
     return {
       evgDetails: {},
       readings: [],
@@ -80,7 +71,15 @@ export default {
     //   return this.items.length < items.length
     // }
   },
-  watch: {},
+  watch: {
+    loading (val) {
+      if (!val) {
+        this.$nextTick(() => {
+          this.addListeners();
+        });
+      }
+    }
+  },
 
   methods: {
     // getSelection () {
@@ -91,13 +90,13 @@ export default {
     //     alert(window.getSelection())
     //   })
     // },
-    async getTodaysGospel() {
+    async getTodaysGospel () {
       const response = await evgService.getTodaysGospel();
       this.evgDetails = response.data;
       this.readings = response.data.data.readings;
       // this.addListeners();
     },
-    addListeners() {
+    addListeners () {
       const para = document.querySelectorAll("p");
       this.textSelection = window.getSelection();
       let tEvents = ["mouseup"];
@@ -123,11 +122,11 @@ export default {
         });
       });
     },
-    alertName(name) {
+    alertName (name) {
       alert(`You clicked on "${name}"!`);
     },
 
-    remove(index) {
+    remove (index) {
       this.$delete(this.items, index);
     }
   }

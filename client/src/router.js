@@ -37,5 +37,13 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "signup" */ './views/Signup.vue')
     },
+    {
+      path: '/lectio',
+      name: 'lectio',
+      // route level code-splitting
+      // this generates a separate chunk (lectio.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "lectio" */ './views/Lectio.vue')
+    },
   ]
 })
