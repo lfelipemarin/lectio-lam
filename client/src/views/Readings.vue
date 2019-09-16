@@ -63,7 +63,8 @@ export default {
     return {
       evgDetails: {},
       readings: [],
-      loading: true
+      loading: true,
+      selection: ''
     };
   },
   computed: {
@@ -98,7 +99,6 @@ export default {
     },
     addListeners () {
       const para = document.querySelectorAll("p");
-      this.textSelection = window.getSelection();
       let tEvents = ["mouseup"];
 
       _.each(para, par => {
@@ -112,8 +112,8 @@ export default {
             } else if (document.selection) {
               selection = document.selection.createRange();
             }
-
             if (selection.toString() !== "") {
+              this.selection = selection.toString()
               setTimeout(() => {
                 this.$refs.menu.open(e, selection.toString());
               }, 0);

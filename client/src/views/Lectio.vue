@@ -6,7 +6,14 @@
           <v-form ref="form" v-model="form" class="pa-4 pt-6">
             <v-textarea v-for="(step, index) in lectioDivina" v-bind:key="index" v-model="step.text" auto-grow filled
                         color="amber" :label="step.label" rows="6" :disabled="step.label=='Lectio'"
-                        append-icon='mdi-help-circle'>
+                        :readonly="step.label=='Lectio'">
+
+              <v-tooltip slot="append" top open-on-hover>
+                <template #activator="{ on }">
+                  <v-icon color="primary" class="mr-1" v-on="on" size="40">mdi-help-circle</v-icon>
+                </template>
+                <span>{{step.tooltip}}</span>
+              </v-tooltip>
             </v-textarea>
           </v-form>
           <v-divider></v-divider>
@@ -52,19 +59,23 @@ export default {
     lectioDivina: {
       lectio: {
         label: 'Lectio',
-        text: ''
+        text: '',
+        tooltip: '¿Qué dice el texto? ¿Qué sucede en este pasaje del evangelio?'
       },
       meditatio: {
         label: 'Meditatio',
-        text: ''
+        text: '',
+        tooltip: '¿Qué me dice Dios en este texto?'
       },
       oratio: {
         label: 'Oratio',
-        text: ''
+        text: '',
+        tooltip: '¿Qué le quiero decir yo a Dios sobre este texto?'
       },
       contemplatio: {
         label: 'Contemplatio',
-        text: ''
+        text: '',
+        tooltip: 'Haz un pequeño compromiso que puedas cumplir'
       }
     },
     agreement: false,
