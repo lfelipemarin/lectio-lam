@@ -28,7 +28,7 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-        <v-snackbar v-model="snackbar" multi-line color="info" timeout=4000>
+        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
           Por favor selecciona una parte del texto
           <v-btn color="white" text @click="snackbar = false">
             Cerrar
@@ -59,7 +59,7 @@
 <script>
 import { VueContext } from "vue-context";
 import _ from "lodash";
-import evgService from "../services/EvangelizoService";
+import lectioService from "../services/LectioService";
 
 export default {
   components: { VueContext },
@@ -102,7 +102,7 @@ export default {
     //   })
     // },
     async getTodaysGospel () {
-      const response = await evgService.getTodaysGospel();
+      const response = await lectioService.getTodaysGospel();
       this.evgDetails = response.data;
       this.readings = response.data.data.readings;
       // this.addListeners();
@@ -122,7 +122,7 @@ export default {
             } else if (document.selection) {
               selection = document.selection.createRange();
             }
-            if (selection.toString() !== "") {
+            if (selection.toString()) {
               this.selection = selection.toString()
               setTimeout(() => {
                 this.$refs.menu.open(e, selection.toString());

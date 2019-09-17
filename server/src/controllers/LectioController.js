@@ -1,6 +1,7 @@
 const axios = require('axios')
 const moment = require('moment')
 const config = require('../config/config')
+const { Lectio } = require('../models')
 
 module.exports = {
   async getReadings (req, res) {
@@ -12,7 +13,17 @@ module.exports = {
     } catch (err) {
       console.log(err)
       res.status(500).send({
-        err: 'an error has occured trying to fetch the bookmark'
+        err: 'an error has occured trying to fetch the readings'
+      })
+    }
+  },
+  async saveLectio (req, res) {
+    try {
+      const song = await Lectio.create(req.body)
+      res.send(song)
+    } catch (err) {
+      res.status(500).send({
+        error: 'an error has occured trying to create the lectio'
       })
     }
   }

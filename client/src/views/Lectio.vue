@@ -5,7 +5,7 @@
         <v-card class="mx-auto">
           <v-form ref="form" v-model="form" class="pa-4 pt-6">
             <v-textarea v-for="(step, index) in lectioDivina" v-bind:key="index" v-model="step.text" auto-grow filled
-                        color="amber" :label="step.label" rows="6">
+                        color="amber" :label="step.label" rows="6" :rules="rules.required">
               <v-tooltip slot="append" top open-on-hover>
                 <template #activator="{ on }">
                   <v-icon color="primary" class="mr-1" v-on="on" size="40">mdi-help-circle</v-icon>
@@ -20,7 +20,8 @@
               Limpiar
             </v-btn>
             <div class="flex-grow-1"></div>
-            <v-btn :disabled="!form" :loading="isLoading" class="white--text" color="amber accent-4" depressed>
+            <v-btn :disabled="!form" :loading="isLoading" class="white--text" color="amber accent-4" depressed
+                   @click="saveLectio">
               Guardar</v-btn>
           </v-card-actions>
         </v-card>
@@ -30,6 +31,8 @@
 </template>
 
 <script>
+import lectioService from "../services/LectioService";
+
 export default {
   props: ['copiedLectioText'],
   data: () => ({
@@ -68,7 +71,7 @@ export default {
       length: len => v => (v || '').length >= len || `Invalid character length, required ${len}`,
       password: v => (v || '').match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/) ||
         'Password must contain an upper case letter, a numeric character, and a special character',
-      required: v => !!v || 'This field is required',
+      required: [v => !!v || 'Este campo es requerido'],
     },
   }),
   mounted () {
@@ -86,6 +89,15 @@ export default {
       this.lectioDivina.meditatio.text = this.$store.state.lectioDivina.meditatioText
       this.lectioDivina.oratio.text = this.$store.state.lectioDivina.oratioText
       this.lectioDivina.contemplatio.text = this.$store.state.lectioDivina.contemplatioText
+    },
+    saveLectio () {
+      lectioService.saveLectio({
+        lectio: this.lectioDivina.lectio.text,
+        meditatio: this.lectioDivina.meditatio.text,
+        oratio: this.lectioDivina.oratio.text,
+        contemplatio: this.lectioDivina.contemplatio.text,
+        UserId: this.$store.state.user.id
+      })
     }
   },
   watch: {

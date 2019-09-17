@@ -1,9 +1,9 @@
 const AuthenticationController = require('./controllers/AuthenticationController')
 const AuthenticationControllerPolicy = require('./policies/AuthenticationControllerPolicy')
-const SongsController = require('./controllers/SongsController')
+// const SongsController = require('./controllers/SongsController')
 const BookmarksController = require('./controllers/BookmarksController')
 const HistoriesController = require('./controllers/HistoriesController')
-const EvangController = require('./controllers/EvangController')
+const LectioController = require('./controllers/LectioController')
 
 const isAuthenticated = require('./policies/isAuthenticated')
 
@@ -24,7 +24,7 @@ module.exports = (app) => {
   // app.post('/songs',
   //   SongsController.post)
 
-  //Bookmarks
+  // Bookmarks
   app.get('/bookmarks',
     isAuthenticated,
     BookmarksController.index)
@@ -43,8 +43,8 @@ module.exports = (app) => {
   //   HistoriesController.post)
   app.get('/readings',
     isAuthenticated,
-    EvangController.getReadings)
-  app.post('/histories',
+    LectioController.getReadings)
+  app.post('/save-lectio',
     isAuthenticated,
-    HistoriesController.post)
+    LectioController.saveLectio)
 }
