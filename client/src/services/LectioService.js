@@ -6,7 +6,10 @@ export default {
         return Api().get('readings')
     },
     saveLectio (lectio) {
-        return Api().post('save-lectio', lectio)
+        return Api().post('lectios', lectio)
+    },
+    getAllLectios (userId) {
+        return Api().get('lectios', userId)
     }
 
 }

@@ -26,5 +26,21 @@ module.exports = {
         error: 'an error has occured trying to create the lectio'
       })
     }
+  },
+  async getAllLectios (req, res) {
+    try {
+      const userId = req.user.id
+      const where = {
+        UserId: userId
+      }
+      const lectios = await Lectio.findAll({
+        where: where
+      }).map(lectio => lectio.toJSON())
+      res.send(lectios)
+    } catch (err) {
+      res.status(500).send({
+        error: 'an error has occured trying to fetch the lectios'
+      })
+    }
   }
 }

@@ -44,7 +44,12 @@ module.exports = (app) => {
   app.get('/readings',
     isAuthenticated,
     LectioController.getReadings)
-  app.post('/save-lectio',
+
+  // Lectio
+  app.post('/lectios',
     isAuthenticated,
     LectioController.saveLectio)
+  app.get('/lectios',
+    isAuthenticated,
+    LectioController.getAllLectios)
 }
