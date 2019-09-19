@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-treeview v-model="tree" :open="open" :items="items" activatable item-key="name" open-on-click>
+        <v-treeview v-model="tree" :open="open" :items="items" activatable item-key="id" open-on-click>
           <template v-slot:prepend="{ item, open }">
             <v-icon v-if="!item.file">
               {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
@@ -93,7 +93,7 @@ export default {
   }),
   async mounted () {
     this.lectios = (await this.getAllLectios()).data
-    console.log(this.years())
+    this.years()
   },
   methods: {
     getAllLectios () {
@@ -107,17 +107,57 @@ export default {
       uniqYears = _.uniqBy((this.lectios), (lectio) => {
         return moment(lectio.createdAt).format('YYYY-MM')
       })
-      console.log(uniqYears)
-      _.map(uniqYears, (lectio) => {
-        console.log('lectio', lectio)
+      let year
+      let prevYear
+      let tempItems = []
+      _.each(uniqYears, (lectio) => {
         let obj = {}
+        obj.id = Math.floor(Math.random() * 999999)
         obj.name = moment(lectio.createdAt).format('YYYY')
-        obj.children = [{ name: moment(lectio.createdAt).format('MMMM') }]
-        this.items.push(obj)
+        obj.children = [{
+          name: moment(lectio.createdAt).format('MMMM'),
+          children: [{
+            name: moment(lectio.createdAt).format('dddd DD'),
+            file: 'txt',
+            id: Math.floor(Math.random() * 999999)
+          }],
+          id: Math.floor(Math.random() * 999999)
+        }]
+        tempItems.push(obj)
       })
-      
 
+      this.items = _.map(tempItems, (item, index) => {
+        let prev
+        let next
+        let mergedLectio = item
+        year = item.name
+
+        if (index > 0) {
+          prev = tempItems[index - 1]
+        }
+        if (index < tempItems.length) {
+          next = tempItems[index + 1]
+        }
+        if (prev) {
+          prevYear = prev.name
+          if (prevYear == year) {
+            mergedLectio = _.mergeWith(item, prev, this.customizer);
+          }
+        }
+        if (next) {
+          if (next.name == year) {
+            return
+          }
+        }
+        return mergedLectio
+      })
+      this.items = _.compact(this.items)
     },
+    customizer (objValue, srcValue) {
+      if (_.isArray(objValue)) {
+        return objValue.concat(srcValue);
+      }
+    }
   }
 }
 </script>
