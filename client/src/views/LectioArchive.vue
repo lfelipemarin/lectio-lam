@@ -2,7 +2,10 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-treeview v-model="tree" :open="open" :items="items" activatable item-key="id" open-on-click>
+        <v-text-field v-model="search" label="Search Company Directory" dark flat solo-inverted hide-details clearable
+                      clear-icon="mdi-close-circle-outline"></v-text-field>
+        <v-treeview v-model="tree" :open="open" :items="items" activatable item-key="id" open-on-click :search="search"
+                    :filter="filter">
           <template v-slot:prepend="{ item, open }">
             <v-icon v-if="!item.file">
               {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
@@ -26,6 +29,7 @@ export default {
   data: () => ({
     lectios: [],
     open: ['public'],
+    search: null,
     files: {
       html: 'mdi-language-html5',
       js: 'mdi-nodejs',
@@ -101,14 +105,9 @@ export default {
     },
     years () {
       let uniqYears
-      // let years = ''
-      // let months = ''
-      // let day = ''
       uniqYears = _.uniqBy((this.lectios), (lectio) => {
-        return moment(lectio.createdAt).format('YYYY-MM')
+        return moment(lectio.createdAt).format('YYYY-MM-DD')
       })
-      let year
-      let prevYear
       let tempItems = []
       _.each(uniqYears, (lectio) => {
         let obj = {}
@@ -126,22 +125,46 @@ export default {
         tempItems.push(obj)
       })
 
-      this.items = _.map(tempItems, (item, index) => {
+      tempItems = _.sortBy(tempItems, 'name')
+
+      this.items = this.organizeLectios(tempItems)
+    },
+    customizer (objValue, srcValue) {
+      debugger
+      if (_.isArray(objValue)) {
+        _.each(srcValue, (val1, index1) => {
+          _.each(objValue, (val2, index2) => {
+            if (val1.name == val2.name) {
+              debugger
+              objValue[index2].children = objValue[index2].children.concat(srcValue[index1].children)
+            }
+          })
+        })
+        return objValue.concat(srcValue);
+      }
+    },
+    organizeLectios (array) {
+      return _.compact(array = _.map(array, (item, index) => {
+        let year
+        let prevYear
         let prev
         let next
         let mergedLectio = item
         year = item.name
 
         if (index > 0) {
-          prev = tempItems[index - 1]
+          prev = array[index - 1]
         }
-        if (index < tempItems.length) {
-          next = tempItems[index + 1]
+        if (index < array.length) {
+          next = array[index + 1]
         }
         if (prev) {
           prevYear = prev.name
           if (prevYear == year) {
+            debugger
             mergedLectio = _.mergeWith(item, prev, this.customizer);
+            let uniqChildren = _.uniqBy(mergedLectio.children, 'name')
+            mergedLectio.children = uniqChildren
           }
         }
         if (next) {
@@ -150,14 +173,13 @@ export default {
           }
         }
         return mergedLectio
-      })
-      this.items = _.compact(this.items)
+      }))
     },
-    customizer (objValue, srcValue) {
-      if (_.isArray(objValue)) {
-        return objValue.concat(srcValue);
-      }
-    }
-  }
+  },
+  computed: {
+    filter () {
+      return (item, search, textKey) => item[textKey].indexOf(search) > -1
+    },
+  },
 }
 </script>

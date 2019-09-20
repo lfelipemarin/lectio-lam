@@ -96,7 +96,12 @@ export default {
         path: '/lectio',
         title: 'Lectio Divina',
         icon: 'mdi-notebook'
-      }
+      },
+      {
+        path: '/lectio-archivo',
+        title: 'Lectios Guardadas',
+        icon: 'mdi-folder-heart'
+      },
     ]
   }),
   created () {
