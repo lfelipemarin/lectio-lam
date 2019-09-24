@@ -19,8 +19,8 @@ module.exports = {
   },
   async saveLectio (req, res) {
     try {
-      const song = await Lectio.create(req.body)
-      res.send(song)
+      const lectio = await Lectio.create(req.body)
+      res.send(lectio)
     } catch (err) {
       res.status(500).send({
         error: 'an error has occured trying to create the lectio'

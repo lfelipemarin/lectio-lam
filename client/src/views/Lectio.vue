@@ -66,11 +66,8 @@ export default {
     isLoading: false,
     password: undefined,
     phone: undefined,
+    error: null,
     rules: {
-      email: v => (v || '').match(/@/) || 'Please enter a valid email',
-      length: len => v => (v || '').length >= len || `Invalid character length, required ${len}`,
-      password: v => (v || '').match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/) ||
-        'Password must contain an upper case letter, a numeric character, and a special character',
       required: [v => !!v || 'Este campo es requerido'],
     },
   }),
@@ -90,14 +87,20 @@ export default {
       this.lectioDivina.oratio.text = this.$store.state.lectioDivina.oratioText
       this.lectioDivina.contemplatio.text = this.$store.state.lectioDivina.contemplatioText
     },
-    saveLectio () {
-      lectioService.saveLectio({
-        lectio: this.lectioDivina.lectio.text,
-        meditatio: this.lectioDivina.meditatio.text,
-        oratio: this.lectioDivina.oratio.text,
-        contemplatio: this.lectioDivina.contemplatio.text,
-        UserId: this.$store.state.user.id
-      })
+    async saveLectio () {
+      try {
+        const response = await lectioService.saveLectio({
+          lectio: this.lectioDivina.lectio.text,
+          meditatio: this.lectioDivina.meditatio.text,
+          oratio: this.lectioDivina.oratio.text,
+          contemplatio: this.lectioDivina.contemplatio.text,
+          UserId: this.$store.state.user.id
+        })
+        console.log('lectio save response ', response)
+      } catch (error) {
+        this.error = error.response.data.error
+
+      }
     }
   },
   watch: {
