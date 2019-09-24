@@ -11,14 +11,17 @@
       <v-col xs="12" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
         <v-card class="mx-auto">
           <v-list-item>
-            <v-list-item-avatar color="grey"></v-list-item-avatar>
-            <v-list-item-content>
+            <v-chip class="mt-2" color="primary" label text-color="white">
+              <v-icon left>mdi-calendar-month</v-icon>
+              {{beautyDate(lectio.createdAt)}}
+            </v-chip>
+            <!-- <v-list-item-content>
               <v-list-item-title class="headline">Our Changing Planet</v-list-item-title>
               <v-list-item-subtitle>by Kurt Wagner</v-list-item-subtitle>
-            </v-list-item-content>
+            </v-list-item-content> -->
           </v-list-item>
 
-          <v-img src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg" height="194"></v-img>
+          <!-- <v-img src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg" height="194"></v-img> -->
 
           <v-card-text>
             <h4>Lectio</h4>
