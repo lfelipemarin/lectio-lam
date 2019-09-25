@@ -64,7 +64,6 @@ import lectioService from "../services/LectioService";
 export default {
   components: { VueContext },
   async mounted () {
-    console.log(this.loading);
     await this.getTodaysGospel();
     this.loading = false;
   },
@@ -135,7 +134,7 @@ export default {
     sendSelectionToLectio () {
       this.selection = window.getSelection().toString()
       if (this.selection) {
-        this.$router.push({ name: 'lectio', params: { copiedLectioText: this.selection } })
+        this.$router.push({ name: 'lectio', params: { copiedLectioText: this.selection, readings: this.readings } })
       } else {
         this.snackbar = true
       }

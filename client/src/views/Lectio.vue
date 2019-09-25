@@ -13,6 +13,9 @@
                 <span>{{step.tooltip}}</span>
               </v-tooltip>
             </v-textarea>
+            <v-checkbox v-model="lectioDivina.contemplatio.reminder"
+                        label="Recordar compromiso?"></v-checkbox>
+
           </v-form>
           <v-divider></v-divider>
           <v-card-actions>
@@ -34,7 +37,7 @@
 import lectioService from "../services/LectioService";
 
 export default {
-  props: ['copiedLectioText'],
+  props: ['copiedLectioText', 'readings'],
   data: () => ({
     lectioDivina: {
       lectio: {
@@ -55,7 +58,8 @@ export default {
       contemplatio: {
         label: 'Contemplatio',
         text: '',
-        tooltip: 'Haz un pequeño compromiso que puedas cumplir'
+        tooltip: 'Haz un pequeño compromiso que puedas cumplir',
+        reminder: false
       }
     },
     agreement: false,
@@ -94,6 +98,7 @@ export default {
           meditatio: this.lectioDivina.meditatio.text,
           oratio: this.lectioDivina.oratio.text,
           contemplatio: this.lectioDivina.contemplatio.text,
+          reminder: this.lectioDivina.contemplatio.reminder,
           UserId: this.$store.state.user.id
         })
         console.log('lectio save response ', response)

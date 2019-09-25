@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid v-if="!loading">
+  <v-container fluid>
     <v-row>
       <v-col>
 
@@ -14,15 +14,12 @@ import lectioService from "../services/LectioService";
 
 export default {
   async mounted () {
-    console.log(this.loading);
     await this.getTodaysGospel();
-    this.loading = false;
   },
   data () {
     return {
       evgDetails: {},
       readings: [],
-      loading: true,
       selection: '',
       snackbar: false
     };

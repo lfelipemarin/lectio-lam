@@ -50,11 +50,9 @@ export default {
   components: { VueContext },
   async mounted () {
     let loading = true
-    console.log(loading)
     await this.getTodaysGospel()
     this.addListeners()
     loading = false
-    console.log(loading)
   },
 
   data () {

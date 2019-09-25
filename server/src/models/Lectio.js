@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
     lectio: DataTypes.TEXT,
     meditatio: DataTypes.TEXT,
     oratio: DataTypes.TEXT,
-    contemplatio: DataTypes.TEXT
+    contemplatio: DataTypes.TEXT,
+    reminder: DataTypes.INTEGER
   })
 
   Lectio.associate = function (models) {

@@ -1,11 +1,35 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col>
-        <v-form>
-          <v-text-field v-model="search" single-line solo label="Buscar Lectios" clearable></v-text-field>
-        </v-form>
-      </v-col>
+      <v-expansion-panels inset popout>
+        <v-expansion-panel>
+          <v-expansion-panel-header disable-icon-rotate>
+            <template v-slot:actions>
+              <v-icon color="primary">mdi-magnify</v-icon>
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-form>
+              <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="searchDate"
+                      transition="scale-transition" offset-y max-width="290px" min-width="290px">
+                <template v-slot:activator="{ on }">
+                  <v-text-field v-model="searchDate" single-line solo label="Buscar Lectios por fecha" readonly
+                                clearable v-on="on">
+                  </v-text-field>
+                </template>
+                <v-date-picker v-model="searchDate" type="month" no-title scrollable
+                               @change="$refs.menu.save(searchDate)">
+                </v-date-picker>
+              </v-menu>
+              <v-text-field v-model="searchWord" single-line solo label="Buscar Lectios por palabra" clearable>
+              </v-text-field>
+              <v-text-field v-model="searchVerse" single-line solo label="Buscar Lectios por versículo" clearable>
+              </v-text-field>
+            </v-form>
+
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </v-row>
     <v-row>
       <v-col xs="12" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
@@ -63,7 +87,12 @@ moment.locale('es')
 export default {
   data: () => ({
     lectios: [],
-    search: ''
+    searchWord: '',
+    searchVerse: '',
+    searchDate: '',
+    menu: false,
+    modal: false,
+    moment: moment
   }),
   async mounted () {
     this.lectios = (await this.getAllLectios()).data
@@ -83,6 +112,9 @@ export default {
     },
     beautyDate (date) {
       return moment(date).format('MMMM-DD-YYYY')
+    },
+    parseSearchDate (date) {
+      return moment(date).format('YYYY-MM')
     }
   },
   computed: {
@@ -102,24 +134,46 @@ export default {
     filteredList () {
 
       let result = this.lectios
-      if (!this.search)
+      let filter
+      let filterValueWord
+      let filterValueDate
+
+      if (!this.searchDate && !this.searchWord)
         return result
 
-      const filterValue = this.search.toLowerCase()
+      if (this.searchDate && this.searchWord) {
+        filterValueDate = this.searchDate.toLowerCase()
+        filterValueWord = this.searchWord.toLowerCase()
 
-      const filter = lectio =>
-        lectio.lectio.toLowerCase().includes(filterValue) ||
-        lectio.meditatio.toLowerCase().includes(filterValue) ||
-        lectio.oratio.toLowerCase().includes(filterValue) ||
-        lectio.contemplatio.toLowerCase().includes(filterValue) ||
-        this.beautyDate(lectio.createdAt).includes(filterValue)
+        filter = lectio =>
+          this.parseSearchDate(lectio.createdAt).includes(filterValueDate) &&
+          (lectio.lectio.toLowerCase().includes(filterValueWord) ||
+            lectio.meditatio.toLowerCase().includes(filterValueWord) ||
+            lectio.oratio.toLowerCase().includes(filterValueWord) ||
+            lectio.contemplatio.toLowerCase().includes(filterValueWord))
+        return result.filter(filter)
+      }
+      if (this.searchWord) {
+
+        filterValueWord = this.searchWord.toLowerCase()
+        filter = lectio =>
+          lectio.lectio.toLowerCase().includes(filterValueWord) ||
+          lectio.meditatio.toLowerCase().includes(filterValueWord) ||
+          lectio.oratio.toLowerCase().includes(filterValueWord) ||
+          lectio.contemplatio.toLowerCase().includes(filterValueWord)
+      } else {
+        filterValueDate = this.searchDate.toLowerCase()
+
+        filter = lectio =>
+          this.parseSearchDate(lectio.createdAt).includes(filterValueDate)
+      }
 
       return result.filter(filter)
     }
   },
 }
 </script>
-<style>
+<style scoped>
 @media only screen and (min-width: 500px) {
   .cards {
     column-count: 1;
@@ -147,7 +201,9 @@ export default {
   display: inline-block;
   color: black;
   -webkit-perspective: 1000;
+  perspective: 1000;
   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   transition: all 100ms ease-in-out;
 }
 
@@ -159,5 +215,13 @@ export default {
 img {
   display: block;
   width: 100%;
+}
+
+.v-expansion-panel::before {
+  box-shadow: none;
+}
+
+.theme--dark.v-expansion-panels .v-expansion-panel {
+  background-color: transparent;
 }
 </style>
