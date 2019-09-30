@@ -1,13 +1,32 @@
 <template>
   <v-container fluid v-if="!loading">
     <v-row>
-      <v-col v-for="(reading, index) in readings" :key="index" cols="12">
+      <v-col>
+        <v-list-item>
+          <v-icon left>mdi-calendar-month</v-icon>
+          <v-list-item-content>
+            <v-list-item-title class="headline">{{evgDetails.data.date_displayed}}
+            </v-list-item-title>
+            <v-list-item-subtitle>{{evgDetails.data.liturgic_title}}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col v-for="(reading, index) in readings" :key="index" cols="12" sm="12" md="6" lg="4">
         <v-card>
-          <v-img src="//placehold.it/800x200" class="white--text" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
-            <v-card-title class="fill-height align-end"></v-card-title>
-          </v-img>
+          <v-list-item>
+            <!-- <v-chip class="mt-2" color="primary" label text-color="white">
+              <v-icon left>mdi-calendar-month</v-icon>
+              {{beautyDate(lectio.createdAt)}}
+            </v-chip> -->
+            <v-list-item-content>
+              <v-list-item-title class="headline">{{`${reading.title} ${reading.reference_displayed}`}}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-card-text>
-            <p>{{reading.text}}</p>
+            <p>{{cleanText(reading.text)}}</p>
           </v-card-text>
           <v-card-actions>
             <v-btn class="white--text" color="amber accent-4" @click="sendSelectionToLectio">
@@ -142,6 +161,15 @@ export default {
 
     remove (index) {
       this.$delete(this.items, index);
+    },
+    cleanText (text) {
+      const regex = /\[{2}.*?\]{2}/gm;
+      const subst = ``;
+
+      // The substituted value will be contained in the result variable
+      const result = text.replace(regex, subst);
+
+      return result
     }
   }
 };

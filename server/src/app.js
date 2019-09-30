@@ -14,7 +14,7 @@ require('./passport')
 
 require('./routes')(app)
 
-sequelize.sync({force: true})
+sequelize.sync({force: false})
   .then(() => {
     app.listen(config.port)
     console.log(`Server started on port ${config.port}`)

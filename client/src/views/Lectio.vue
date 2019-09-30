@@ -13,8 +13,7 @@
                 <span>{{step.tooltip}}</span>
               </v-tooltip>
             </v-textarea>
-            <v-checkbox v-model="lectioDivina.contemplatio.reminder"
-                        label="Recordar compromiso?"></v-checkbox>
+            <v-checkbox v-model="lectioDivina.contemplatio.reminder" label="Recordar compromiso?"></v-checkbox>
 
           </v-form>
           <v-divider></v-divider>
@@ -86,10 +85,10 @@ export default {
   },
   methods: {
     init () {
-      this.lectioDivina.lectio.text = this.$store.state.lectioDivina.lectioText
-      this.lectioDivina.meditatio.text = this.$store.state.lectioDivina.meditatioText
-      this.lectioDivina.oratio.text = this.$store.state.lectioDivina.oratioText
-      this.lectioDivina.contemplatio.text = this.$store.state.lectioDivina.contemplatioText
+      this.lectioDivina.lectio.text = this.$store.state.lectioDivina.lectioText || ''
+      this.lectioDivina.meditatio.text = this.$store.state.lectioDivina.meditatioText || ''
+      this.lectioDivina.oratio.text = this.$store.state.lectioDivina.oratioText || ''
+      this.lectioDivina.contemplatio.text = this.$store.state.lectioDivina.contemplatioText || ''
     },
     async saveLectio () {
       try {

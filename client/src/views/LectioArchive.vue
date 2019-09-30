@@ -1,38 +1,39 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-expansion-panels inset popout>
-        <v-expansion-panel>
-          <v-expansion-panel-header disable-icon-rotate>
-            <template v-slot:actions>
-              <v-icon color="primary">mdi-magnify</v-icon>
-            </template>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-form>
-              <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="searchDate"
-                      transition="scale-transition" offset-y max-width="290px" min-width="290px">
-                <template v-slot:activator="{ on }">
-                  <v-text-field v-model="searchDate" single-line solo label="Buscar Lectios por fecha" readonly
-                                clearable v-on="on">
-                  </v-text-field>
-                </template>
-                <v-date-picker v-model="searchDate" type="month" no-title scrollable
-                               @change="$refs.menu.save(searchDate)">
-                </v-date-picker>
-              </v-menu>
-              <v-text-field v-model="searchWord" single-line solo label="Buscar Lectios por palabra" clearable>
-              </v-text-field>
-              <v-text-field v-model="searchVerse" single-line solo label="Buscar Lectios por versículo" clearable>
-              </v-text-field>
-            </v-form>
-
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+      <v-col>
+        <v-expansion-panels inset popout>
+          <v-expansion-panel>
+            <v-expansion-panel-header disable-icon-rotate>
+              <template v-slot:actions>
+                <v-icon color="primary">mdi-magnify</v-icon>
+              </template>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-form>
+                <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="searchDate"
+                        transition="scale-transition" offset-y max-width="290px" min-width="290px">
+                  <template v-slot:activator="{ on }">
+                    <v-text-field v-model="searchDate" single-line solo label="Buscar Lectios por fecha" readonly
+                                  clearable v-on="on">
+                    </v-text-field>
+                  </template>
+                  <v-date-picker v-model="searchDate" type="month" no-title scrollable
+                                 @change="$refs.menu.save(searchDate)">
+                  </v-date-picker>
+                </v-menu>
+                <v-text-field v-model="searchWord" single-line solo label="Buscar Lectios por palabra" clearable>
+                </v-text-field>
+                <v-text-field v-model="searchVerse" single-line solo label="Buscar Lectios por versículo" clearable>
+                </v-text-field>
+              </v-form>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-col>
     </v-row>
     <v-row>
-      <v-col xs="12" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
+      <v-col cols="6" xs="6" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
         <v-card class="mx-auto">
           <v-list-item>
             <v-chip class="mt-2" color="primary" label text-color="white">
@@ -59,11 +60,9 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn text color="amber accent-4">
-              Read
-            </v-btn>
-            <v-btn text color="amber accent-4">
-              Bookmark
+            <v-btn text color="amber accent-4"
+                   @click.stop="openLectioDialog(lectio.lectio,lectio.meditatio,lectio.oratio,lectio.contemplatio)">
+              Leer
             </v-btn>
             <div class="flex-grow-1"></div>
             <v-btn icon>
@@ -76,6 +75,73 @@
         </v-card>
       </v-col>
     </v-row>
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialog.open" fullscreen hide-overlay transition="dialog-bottom-transition">
+          <v-card>
+            <v-toolbar dark color="primary">
+              <v-btn icon dark @click="dialog.open = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-toolbar-title>Settings</v-toolbar-title>
+              <div class="flex-grow-1"></div>
+              <v-toolbar-items>
+                <v-btn dark text @click="dialog.open = false">Save</v-btn>
+              </v-toolbar-items>
+            </v-toolbar>
+            <v-list three-line subheader>
+              <v-subheader>{{dialog.lectio}}</v-subheader>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Content filtering</v-list-item-title>
+                  <v-list-item-subtitle>Set the content filtering level to restrict apps that can be downloaded
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>Password</v-list-item-title>
+                  <v-list-item-subtitle>Require password for purchase or use password to restrict purchase
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <v-divider></v-divider>
+            <v-list three-line subheader>
+              <v-subheader>General</v-subheader>
+              <v-list-item>
+                <v-list-item-action>
+                  <v-checkbox v-model="notifications"></v-checkbox>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>Notifications</v-list-item-title>
+                  <v-list-item-subtitle>Notify me about updates to apps or games that I downloaded
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-action>
+                  <v-checkbox v-model="sound"></v-checkbox>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>Sound</v-list-item-title>
+                  <v-list-item-subtitle>Auto-update apps at any time. Data charges may apply</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-action>
+                  <v-checkbox v-model="widgets"></v-checkbox>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>Auto-add widgets</v-list-item-title>
+                  <v-list-item-subtitle>Automatically add home screen widgets</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
   </v-container>
 </template>
 <script>
@@ -92,7 +158,14 @@ export default {
     searchDate: '',
     menu: false,
     modal: false,
-    moment: moment
+    moment: moment,
+    dialog: {
+      open: false,
+      lectio: '',
+      meditatio: '',
+      oratio: '',
+      contemplatio: '',
+    }
   }),
   async mounted () {
     this.lectios = (await this.getAllLectios()).data
@@ -115,6 +188,13 @@ export default {
     },
     parseSearchDate (date) {
       return moment(date).format('YYYY-MM')
+    },
+    openLectioDialog (lectio, meditatio, oratio, contemplatio) {
+      this.dialog.lectio = lectio
+      this.dialog.meditatio = meditatio
+      this.dialog.oratio = oratio
+      this.dialog.contemplatio = contemplatio
+      this.dialog.open = true
     }
   },
   computed: {
