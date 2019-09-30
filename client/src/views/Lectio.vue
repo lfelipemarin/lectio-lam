@@ -27,6 +27,12 @@
               Guardar</v-btn>
           </v-card-actions>
         </v-card>
+        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
+          Lectio Guardada
+          <v-btn color="white" text @click="snackbar = false">
+            Cerrar
+          </v-btn>
+        </v-snackbar>
       </v-col>
     </v-row>
   </v-container>
@@ -73,6 +79,7 @@ export default {
     rules: {
       required: [v => !!v || 'Este campo es requerido'],
     },
+    snackbar: false
   }),
   mounted () {
     this.init()
@@ -101,6 +108,10 @@ export default {
           UserId: this.$store.state.user.id
         })
         console.log('lectio save response ', response)
+        if (response.status == 200) {
+          this.snackbar = true
+          this.$refs.form.reset()
+        }
       } catch (error) {
         this.error = error.response.data.error
 
