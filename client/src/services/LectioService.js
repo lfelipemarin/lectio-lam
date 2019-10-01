@@ -24,5 +24,12 @@ export default {
                 pageSize: pageSize
             }
         })
+    },
+    getSaintsByDate (date) {
+        return Api().get('saints', {
+            params: {
+                date: date
+            }
+        })
     }
 }

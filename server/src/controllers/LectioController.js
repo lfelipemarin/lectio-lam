@@ -4,16 +4,6 @@ const config = require('../config/config')
 const { Lectio } = require('../models')
 const dbHelper = require('../helpers/dbHelper')
 
-// const paginate = (query, { page, pageSize }) => {
-//   const offset = page * pageSize
-//   const limit = offset + pageSize
-
-//   return {
-//     ...query,
-//     offset,
-//     limit
-//   }
-// }
 module.exports = {
   async getReadings (req, res) {
     let today = moment().format('YYYY-MM-DD')
@@ -28,16 +18,6 @@ module.exports = {
       })
     }
   },
-  async saveLectio (req, res) {
-    try {
-      const lectio = await Lectio.create(req.body)
-      res.send(lectio)
-    } catch (err) {
-      res.status(500).send({
-        error: 'an error has occured trying to create the lectio'
-      })
-    }
-  },
   async getDateReadings (req, res) {
     try {
       let readings = await axios.get('http://feed.evangelizo.org/v2/reader.php', {
@@ -48,6 +28,32 @@ module.exports = {
       console.log(err)
       res.status(500).send({
         err: 'an error has occured trying to fetch the readings'
+      })
+    }
+  },
+  async getSaintsByDate (req, res) {
+    let day = moment(req.query.date).format('DD')
+    let month = moment(req.query.date).format('MM')
+    try {
+      let saints = await axios.get(config.apiConfig.baseUrl + 'saints', {
+        params: { day: day, month: month }
+      })
+      console.log(saints.data)
+      res.send(saints.data)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        err: 'an error has occured trying to fetch the saints'
+      })
+    }
+  },
+  async saveLectio (req, res) {
+    try {
+      const lectio = await Lectio.create(req.body)
+      res.send(lectio)
+    } catch (err) {
+      res.status(500).send({
+        error: 'an error has occured trying to create the lectio'
       })
     }
   },

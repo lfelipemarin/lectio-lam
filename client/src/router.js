@@ -54,5 +54,13 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "lectio-archivo" */ './views/LectioArchive.vue')
     },
+    {
+      path: '/saints',
+      name: 'saints',
+      // route level code-splitting
+      // this generates a separate chunk (saints.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "saints" */ './views/Saints.vue')
+    },
   ]
 })

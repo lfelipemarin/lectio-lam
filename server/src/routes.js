@@ -47,6 +47,9 @@ module.exports = (app) => {
   app.get('/date-readings',
     isAuthenticated,
     LectioController.getDateReadings)
+  app.get('/saints',
+    isAuthenticated,
+    LectioController.getSaintsByDate)
 
   // Lectio
   app.post('/lectios',
