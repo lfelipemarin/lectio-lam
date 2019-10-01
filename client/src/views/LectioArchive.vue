@@ -34,7 +34,7 @@
     </v-row>
     <v-row>
       <v-col cols="6" xs="6" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
-        <v-card class="mx-auto">
+        <v-card class="mx-auto" hover>
           <v-list-item>
             <v-chip class="mt-2" color="primary" label text-color="white">
               <v-icon left>mdi-calendar-month</v-icon>
@@ -61,7 +61,7 @@
 
           <v-card-actions>
             <v-btn text color="amber accent-4"
-                   @click.stop="openLectioDialog(lectio.lectio,lectio.meditatio,lectio.oratio,lectio.contemplatio)">
+                   @click.stop="openLectioDialog(lectio.lectio,lectio.meditatio,lectio.oratio,lectio.contemplatio,lectio.createdAt)">
               Leer
             </v-btn>
             <div class="flex-grow-1"></div>
@@ -75,6 +75,12 @@
         </v-card>
       </v-col>
     </v-row>
+    <infinite-loading spinner="spiral" @infinite="infiniteHandler">
+      <div slot="no-more">No tienes mas lectios guardadas <v-icon>mdi-christianity-outline</v-icon>
+      </div>
+      <div slot="no-results">Todavia no tienes lectios guardadas <v-icon>mdi-christianity-outline</v-icon>
+      </div>
+    </infinite-loading>
     <template>
       <v-row justify="center">
         <v-dialog v-model="dialog.open" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -83,61 +89,13 @@
               <v-btn icon dark @click="dialog.open = false">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
-              <v-toolbar-title>Settings</v-toolbar-title>
+              <v-toolbar-title>Lectio {{beautyDate(dialog.createdAt)}}</v-toolbar-title>
               <div class="flex-grow-1"></div>
-              <v-toolbar-items>
+              <!-- <v-toolbar-items>
                 <v-btn dark text @click="dialog.open = false">Save</v-btn>
-              </v-toolbar-items>
+              </v-toolbar-items> -->
             </v-toolbar>
-            <v-list three-line subheader>
-              <v-subheader>{{dialog.lectio}}</v-subheader>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>Content filtering</v-list-item-title>
-                  <v-list-item-subtitle>Set the content filtering level to restrict apps that can be downloaded
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>Password</v-list-item-title>
-                  <v-list-item-subtitle>Require password for purchase or use password to restrict purchase
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-            <v-divider></v-divider>
-            <v-list three-line subheader>
-              <v-subheader>General</v-subheader>
-              <v-list-item>
-                <v-list-item-action>
-                  <v-checkbox v-model="notifications"></v-checkbox>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>Notifications</v-list-item-title>
-                  <v-list-item-subtitle>Notify me about updates to apps or games that I downloaded
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-action>
-                  <v-checkbox v-model="sound"></v-checkbox>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>Sound</v-list-item-title>
-                  <v-list-item-subtitle>Auto-update apps at any time. Data charges may apply</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-action>
-                  <v-checkbox v-model="widgets"></v-checkbox>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>Auto-add widgets</v-list-item-title>
-                  <v-list-item-subtitle>Automatically add home screen widgets</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
+            <p v-html="dialog.readings"></p>
           </v-card>
         </v-dialog>
       </v-row>
@@ -149,8 +107,12 @@ import lectioService from "../services/LectioService";
 import moment from 'moment'
 import _ from 'lodash'
 moment.locale('es')
+import InfiniteLoading from 'vue-infinite-loading';
 
 export default {
+  components: {
+    InfiniteLoading
+  },
   data: () => ({
     lectios: [],
     searchWord: '',
@@ -165,14 +127,29 @@ export default {
       meditatio: '',
       oratio: '',
       contemplatio: '',
-    }
+      createdAt: '',
+      readings: ''
+    },
+    page: 0,
+    pageSize: 10
   }),
   async mounted () {
-    this.lectios = (await this.getAllLectios()).data
+    // this.lectios = (await this.getAllLectios()).data
   },
   methods: {
+    infiniteHandler ($state) {
+      lectioService.getAllLectios(this.page, this.pageSize).then(({ data }) => {
+        if (data.length) {
+          this.page += 1;
+          this.lectios.push(...data);
+          $state.loaded();
+        } else {
+          $state.complete();
+        }
+      })
+    },
     getAllLectios () {
-      return lectioService.getAllLectios({ UserId: this.$store.state.user.id })
+      return lectioService.getAllLectios(this.page, this.pageSize)
     },
     checkLectioYear (year, lectioYear) {
       return year == moment(lectioYear).format('YYYY')
@@ -189,31 +166,24 @@ export default {
     parseSearchDate (date) {
       return moment(date).format('YYYY-MM')
     },
-    openLectioDialog (lectio, meditatio, oratio, contemplatio) {
+    async openLectioDialog (lectio, meditatio, oratio, contemplatio, createdAt) {
       this.dialog.lectio = lectio
       this.dialog.meditatio = meditatio
       this.dialog.oratio = oratio
       this.dialog.contemplatio = contemplatio
       this.dialog.open = true
+      this.dialog.createdAt = createdAt
+      this.dialog.readings = (await lectioService.getDateReadings(moment(createdAt).format('YYYYMMDD'), 'SP', 'all')).data
     }
   },
   computed: {
     filter () {
       return (item, search, textKey) => item[textKey].indexOf(search) > -1
     },
-    sortLectiosByYear () {
-      return _.orderBy(_.uniqBy(_.map(this.lectios, (lectio) => {
-        return { year: moment(lectio.createdAt).format('YYYY') }
-      }), 'year'), ['year'], ['desc'])
-    },
-    sortLectiosByMonth () {
-      return _.orderBy(_.uniqBy(_.map(this.lectios, (lectio) => {
-        return { date: moment(lectio.createdAt).format('YYYY-MMMM'), year: moment(lectio.createdAt).format('YYYY'), month: moment(lectio.createdAt).format('MMMM') }
-      }), 'date'), ['date'], ['desc'])
-    },
     filteredList () {
-
-      let result = this.lectios
+      let result = _.orderBy(this.lectios, (lectio) => {
+        return lectio.createdAt
+      }, ['desc'])
       let filter
       let filterValueWord
       let filterValueDate
