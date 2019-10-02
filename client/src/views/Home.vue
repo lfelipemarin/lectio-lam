@@ -2,7 +2,7 @@
   <v-container grid-list-xs>
     <v-layout row wrap>
       <v-flex xs12>
-        WELCOME TO LECTIO DIVINA
+        BIENVENIDO A LA LECTIO DIVINA DE LAZOS DE AMOR MARIANO
       </v-flex>
     </v-layout>
 
