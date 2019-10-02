@@ -5,7 +5,7 @@
         <v-list-item>
           <v-icon left>mdi-calendar-month</v-icon>
           <v-list-item-content>
-            <v-list-item-title class="headline">{{moment().format('dddd MMMM DD, YYYY')}}
+            <v-list-item-title class="headline text-capitalize">{{beautyDate}}
             </v-list-item-title>
             <!-- <v-list-item-subtitle>{{evgDetails.data.liturgic_title}}</v-list-item-subtitle> -->
           </v-list-item-content>
@@ -17,7 +17,7 @@
         <v-list width="100%" subheader>
           <v-subheader>Santos del día</v-subheader>
 
-          <v-list-item v-for="(saint, index) in saints.data" :key="index" @click="">
+          <v-list-item v-for="(saint, index) in saints.data" :key="index" @click="openSaintDialog(saint)">
             <v-list-item-avatar>
               <v-img :src="showSaintAvatar(saint.image_links)"></v-img>
             </v-list-item-avatar>
@@ -61,6 +61,25 @@
         <p>Fuente: https://es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html</p>
       </v-col>
     </v-row>
+    <template v-if="dialog.saint">
+      <v-row justify="center">
+        <v-dialog v-model="dialog.open" fullscreen hide-overlay transition="dialog-bottom-transition">
+          <v-card>
+            <v-toolbar dark color="primary">
+              <v-btn icon dark @click="dialog.open = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-toolbar-title>{{dialog.saint.data.name}}</v-toolbar-title>
+              <div class="flex-grow-1"></div>
+              <!-- <v-toolbar-items>
+                <v-btn dark text @click="dialog.open = false">Save</v-btn>
+              </v-toolbar-items> -->
+            </v-toolbar>
+            <p v-html="cleanText(dialog.saint.data.bio)"></p>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
   </v-container>
   <v-container fill-height v-else>
     <v-layout align-center>
@@ -87,10 +106,17 @@ export default {
       saints: [],
       loading: true,
       snackbar: false,
-      moment: moment
+      moment: moment,
+      dialog: {
+        open: false,
+        saint: null
+      },
     };
   },
   computed: {
+    beautyDate () {
+      return `${moment().format('dddd D')} de ${moment().format('MMMM')} de ${moment().format('YYYY')}`
+    }
   },
   watch: {
 
@@ -108,13 +134,19 @@ export default {
     },
 
     cleanText (text) {
-      const regex = /\[{2}.*?\]{2}/gm;
-      const subst = ``;
+      const regex = /([</].*?>|&nbsp;)/gm
+      const subst = ``
 
       // The substituted value will be contained in the result variable
-      const result = text.replace(regex, subst);
+      const result = text.replace(regex, subst)
 
       return result
+    },
+    async openSaintDialog (saint) {
+      if (saint.has_bio) {
+        this.dialog.saint = (await lectioService.getSaintById(saint.id)).data
+        this.dialog.open = true
+      }
     }
   }
 };

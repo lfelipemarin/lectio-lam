@@ -31,5 +31,8 @@ export default {
                 date: date
             }
         })
+    },
+    getSaintById (id) {
+        return Api().get(`saints/${id}`)
     }
 }

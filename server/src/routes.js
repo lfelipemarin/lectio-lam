@@ -50,6 +50,9 @@ module.exports = (app) => {
   app.get('/saints',
     isAuthenticated,
     LectioController.getSaintsByDate)
+  app.get('/saints/:id',
+    isAuthenticated,
+    LectioController.getSaintById)
 
   // Lectio
   app.post('/lectios',

@@ -61,7 +61,7 @@
 
           <v-card-actions>
             <v-btn text color="amber accent-4"
-                   @click.stop="openLectioDialog(lectio.lectio,lectio.meditatio,lectio.oratio,lectio.contemplatio,lectio.createdAt)">
+                   @click.stop="openLectioDialog(lectio)">
               Leer
             </v-btn>
             <div class="flex-grow-1"></div>
@@ -166,14 +166,14 @@ export default {
     parseSearchDate (date) {
       return moment(date).format('YYYY-MM')
     },
-    async openLectioDialog (lectio, meditatio, oratio, contemplatio, createdAt) {
-      this.dialog.lectio = lectio
-      this.dialog.meditatio = meditatio
-      this.dialog.oratio = oratio
-      this.dialog.contemplatio = contemplatio
+    async openLectioDialog (lectio) {
+      this.dialog.lectio = lectio.lectio
+      this.dialog.meditatio = lectio.meditatio
+      this.dialog.oratio = lectio.oratio
+      this.dialog.contemplatio = lectio.contemplatio
       this.dialog.open = true
-      this.dialog.createdAt = createdAt
-      this.dialog.readings = (await lectioService.getDateReadings(moment(createdAt).format('YYYYMMDD'), 'SP', 'all')).data
+      this.dialog.createdAt = lectio.createdAt
+      this.dialog.readings = (await lectioService.getDateReadings(moment(lectio.createdAt).format('YYYYMMDD'), 'SP', 'all')).data
     }
   },
   computed: {

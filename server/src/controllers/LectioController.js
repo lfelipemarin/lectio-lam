@@ -47,6 +47,19 @@ module.exports = {
       })
     }
   },
+  async getSaintById (req, res) {
+    let id = req.params.id
+    try {
+      let saint = await axios.get(`${config.apiConfig.baseUrl}saints/${id}`)
+      console.log(saint.data)
+      res.send(saint.data)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        err: 'an error has occured trying to fetch the saints'
+      })
+    }
+  },
   async saveLectio (req, res) {
     try {
       const lectio = await Lectio.create(req.body)
