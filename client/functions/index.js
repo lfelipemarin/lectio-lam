@@ -1,25 +1,26 @@
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const morgan = require('morgan')
+const { sequelize } = require('./src/models')
+const config = require('./src/config/config')
 const functions = require('firebase-functions')
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var cors = require('cors')
-var app = express();
-
+const app = express()
+app.use(morgan('combined'))
+app.use(bodyParser.json())
 app.use(cors())
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+require('./src/passport')
+
+require('./src/routes')(app)
+
+sequelize.sync({ force: false })
+  .then(() => {
+    app.listen(config.port)
+    console.log(`Server started on port ${config.port}`)
+  })
 
 const api = functions.https.onRequest(app)
 
-exports.widgets = api;
+exports.widgets = api

@@ -9,3 +9,13 @@ export default () => {
     }
   })
 }
+
+/*** Uncomment for deployment to firebase ****/
+// export default () => {
+//   return axios.create({
+//     baseURL: `https://us-central1-sizzling-heat-354.cloudfunctions.net/widgets/`,
+//     headers: {
+//       Authorization: `Bearer ${store.state.token}`
+//     }
+//   })
+// }
