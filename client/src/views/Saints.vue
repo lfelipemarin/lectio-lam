@@ -75,7 +75,15 @@
                 <v-btn dark text @click="dialog.open = false">Save</v-btn>
               </v-toolbar-items> -->
             </v-toolbar>
-            <p v-html="cleanText(dialog.saint.data.bio)"></p>
+            <v-container fluid>
+              <v-row>
+                <v-col>
+                  <p v-html="cleanText(dialog.saint.data.bio)"></p>
+
+                </v-col>
+              </v-row>
+
+            </v-container>
           </v-card>
         </v-dialog>
       </v-row>

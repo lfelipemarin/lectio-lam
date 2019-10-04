@@ -31,6 +31,10 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
+const firebase = require("firebase");
+// Required for side-effects
+require("firebase/firestore");
+const db = firebase.firestore()
 
 export default {
   props: {
@@ -48,7 +52,8 @@ export default {
     password: '',
     passwordRules: [
       v => !!v || 'Password and Confirm password Required'
-    ]
+    ],
+    error: null
   }),
   methods: {
     validate () {
@@ -60,28 +65,39 @@ export default {
     reset () {
       this.$refs.form.reset()
     },
-    async login () {
-      try {
-        const response = await AuthenticationService.login({
-          email: this.email,
-          password: this.password
-        })
-        this.$store.dispatch('setToken', response.data.token)
-        this.$store.dispatch('setUser', response.data.user)
-        this.$router.push({
-          name: 'home'
-        })
-      } catch (error) {
-        this.error = error.response.data.error
-      }
+    login () {
+
+      AuthenticationService.login({
+        email: this.email,
+        password: this.password
+      }).then((user) => {
+        var docRef = db.collection("users").doc(this.email);
+
+        docRef.get().then((doc) => {
+          debugger
+          if (doc.exists) {
+            console.log("Document data:", doc.data());
+            user.user.getIdToken().then((data) => {
+              this.$store.dispatch('setToken', data)
+            })
+            this.$store.dispatch('setUser', doc.data())
+            this.$router.push({
+              name: 'home'
+            })
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        }).catch((error) => {
+          console.log("Error getting document:", error);
+          this.error = error
+        });
+      }).catch((error) => {
+        this.error = error
+      })
+
     }
-    // loginWithFirebase () {
-    //   const user = {
-    //     email: this.email,
-    //     password: this.password
-    //   }
-    //   this.$store.dispatch('signInAction', user)
-    // }
+
   }
 };
 </script>

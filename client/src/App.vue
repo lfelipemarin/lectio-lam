@@ -34,7 +34,8 @@
         </template>
         <span>Register</span>
       </v-tooltip>
-      <div v-if="$store.state.isUserLoggedIn">
+      <!-- <div v-if="$store.state.isUserLoggedIn"> -->
+      <div>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" @click="logout">
@@ -70,6 +71,8 @@
 </template>
 
 <script>
+const firebase = require("firebase");
+
 export default {
   props: {
     source: String,
@@ -109,6 +112,14 @@ export default {
   },
   methods: {
     logout () {
+      firebase.auth().signOut().then(function () {
+        // Sign-out successful.
+        console.log('signed out')
+      }).catch(function (error) {
+        // An error happened.
+        console.log('signed out error', error)
+      });
+
       this.$store.dispatch('setToken', null)
       this.$store.dispatch('setUser', null)
       this.$router.push({

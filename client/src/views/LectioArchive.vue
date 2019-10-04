@@ -60,8 +60,7 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn text color="amber accent-4"
-                   @click.stop="openLectioDialog(lectio)">
+            <v-btn text color="amber accent-4" @click.stop="openLectioDialog(lectio)">
               Leer
             </v-btn>
             <div class="flex-grow-1"></div>
@@ -95,7 +94,14 @@
                 <v-btn dark text @click="dialog.open = false">Save</v-btn>
               </v-toolbar-items> -->
             </v-toolbar>
-            <p v-html="dialog.readings"></p>
+            <v-container fluid>
+              <v-row>
+                <v-col>
+                  <p v-html="dialog.readings"></p>
+
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card>
         </v-dialog>
       </v-row>
