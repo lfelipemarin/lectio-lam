@@ -74,12 +74,12 @@
         </v-card>
       </v-col>
     </v-row>
-    <infinite-loading spinner="spiral" @infinite="infiniteHandler">
+    <!-- <infinite-loading spinner="spiral" @infinite="infiniteHandler">
       <div slot="no-more">No tienes mas lectios guardadas <v-icon>mdi-christianity-outline</v-icon>
       </div>
       <div slot="no-results">Todavia no tienes lectios guardadas <v-icon>mdi-christianity-outline</v-icon>
       </div>
-    </infinite-loading>
+    </infinite-loading> -->
     <template>
       <v-row justify="center">
         <v-dialog v-model="dialog.open" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -139,23 +139,51 @@ export default {
     page: 0,
     pageSize: 10
   }),
-  async mounted () {
+  mounted () {
     // this.lectios = (await this.getAllLectios()).data
+    this.getAllLectios()
   },
   methods: {
-    infiniteHandler ($state) {
-      lectioService.getAllLectios(this.page, this.pageSize).then(({ data }) => {
-        if (data.length) {
-          this.page += 1;
-          this.lectios.push(...data);
-          $state.loaded();
-        } else {
-          $state.complete();
-        }
-      })
-    },
+    // infiniteHandler ($state) {
+
+    //   var first = db.collection("cities")
+    //     .orderBy("population")
+    //     .limit(25);
+
+    //   return first.get().then(function (documentSnapshots) {
+    //     // Get the last visible document
+    //     var lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
+    //     console.log("last", lastVisible);
+
+    //     // Construct a new query starting at this document,
+    //     // get the next 25 cities.
+    //     var next = db.collection("cities")
+    //       .orderBy("population")
+    //       .startAfter(lastVisible)
+    //       .limit(25);
+    //   });
+
+
+
+    // lectioService.getAllLectios(this.page, this.pageSize).then(({ data }) => {
+    //   if (data.length) {
+    //     this.page += 1;
+    //     this.lectios.push(...data);
+    //     $state.loaded();
+    //   } else {
+    //     $state.complete();
+    //   }
+    // })
+    // },
     getAllLectios () {
-      return lectioService.getAllLectios(this.page, this.pageSize)
+      let user = this.$store.state.user
+      lectioService.getAllLectios(user).then((collection) => {
+        this.lectios = _.map(collection.docs, (doc) => {
+          return doc.data()
+        })
+      }).catch((error) => {
+        console.log('lectio archive', error)
+      })
     },
     checkLectioYear (year, lectioYear) {
       return year == moment(lectioYear).format('YYYY')

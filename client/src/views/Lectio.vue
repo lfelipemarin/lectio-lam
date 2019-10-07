@@ -39,7 +39,8 @@
 </template>
 
 <script>
-import lectioService from "../services/LectioService";
+import lectioService from "../services/LectioService"
+import moment from 'moment'
 
 export default {
   props: ['copiedLectioText', 'readings'],
@@ -97,25 +98,35 @@ export default {
       this.lectioDivina.oratio.text = this.$store.state.lectioDivina.oratioText || ''
       this.lectioDivina.contemplatio.text = this.$store.state.lectioDivina.contemplatioText || ''
     },
-    async saveLectio () {
-      try {
-        const response = await lectioService.saveLectio({
-          lectio: this.lectioDivina.lectio.text,
-          meditatio: this.lectioDivina.meditatio.text,
-          oratio: this.lectioDivina.oratio.text,
-          contemplatio: this.lectioDivina.contemplatio.text,
-          reminder: this.lectioDivina.contemplatio.reminder,
-          UserId: this.$store.state.user.id
-        })
-        console.log('lectio save response ', response)
-        if (response.status == 200) {
-          this.snackbar = true
-          this.$refs.form.reset()
-        }
-      } catch (error) {
-        this.error = error.response.data.error
-
+    saveLectio () {
+      let lectioToSave = {
+        lectio: this.lectioDivina.lectio.text,
+        meditatio: this.lectioDivina.meditatio.text,
+        oratio: this.lectioDivina.oratio.text,
+        contemplatio: this.lectioDivina.contemplatio.text,
+        reminder: this.lectioDivina.contemplatio.reminder,
+        createdAt: moment().toISOString(),
+        updatedAt: moment().toISOString()
       }
+      let user = this.$store.state.user
+      lectioService.saveLectio(lectioToSave, user).then(() => {
+        this.$refs.form.reset()
+        this.lectioDivina.contemplatio.reminder = false
+        this.snackbar = true
+
+        console.log('All good')
+      }).catch((error) => {
+        console.log('lectio error', error)
+      })
+      // if (response.status == 200) {
+      //   this.snackbar = true
+      //   this.$refs.form.reset()
+      // }
+
+    },
+    resetForm () {
+      this.$refs.form.reset()
+      this.lectioDivina.contemplatio.reminder = false
     }
   },
   watch: {

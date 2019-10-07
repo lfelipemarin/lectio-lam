@@ -1,4 +1,8 @@
 import Api from '@/services/Api'
+const firebase = require("firebase")
+// Required for side-effects
+require("firebase/firestore")
+const db = firebase.firestore()
 
 export default {
     getTodaysGospel () {
@@ -14,16 +18,20 @@ export default {
             }
         })
     },
-    saveLectio (lectio) {
-        return Api().post('lectios', lectio)
+    saveLectio (lectio, user) {
+        return db.collection('users').doc(user.email).collection('lectios').doc(`lectio-${lectio.createdAt}`).set(lectio)
+        // return Api().post('lectios', lectio)
     },
-    getAllLectios (page, pageSize) {
-        return Api().get('lectios', {
-            params: {
-                page: page,
-                pageSize: pageSize
-            }
-        })
+    getAllLectios (user) {
+        let docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt')
+        return docRef.get()
+
+        // return Api().get('lectios', {
+        //     params: {
+        //         page: page,
+        //         pageSize: pageSize
+        //     }
+        // })
     },
     getSaintsByDate (date) {
         return Api().get('saints', {

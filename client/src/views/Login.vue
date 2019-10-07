@@ -24,6 +24,12 @@
             </v-btn>
           </v-card-actions>
         </v-card>
+        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
+          Nombre de Usuario/Contraseña inválidos
+          <v-btn color="white" text @click="snackbar = false">
+            Cerrar
+          </v-btn>
+        </v-snackbar>
       </v-col>
     </v-row>
   </v-container>
@@ -31,9 +37,9 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
-const firebase = require("firebase");
+const firebase = require("firebase")
 // Required for side-effects
-require("firebase/firestore");
+require("firebase/firestore")
 const db = firebase.firestore()
 
 export default {
@@ -53,12 +59,12 @@ export default {
     passwordRules: [
       v => !!v || 'Password and Confirm password Required'
     ],
-    error: null
+    error: null,
+    snackbar: false
   }),
   methods: {
     validate () {
       if (this.$refs.form.validate()) {
-        this.snackbar = true
         this.login()
       }
     },
@@ -74,7 +80,6 @@ export default {
         var docRef = db.collection("users").doc(this.email);
 
         docRef.get().then((doc) => {
-          debugger
           if (doc.exists) {
             console.log("Document data:", doc.data());
             user.user.getIdToken().then((data) => {
@@ -93,6 +98,7 @@ export default {
           this.error = error
         });
       }).catch((error) => {
+        this.snackbar = true
         this.error = error
       })
 
