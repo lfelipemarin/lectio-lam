@@ -68,13 +68,14 @@
     </v-content>
 
     <v-footer>
-      <span>&copy; 2019</span>
+      <span>&copy; {{year}}</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
 const firebase = require("firebase");
+import moment from 'moment';
 
 export default {
   props: {
@@ -109,7 +110,7 @@ export default {
         icon: 'mdi-folder-heart'
       },
     ],
-    history: 0
+    year: moment().format('YYYY')
   }),
   created () {
     this.$vuetify.theme.dark = true

@@ -13,9 +13,9 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="12" md="6" order-sm="2" order-md="1">
+      <v-col cols="12" sm="12" md="6" order="2" order-sm="2" order-md="1">
         <v-list width="100%" subheader>
-          <v-subheader>Santos del día</v-subheader>
+          <v-subheader>SANTOS DEL DÍA</v-subheader>
 
           <v-list-item v-for="(saint, index) in saints.data" :key="index" @click="openSaintDialog(saint)">
             <v-list-item-avatar>
@@ -39,7 +39,7 @@
           </v-btn>
         </v-snackbar>
       </v-col>
-      <v-col cols="12" sm="12" md="6" order-sm="1" order-md="2">
+      <v-col cols="12" sm="12" md="6" order="1" order-sm="1" order-md="2">
         <p>¿Quienes son los santos? Son esa multitud innumerable de hombres y mujeres, de toda raza, edad y condición,
           que se desvivieron por los demás, que vencieron el egoísmo, que perdonaron siempre. Santos son los que han
           hecho de su vida una epifanía de los valores trascendentes; por eso quienes buscan a Dios lo encuentran con
@@ -58,7 +58,9 @@
           lengua, en los días felices y cuando la tribulación arranca lágrimas del corazón; en la soledad del claustro o
           en el vértigo de la ciudad; en la buena y en la mala salud.
         </p>
-        <p>Fuente: https://es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html</p>
+        <p>Fuente: <a href="//es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html" target="_blank">
+            https://es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html</a>
+        </p>
       </v-col>
     </v-row>
     <template v-if="dialog.saint">
