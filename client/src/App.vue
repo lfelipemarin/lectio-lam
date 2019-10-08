@@ -2,7 +2,7 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app clipped disable-resize-watcher>
       <v-list dense>
-        <v-list-item v-for="(path, index) in paths" :key="index" :to="path.path">
+        <v-list-item v-for="(path, index) in paths" :key="index" @click="navigate(path.path)">
           <v-list-item-action>
             <v-icon>{{path.icon}}</v-icon>
           </v-list-item-action>
@@ -15,12 +15,15 @@
 
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-if="$store.state.isUserLoggedIn"></v-app-bar-nav-icon>
+      <v-btn icon @click="navigate(null,'back')">
+        <v-icon>mdi-arrow-left-drop-circle</v-icon>
+      </v-btn>
       <v-toolbar-title>Lectio LAM</v-toolbar-title>
       <div class="flex-grow-1"></div>
 
       <v-tooltip bottom v-if="!$store.state.isUserLoggedIn">
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on" to="/login">
+          <v-btn icon v-on="on" @click="navigate('login')">
             <v-icon>mdi-login</v-icon>
           </v-btn>
         </template>
@@ -28,7 +31,7 @@
       </v-tooltip>
       <v-tooltip bottom v-if="!$store.state.isUserLoggedIn">
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on" to="/signup">
+          <v-btn icon v-on="on" @click="navigate('signup')">
             <v-icon>mdi-account-plus</v-icon>
           </v-btn>
         </template>
@@ -105,7 +108,8 @@ export default {
         title: 'Lectios Guardadas',
         icon: 'mdi-folder-heart'
       },
-    ]
+    ],
+    history: 0
   }),
   created () {
     this.$vuetify.theme.dark = true
@@ -125,6 +129,13 @@ export default {
       this.$router.push({
         name: 'login'
       })
+    },
+    navigate (route, back) {
+      if (back) {
+        this.$router.back()
+      } else {
+        this.$router.push(route)
+      }
     }
   },
 }

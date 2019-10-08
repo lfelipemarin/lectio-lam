@@ -85,7 +85,13 @@ export default {
   mounted () {
     this.init()
     this.$nextTick(() => {
-
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }, 500);
       if (this.copiedLectioText) {
         this.lectioDivina.lectio.text = this.copiedLectioText
       }
@@ -117,6 +123,7 @@ export default {
         console.log('All good')
       }).catch((error) => {
         console.log('lectio error', error)
+        this.error = error
       })
       // if (response.status == 200) {
       //   this.snackbar = true

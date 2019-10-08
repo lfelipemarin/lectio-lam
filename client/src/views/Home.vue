@@ -1,11 +1,8 @@
 <template>
   <v-container grid-list-xs>
-    <v-layout row wrap>
-      <v-flex xs12>
-        BIENVENIDO A LA LECTIO DIVINA DE LAZOS DE AMOR MARIANO
-      </v-flex>
-    </v-layout>
-
+    <v-row align="center" justify="center">
+      <v-img src="../assets/logo-lam-white.png" lazy-src="../assets/logo-lam-white.png" aspect-ratio="1.3" contain max-width="500"></v-img>
+    </v-row>
   </v-container>
 </template>
 

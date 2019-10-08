@@ -29,7 +29,8 @@ export default new Vuex.Store({
       oratioText: null,
       contemplatioText: null,
     },
-    isUserLoggedIn: false
+    isUserLoggedIn: false,
+    history: 0
   },
   mutations: {
     setToken (state, token) {
@@ -51,6 +52,9 @@ export default new Vuex.Store({
     setContemplatioText (state, contemplatioText) {
       state.lectioDivina.contemplatioText = contemplatioText
     },
+    setHistory (state, history) {
+      state.history = history
+    },
   },
   actions: {
     setToken ({ commit }, token) {
@@ -70,6 +74,9 @@ export default new Vuex.Store({
     },
     setContemplatioText ({ commit }, contemplatioText) {
       commit('setContemplatioText', contemplatioText)
+    },
+    setHistory ({ commit }, history) {
+      commit('setHistory', history)
     },
   }
 })

@@ -21,8 +21,9 @@
               {{beautyDate(lectio.createdAt)}}
             </v-chip> -->
             <v-list-item-content>
-              <v-list-item-title class="headline">{{`${reading.title} ${reading.reference_displayed}`}}
+              <v-list-item-title class="headline">{{`${reading.title}`}}
               </v-list-item-title>
+               <v-list-item-subtitle>{{`${reading.reference_displayed}`}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-card-text>

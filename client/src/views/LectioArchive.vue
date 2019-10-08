@@ -33,7 +33,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="6" xs="6" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
+      <v-col cols="12" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
         <v-card class="mx-auto" hover>
           <v-list-item>
             <v-chip class="mt-2" color="primary" label text-color="white">
@@ -74,12 +74,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <!-- <infinite-loading spinner="spiral" @infinite="infiniteHandler">
-      <div slot="no-more">No tienes mas lectios guardadas <v-icon>mdi-christianity-outline</v-icon>
-      </div>
-      <div slot="no-results">Todavia no tienes lectios guardadas <v-icon>mdi-christianity-outline</v-icon>
-      </div>
-    </infinite-loading> -->
     <template>
       <v-row justify="center">
         <v-dialog v-model="dialog.open" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -113,11 +107,10 @@ import lectioService from "../services/LectioService";
 import moment from 'moment'
 import _ from 'lodash'
 moment.locale('es')
-import InfiniteLoading from 'vue-infinite-loading';
 
 export default {
   components: {
-    InfiniteLoading
+
   },
   data: () => ({
     lectios: [],
@@ -137,7 +130,8 @@ export default {
       readings: ''
     },
     page: 0,
-    pageSize: 10
+    pageSize: 10,
+    error: null
   }),
   mounted () {
     // this.lectios = (await this.getAllLectios()).data
@@ -183,6 +177,7 @@ export default {
         })
       }).catch((error) => {
         console.log('lectio archive', error)
+        this.error = error
       })
     },
     checkLectioYear (year, lectioYear) {
