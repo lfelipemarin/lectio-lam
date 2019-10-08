@@ -42,23 +42,17 @@ module.exports = (app) => {
   //   isAuthenticated,
   //   HistoriesController.post)
   app.get('/readings',
-    isAuthenticated,
     LectioController.getReadings)
   app.get('/date-readings',
-    isAuthenticated,
     LectioController.getDateReadings)
   app.get('/saints',
-    isAuthenticated,
     LectioController.getSaintsByDate)
   app.get('/saints/:id',
-    isAuthenticated,
     LectioController.getSaintById)
 
   // Lectio
   app.post('/lectios',
-    isAuthenticated,
     LectioController.saveLectio)
   app.get('/lectios',
-    isAuthenticated,
     LectioController.getAllLectios)
 }

@@ -13,6 +13,7 @@ npm run serve
 ### Compiles and minifies for production
 ```
 npm run build
+Uncomment production code in client Api.js
 ```
 
 ### Run your tests

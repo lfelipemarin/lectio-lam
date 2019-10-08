@@ -67,17 +67,25 @@ let router = new Router({
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "saints" */ './views/Saints.vue')
     },
+    {
+      path: '*', // or '/index.html'
+      beforeEnter: (to, from, next) => {
+        next('/')
+      }
+    }
   ]
 })
 
+
+//TODO refarctor this code
 const firebaseConfig = {
-  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
-  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGE_SENDER_ID,
-  appId: process.env.VUE_APP_FIREBASE_APP_ID
+  apiKey: 'AIzaSyCdAX_TnRncsLM0tV8oRCdS26QdxOigjNA',
+  authDomain: 'sizzling-heat-354.firebaseapp.com',
+  databaseURL: 'https://sizzling-heat-354.firebaseio.com',
+  projectId: 'sizzling-heat-354',
+  storageBucket: 'sizzling-heat-354.appspot.com',
+  messagingSenderId: '485166763553',
+  appId: '1:485166763553:web:5d0080146713de4baa1d60'
 }
 firebase.initializeApp(firebaseConfig)
 

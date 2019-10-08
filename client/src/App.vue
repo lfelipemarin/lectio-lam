@@ -15,7 +15,7 @@
 
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-if="$store.state.isUserLoggedIn"></v-app-bar-nav-icon>
-      <v-btn icon @click="navigate(null,'back')">
+      <v-btn icon @click="navigate(null,'back')" v-if="$store.state.isUserLoggedIn">
         <v-icon>mdi-arrow-left-drop-circle</v-icon>
       </v-btn>
       <v-toolbar-title>Lectio LAM</v-toolbar-title>
@@ -39,7 +39,7 @@
       </v-tooltip>
       <!-- <div v-if="$store.state.isUserLoggedIn"> -->
       <div>
-        <v-tooltip bottom>
+        <v-tooltip bottom v-if="$store.state.isUserLoggedIn">
           <template v-slot:activator="{ on }">
             <v-btn icon v-on="on" @click="logout">
               <v-icon>mdi-logout</v-icon>
@@ -117,6 +117,7 @@ export default {
   },
   methods: {
     logout () {
+      this.drawer = false
       firebase.auth().signOut().then(function () {
         // Sign-out successful.
         console.log('signed out')

@@ -59,7 +59,7 @@
           en el vértigo de la ciudad; en la buena y en la mala salud.
         </p>
         <p>Fuente: <a href="//es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html" target="_blank">
-            https://es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html</a>
+            Artículo: ¿Quienes son los santos? - Catholic.net </a>
         </p>
       </v-col>
     </v-row>
