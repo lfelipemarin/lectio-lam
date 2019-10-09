@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid v-if="!loading">
     <v-row>
       <v-col>
         <v-expansion-panels inset popout>
@@ -40,13 +40,7 @@
               <v-icon left>mdi-calendar-month</v-icon>
               {{beautyDate(lectio.createdAt)}}
             </v-chip>
-            <!-- <v-list-item-content>
-              <v-list-item-title class="headline">Our Changing Planet</v-list-item-title>
-              <v-list-item-subtitle>by Kurt Wagner</v-list-item-subtitle>
-            </v-list-item-content> -->
           </v-list-item>
-
-          <!-- <v-img src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg" height="194"></v-img> -->
 
           <v-card-text>
             <h4>Lectio</h4>
@@ -84,15 +78,11 @@
               </v-btn>
               <v-toolbar-title>Lectio {{beautyDate(dialog.createdAt)}}</v-toolbar-title>
               <div class="flex-grow-1"></div>
-              <!-- <v-toolbar-items>
-                <v-btn dark text @click="dialog.open = false">Save</v-btn>
-              </v-toolbar-items> -->
             </v-toolbar>
             <v-container fluid>
               <v-row>
                 <v-col>
                   <p v-html="dialog.readings"></p>
-
                 </v-col>
               </v-row>
             </v-container>
@@ -100,6 +90,13 @@
         </v-dialog>
       </v-row>
     </template>
+  </v-container>
+  <v-container fill-height v-else>
+    <v-layout align-center>
+      <v-flex xs12 text-center>
+        <v-progress-circular :size="70" :width="7" color="amber" indeterminate></v-progress-circular>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 <script>
@@ -131,50 +128,20 @@ export default {
     },
     page: 0,
     pageSize: 10,
-    error: null
+    error: null,
+    loading: true
   }),
   mounted () {
-    // this.lectios = (await this.getAllLectios()).data
     this.getAllLectios()
   },
   methods: {
-    // infiniteHandler ($state) {
-
-    //   var first = db.collection("cities")
-    //     .orderBy("population")
-    //     .limit(25);
-
-    //   return first.get().then(function (documentSnapshots) {
-    //     // Get the last visible document
-    //     var lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
-    //     console.log("last", lastVisible);
-
-    //     // Construct a new query starting at this document,
-    //     // get the next 25 cities.
-    //     var next = db.collection("cities")
-    //       .orderBy("population")
-    //       .startAfter(lastVisible)
-    //       .limit(25);
-    //   });
-
-
-
-    // lectioService.getAllLectios(this.page, this.pageSize).then(({ data }) => {
-    //   if (data.length) {
-    //     this.page += 1;
-    //     this.lectios.push(...data);
-    //     $state.loaded();
-    //   } else {
-    //     $state.complete();
-    //   }
-    // })
-    // },
     getAllLectios () {
       let user = this.$store.state.user
       lectioService.getAllLectios(user).then((collection) => {
         this.lectios = _.map(collection.docs, (doc) => {
           return doc.data()
         })
+        this.loading = false
       }).catch((error) => {
         console.log('lectio archive', error)
         this.error = error

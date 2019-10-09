@@ -18,7 +18,7 @@
       <v-btn icon @click="navigate(null,'back')" v-if="$store.state.isUserLoggedIn">
         <v-icon>mdi-arrow-left-drop-circle</v-icon>
       </v-btn>
-      <v-toolbar-title>Lectio LAM</v-toolbar-title>
+      <v-toolbar-title @click="navigate('/')" style="cursor:pointer">Lectio LAM</v-toolbar-title>
       <div class="flex-grow-1"></div>
 
       <v-tooltip bottom v-if="!$store.state.isUserLoggedIn">

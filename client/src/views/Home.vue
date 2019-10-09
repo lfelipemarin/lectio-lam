@@ -1,7 +1,11 @@
 <template>
-  <v-container grid-list-xs>
+  <v-container grid-list-xs fill-height class="flex-column">
     <v-row align="center" justify="center">
-      <v-img src="../assets/logo-lam-white.png" lazy-src="../assets/logo-lam-white.png" aspect-ratio="1.3" contain max-width="300"></v-img>
+      <img src="../assets/logo-lam-white.png"/>
+    </v-row>
+    <v-row v-if="!$store.state.isUserLoggedIn">
+      <v-btn color="amber" class="mt-5 mr-5" to="/login">Ingresar</v-btn>
+      <v-btn color="amber" class="mt-5" to="/signup">Registrarse</v-btn>
     </v-row>
   </v-container>
 </template>
