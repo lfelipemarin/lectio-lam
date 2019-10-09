@@ -18,11 +18,13 @@
           </v-card-text>
           <v-card-actions>
             <div class="flex-grow-1"></div>
-            <v-btn color="primary" :disabled="!valid" @click="validate">Login</v-btn>
             <v-btn color="error" @click="reset">
-              Reset Form
+              Limpiar Formulario
             </v-btn>
+            <v-btn color="primary" :disabled="!valid" @click="validate" :loading="loading">Login</v-btn>
           </v-card-actions>
+          <v-subheader>¿No tienes cuenta?&nbsp;<router-link to="/signup">Créala aquí.</router-link>
+          </v-subheader>
         </v-card>
         <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
           Nombre de Usuario/Contraseña inválidos
@@ -60,7 +62,8 @@ export default {
       v => !!v || 'Password and Confirm password Required'
     ],
     error: null,
-    snackbar: false
+    snackbar: false,
+    loading: false
   }),
   methods: {
     validate () {
@@ -72,7 +75,8 @@ export default {
       this.$refs.form.reset()
     },
     login () {
-
+      this.loading = true
+      this.email = this.email.toLowerCase()
       AuthenticationService.login({
         email: this.email,
         password: this.password
@@ -89,15 +93,21 @@ export default {
             this.$router.push({
               name: 'home'
             })
+            this.loading = false
           } else {
             // doc.data() will be undefined in this case
+            this.loading = false
+
             console.log("No such document!");
           }
         }).catch((error) => {
+          this.loading = false
           console.log("Error getting document:", error);
           this.error = error
         });
       }).catch((error) => {
+        this.loading = false
+
         this.snackbar = true
         this.error = error
       })

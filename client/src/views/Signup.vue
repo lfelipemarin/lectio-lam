@@ -42,10 +42,10 @@
           </v-card-text>
           <v-card-actions>
             <div class="flex-grow-1"></div>
-            <v-btn color="primary" :disabled="!valid" @click="validate">Registrarse</v-btn>
             <v-btn color="error" @click="reset">
               Limpiar Formulario
             </v-btn>
+            <v-btn color="primary" :disabled="!valid" @click="validate">Registrarse</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -112,7 +112,7 @@ export default {
     },
     register () {
       let credentials = {
-        email: this.email,
+        email: this.email.toLowerCase(),
         password: this.password,
         firstName: this.firstName,
         lastName: this.lastName,
