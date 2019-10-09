@@ -49,8 +49,8 @@
             <p>{{lectio.meditatio | truncate(50)}}</p>
             <h4>Oratio</h4>
             <p>{{lectio.oratio | truncate(50)}}</p>
-            <h4>Contemplatio</h4>
-            <p>{{lectio.contemplatio | truncate(50)}}</p>
+            <h4>Actio</h4>
+            <p>{{lectio.actio | truncate(50)}}</p>
           </v-card-text>
 
           <v-card-actions>
@@ -82,7 +82,15 @@
             <v-container fluid>
               <v-row>
                 <v-col>
-                  <p v-html="dialog.readings"></p>
+                  <!-- <p v-html="dialog.readings"></p> -->
+                  <h2>Lectio</h2>
+                  <p>{{dialog.lectio}}</p>
+                  <h2>Meditatio</h2>
+                  <p>{{dialog.meditatio}}</p>
+                  <h2>Oratio</h2>
+                  <p>{{dialog.oratio}}</p>
+                  <h2>Actio</h2>
+                  <p>{{dialog.actio}}</p>
                 </v-col>
               </v-row>
             </v-container>
@@ -122,7 +130,7 @@ export default {
       lectio: '',
       meditatio: '',
       oratio: '',
-      contemplatio: '',
+      actio: '',
       createdAt: '',
       readings: ''
     },
@@ -166,7 +174,7 @@ export default {
       this.dialog.lectio = lectio.lectio
       this.dialog.meditatio = lectio.meditatio
       this.dialog.oratio = lectio.oratio
-      this.dialog.contemplatio = lectio.contemplatio
+      this.dialog.actio = lectio.actio
       this.dialog.open = true
       this.dialog.createdAt = lectio.createdAt
       this.dialog.readings = (await lectioService.getDateReadings(moment(lectio.createdAt).format('YYYYMMDD'), 'SP', 'all')).data
@@ -196,7 +204,7 @@ export default {
           (lectio.lectio.toLowerCase().includes(filterValueWord) ||
             lectio.meditatio.toLowerCase().includes(filterValueWord) ||
             lectio.oratio.toLowerCase().includes(filterValueWord) ||
-            lectio.contemplatio.toLowerCase().includes(filterValueWord))
+            lectio.actio.toLowerCase().includes(filterValueWord))
         return result.filter(filter)
       }
       if (this.searchWord) {
@@ -206,7 +214,7 @@ export default {
           lectio.lectio.toLowerCase().includes(filterValueWord) ||
           lectio.meditatio.toLowerCase().includes(filterValueWord) ||
           lectio.oratio.toLowerCase().includes(filterValueWord) ||
-          lectio.contemplatio.toLowerCase().includes(filterValueWord)
+          lectio.actio.toLowerCase().includes(filterValueWord)
       } else {
         filterValueDate = this.searchDate.toLowerCase()
 

@@ -27,7 +27,8 @@ export default new Vuex.Store({
       lectioText: null,
       meditatioText: null,
       oratioText: null,
-      contemplatioText: null,
+      actioText: null,
+      actioReminder: null
     },
     isUserLoggedIn: false,
     history: 0
@@ -49,8 +50,11 @@ export default new Vuex.Store({
     setOratioText (state, oratioText) {
       state.lectioDivina.oratioText = oratioText
     },
-    setContemplatioText (state, contemplatioText) {
-      state.lectioDivina.contemplatioText = contemplatioText
+    setActioText (state, actioText) {
+      state.lectioDivina.actioText = actioText
+    },
+    setActioReminder (state, actioReminder) {
+      state.lectioDivina.actioReminder = actioReminder
     },
     setHistory (state, history) {
       state.history = history
@@ -72,8 +76,11 @@ export default new Vuex.Store({
     setOratioText ({ commit }, oratioText) {
       commit('setOratioText', oratioText)
     },
-    setContemplatioText ({ commit }, contemplatioText) {
-      commit('setContemplatioText', contemplatioText)
+    setActioText ({ commit }, actioText) {
+      commit('setActioText', actioText)
+    },
+    setActioReminder ({ commit }, actioReminder) {
+      commit('setActioReminder', actioReminder)
     },
     setHistory ({ commit }, history) {
       commit('setHistory', history)

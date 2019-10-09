@@ -4,16 +4,32 @@
       <v-col>
         <v-card class="mx-auto">
           <v-form ref="form" v-model="form" class="pa-4 pt-6">
-            <v-textarea v-for="(step, index) in lectioDivina" v-bind:key="index" v-model="step.text" auto-grow filled
-                        color="amber" :label="step.label" rows="6" :rules="rules.required">
-              <v-tooltip slot="append" top open-on-hover>
-                <template #activator="{ on }">
-                  <v-icon color="primary" class="mr-1" v-on="on" size="40">mdi-help-circle</v-icon>
-                </template>
-                <span>{{step.tooltip}}</span>
-              </v-tooltip>
-            </v-textarea>
-            <v-checkbox v-model="lectioDivina.contemplatio.reminder" label="Recordar compromiso?"></v-checkbox>
+            <v-banner elevation=5 class="mb-7">
+              <h3 class="mb-1">Espíritu Santo</h3>
+              Invoca al Espíritu Santo. Pídele que te ilumine y te abra a la comprensión de la Palabra y que te anime a
+              la respuesta con tu vida.
+              <template v-slot:actions>
+                <v-btn text color="amber accent-4" to="/readings">
+                  Ir a las lecturas
+                </v-btn>
+              </template>
+            </v-banner>
+            <div v-for="(step, index) in lectioDivina" v-bind:key="index">
+              <v-textarea v-model="step.text" auto-grow filled color="amber" :label="step.label" rows="6"
+                          :rules="rules.required" v-if="!step.type">
+                <v-tooltip slot="append" top open-on-hover>
+                  <template #activator="{ on }">
+                    <v-icon color="primary" class="mr-1" v-on="on" size="40">mdi-help-circle</v-icon>
+                  </template>
+                  <span>{{step.tooltip}}</span>
+                </v-tooltip>
+              </v-textarea>
+              <v-banner elevation=5 class="mb-7" v-else>
+                <h3 class="mb-1">{{step.label}}</h3>
+                {{step.tooltip}}
+              </v-banner>
+            </div>
+            <v-checkbox v-model="lectioDivina.actio.reminder" label="¿Recordar compromiso?"></v-checkbox>
 
           </v-form>
           <v-divider></v-divider>
@@ -63,6 +79,11 @@ export default {
       },
       contemplatio: {
         label: 'Contemplatio',
+        tooltip: 'Quédate impresionado, fascinado, en silencio, en calma. Déjate animar por el ardor de la Palabra, como quien recibe el calor del sol.',
+        type: 'banner'
+      },
+      actio: {
+        label: 'Actio',
         text: '',
         tooltip: 'Haz un pequeño compromiso que puedas cumplir',
         reminder: false
@@ -102,22 +123,23 @@ export default {
       this.lectioDivina.lectio.text = this.$store.state.lectioDivina.lectioText || ''
       this.lectioDivina.meditatio.text = this.$store.state.lectioDivina.meditatioText || ''
       this.lectioDivina.oratio.text = this.$store.state.lectioDivina.oratioText || ''
-      this.lectioDivina.contemplatio.text = this.$store.state.lectioDivina.contemplatioText || ''
+      this.lectioDivina.actio.text = this.$store.state.lectioDivina.actioText || ''
+      this.lectioDivina.actio.reminder = this.$store.state.lectioDivina.actioReminder || false
     },
     saveLectio () {
       let lectioToSave = {
         lectio: this.lectioDivina.lectio.text,
         meditatio: this.lectioDivina.meditatio.text,
         oratio: this.lectioDivina.oratio.text,
-        contemplatio: this.lectioDivina.contemplatio.text,
-        reminder: this.lectioDivina.contemplatio.reminder,
+        actio: this.lectioDivina.actio.text,
+        reminder: this.lectioDivina.actio.reminder,
         createdAt: moment().toISOString(),
         updatedAt: moment().toISOString()
       }
       let user = this.$store.state.user
       lectioService.saveLectio(lectioToSave, user).then(() => {
         this.$refs.form.reset()
-        this.lectioDivina.contemplatio.reminder = false
+        this.lectioDivina.actio.reminder = false
         this.snackbar = true
 
         console.log('All good')
@@ -125,15 +147,11 @@ export default {
         console.log('lectio error', error)
         this.error = error
       })
-      // if (response.status == 200) {
-      //   this.snackbar = true
-      //   this.$refs.form.reset()
-      // }
 
     },
     resetForm () {
       this.$refs.form.reset()
-      this.lectioDivina.contemplatio.reminder = false
+      this.lectioDivina.actio.reminder = false
     }
   },
   watch: {
@@ -146,8 +164,11 @@ export default {
     'lectioDivina.oratio.text': function (val) {
       this.$store.dispatch('setOratioText', val)
     },
-    'lectioDivina.contemplatio.text': function (val) {
-      this.$store.dispatch('setContemplatioText', val)
+    'lectioDivina.actio.text': function (val) {
+      this.$store.dispatch('setActioText', val)
+    },
+    'lectioDivina.actio.reminder': function (val) {
+      this.$store.dispatch('setActioReminder', val)
     }
   },
   computed: {
