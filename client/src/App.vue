@@ -74,7 +74,7 @@
 </template>
 
 <script>
-const firebase = require("firebase");
+const firebase = require("firebase/auth");
 import moment from 'moment';
 
 export default {

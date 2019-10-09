@@ -56,7 +56,7 @@
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
 import moment from 'moment'
-const firebase = require("firebase");
+const firebase = require("firebase/app");
 // Required for side-effects
 require("firebase/firestore");
 const db = firebase.firestore()

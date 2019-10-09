@@ -1,5 +1,5 @@
 import Api from '@/services/Api'
-const firebase = require("firebase")
+const firebase = require("firebase/app")
 // Required for side-effects
 require("firebase/firestore")
 const db = firebase.firestore()
