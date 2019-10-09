@@ -1,5 +1,7 @@
 // import Api from '@/services/Api'
-const firebase = require("firebase");
+const firebase = require("firebase/app");
+// Add the Firebase products that you want to use
+require("firebase/auth");
 
 export default {
     register (credentials) {
