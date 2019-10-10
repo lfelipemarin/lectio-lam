@@ -73,19 +73,20 @@ export default {
     valid: true,
     email: '',
     emailRules: [
-      v => !!v || 'E-mail is required',
-      v => /.+@.+/.test(v) || 'E-mail must be valid'
+      v => !!v || 'El campo Email es obligatorio',
+      v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail debe ser válido'
     ],
     firstName: '',
     nameRules: [
-      v => !!v || 'First Name and Last Name Required'
+      v => !!v || 'El campo Nombres es obligatorio'
     ],
     lastName: '',
     password: '',
     confirmPassword: '',
-    passwordRules: [
-      v => !!v || 'Password and Confirm password Required'
-    ],
+    // passwordRules: [
+    //   v => !!v || 'El campo Contraseña es obligatorio',
+    //   v => (!!v && v) === this.confirmPassword || 'Las contraseñas no coinciden'
+    // ],
     birthdate: null,
     menu: false,
     response: null,
@@ -112,7 +113,7 @@ export default {
     },
     register () {
       let credentials = {
-        email: this.email.toLowerCase(),
+        email: this.email.toLowerCase().trim(),
         password: this.password,
         firstName: this.firstName,
         lastName: this.lastName,
@@ -156,6 +157,24 @@ export default {
       }
       this.$store.dispatch('signUpAction', user)
     }
+  },
+  computed: {
+    passwordRules () {
+      // debugger
+      const rules = []
+      let rule = v => !!v || 'El campo Contraseña es obligatorio'
+      rules.push(rule)
+      rule =
+        v => (v || '').length >= 6 ||
+          `La contraseña debe tener mas de 6 caracteres`
+
+      rules.push(rule)
+      if (this.password) {
+        rule = v => (!!v && v) === this.password || 'Las contraseñas no coinciden'
+        rules.push(rule)
+      }
+      return rules
+    },
   }
 };
 </script>

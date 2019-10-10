@@ -55,11 +55,12 @@ export default {
     email: '',
     emailRules: [
       v => !!v || 'E-mail is required',
-      v => /.+@.+/.test(v) || 'E-mail must be valid'
+      v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail debe ser válido'
+
     ],
     password: '',
     passwordRules: [
-      v => !!v || 'Password and Confirm password Required'
+      v => !!v || 'El campo Contraseña es obligatorio'
     ],
     error: null,
     snackbar: false,
@@ -76,7 +77,7 @@ export default {
     },
     login () {
       this.loading = true
-      this.email = this.email.toLowerCase()
+      this.email = this.email.toLowerCase().trim()
       AuthenticationService.login({
         email: this.email,
         password: this.password

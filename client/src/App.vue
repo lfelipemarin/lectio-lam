@@ -18,7 +18,7 @@
       <v-btn icon @click="navigate(null,'back')" v-if="$store.state.isUserLoggedIn">
         <v-icon>mdi-arrow-left-drop-circle</v-icon>
       </v-btn>
-      <v-toolbar-title @click="navigate('/')" style="cursor:pointer">Lectio LAM</v-toolbar-title>
+      <v-toolbar-title @click="navigate('/')" style="cursor:pointer">Lectio Divina</v-toolbar-title>
       <div class="flex-grow-1"></div>
 
       <v-tooltip bottom v-if="!$store.state.isUserLoggedIn">
@@ -112,7 +112,8 @@ export default {
         icon: 'mdi-folder-heart'
       },
     ],
-    year: moment().format('YYYY')
+    year: moment().format('YYYY'),
+    error: null
   }),
   created () {
     this.$vuetify.theme.dark = true
@@ -138,7 +139,10 @@ export default {
       if (back) {
         this.$router.back()
       } else {
-        this.$router.push(route)
+        this.$router.push(route).catch(err => {
+          this.error = err
+          console.log('Already there')
+        })
       }
     }
   },
