@@ -81,7 +81,9 @@
               <v-row>
                 <v-col>
                   <p v-html="cleanText(dialog.saint.data.bio)"></p>
-
+                  <v-btn @click="dialog.open = false" color="amber accent-4">
+                    Cerrar
+                  </v-btn>
                 </v-col>
               </v-row>
 

@@ -91,6 +91,9 @@
                   <p>{{dialog.oratio}}</p>
                   <h2>Actio</h2>
                   <p>{{dialog.actio}}</p>
+                  <v-btn @click="dialog.open = false" color="amber accent-4">
+                    Cerrar
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-container>
