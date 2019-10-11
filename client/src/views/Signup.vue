@@ -88,7 +88,7 @@ export default {
     email: '',
     emailRules: [
       v => !!v || 'El campo Email es obligatorio',
-      v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail debe ser válido'
+      v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3}) *$/.test(v) || 'E-mail debe ser válido'
     ],
     firstName: '',
     nameRules: [
