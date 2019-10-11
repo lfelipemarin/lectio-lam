@@ -27,9 +27,9 @@ export default {
       let actionCode = this.$route.query.oobCode
       let continueUrl = this.$route.query.continueUrl
       let lang = this.$route.query.lang
-      // if (!actionCode) {
-      //   this.$router.push('/')
-      // }
+      if (!actionCode) {
+        this.$router.push('/')
+      }
       this.handleVerifyEmail(auth, actionCode, continueUrl, lang)
     })
   },

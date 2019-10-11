@@ -45,7 +45,7 @@
             <v-btn color="error" @click="reset">
               Limpiar Formulario
             </v-btn>
-            <v-btn color="primary" :disabled="!valid" @click="validate">Registrarse</v-btn>
+            <v-btn color="primary" :disabled="!valid" @click="validate" :loading="loading">Registrarse</v-btn>
           </v-card-actions>
         </v-card>
         <v-snackbar v-model="snackbar" multi-line color="info" :timeout=6000>
@@ -106,7 +106,8 @@ export default {
     response: null,
     error: null,
     snackbar: false,
-    errorSnack: false
+    errorSnack: false,
+    loading: false
   }),
   watch: {
     menu (val) {
@@ -127,6 +128,7 @@ export default {
       this.$refs.form.reset()
     },
     register () {
+      this.loading = true
       let credentials = {
         email: this.email.toLowerCase().trim(),
         password: this.password,
@@ -141,7 +143,7 @@ export default {
           // User is signed in.
           delete credentials.password
           credentials.uid = user.user.uid
-          db.collection('users').doc(credentials.email).set(credentials, { merge: false })
+          db.collection('users').doc(credentials.email).set(credentials)
             .then(() => {
               console.log('success')
               // user.user.getIdToken().then((data) => {
@@ -150,16 +152,19 @@ export default {
               // this.$store.dispatch('setUser', credentials)
               firebase.auth().signOut()
             }).catch((error) => {
+              this.loading = false
               console.log('Error adding document', error)
               this.error = error
             })
           user.user.sendEmailVerification().then(() => {
             this.snackbar = true
+            this.loading = false
             setTimeout(() => {
               this.$router.push('/login')
             }, 6000);
             this.reset()
           }).catch((error) => {
+            this.loading = false
             console.log('send v email error', error)
           })
 
@@ -168,6 +173,7 @@ export default {
           // Handle Errors here.
           let errorCode = error.code
           let errorMessage = error.message
+          this.loading = false
           switch (errorCode) {
             case 'auth/email-already-in-use':
               this.error = 'El Email ingresado ya fue registrado'

@@ -23,13 +23,11 @@
             </v-btn>
             <v-btn color="primary" :disabled="!valid" @click="validate" :loading="loading">Ingresar</v-btn>
           </v-card-actions>
-          <v-subheader :class="['pt-4', !emailVerified?'':'pb-4']">¿No tienes cuenta?&nbsp;<router-link to="/signup">
+          <div :class="['pt-4','pl-4','caption', !emailVerified?'':'pb-4']">¿No tienes cuenta?&nbsp;<router-link to="/signup">
               Créala aquí</router-link>.
-          </v-subheader>
-          <v-subheader v-if="!emailVerified" class="pb-4">¿No te llegó el correo de verificación?&nbsp;<a
-               @click="sendVerificationEmail">Enviar de
-              nuevo</a>.
-          </v-subheader>
+          </div>
+          <div v-if="!emailVerified" class="caption pb-4 pl-4">¿No te llegó el correo de verificación? <a @click="sendVerificationEmail">Enviar de nuevo</a>.
+          </div>
         </v-card>
         <v-snackbar v-model="snackbar" multi-line color="info" :timeout=6000>
           {{error}}

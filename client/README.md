@@ -14,6 +14,7 @@ npm run serve
 ```
 npm run build
 Uncomment production code in client Api.js
+Change dist/manifest.json name to Lectio Divina
 ```
 
 ### Run your tests
