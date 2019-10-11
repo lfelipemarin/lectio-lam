@@ -1,6 +1,6 @@
 <template>
-  <v-container grid-list-xs fill-height class="flex-column">
-    <v-row align="end" justify="center">
+  <v-container grid-list-xs fill-height class="flex-column" justify-center>
+    <v-row :align="$store.state.isUserLoggedIn?'center':'end'" justify="center">
       <!-- <img src="../assets/logo-lam-white.png" width="300"/> -->
       <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"
            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"

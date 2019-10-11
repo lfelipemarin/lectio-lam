@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "lectio-lam",
+    "site": "haz-la-lectio",
     "public": "dist",
     "ignore": [
       "firebase.json",

@@ -48,6 +48,19 @@
             <v-btn color="primary" :disabled="!valid" @click="validate">Registrarse</v-btn>
           </v-card-actions>
         </v-card>
+        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=6000>
+          Se te ha enviado un correo de verificación
+          <v-btn color="white" text @click="snackbar = false">
+            Cerrar
+          </v-btn>
+        </v-snackbar>
+        <v-snackbar v-model="errorSnack" multi-line color="info" :timeout=4000>
+          {{error}}
+          <!-- Se te ha enviado un correo de verificación -->
+          <v-btn color="white" text @click="errorSnack = false">
+            Cerrar
+          </v-btn>
+        </v-snackbar>
       </v-col>
     </v-row>
   </v-container>
@@ -59,6 +72,7 @@ import moment from 'moment'
 const firebase = require("firebase/app");
 // Required for side-effects
 require("firebase/firestore");
+require("firebase/auth");
 const db = firebase.firestore()
 // import _ from 'lodash'
 
@@ -90,7 +104,9 @@ export default {
     birthdate: null,
     menu: false,
     response: null,
-    error: null
+    error: null,
+    snackbar: false,
+    errorSnack: false
   }),
   watch: {
     menu (val) {
@@ -103,7 +119,6 @@ export default {
     },
     validate () {
       if (this.$refs.form.validate()) {
-        this.snackbar = true
         // this.registerWithFirebase()
         this.register()
       }
@@ -126,28 +141,44 @@ export default {
           // User is signed in.
           delete credentials.password
           credentials.uid = user.user.uid
-
-          db.collection('users').doc(credentials.email).set(credentials)
+          db.collection('users').doc(credentials.email).set(credentials, { merge: false })
             .then(() => {
               console.log('success')
-              user.user.getIdToken().then((data) => {
-                this.$store.dispatch('setToken', data)
-              })
-              this.$store.dispatch('setUser', credentials)
-              this.$router.push({
-                name: 'home'
-              })
+              // user.user.getIdToken().then((data) => {
+              //   this.$store.dispatch('setToken', data)
+              // })
+              // this.$store.dispatch('setUser', credentials)
+              firebase.auth().signOut()
             }).catch((error) => {
               console.log('Error adding document', error)
               this.error = error
             })
+          user.user.sendEmailVerification().then(() => {
+            this.snackbar = true
+            setTimeout(() => {
+              this.$router.push('/login')
+            }, 6000);
+            this.reset()
+          }).catch((error) => {
+            console.log('send v email error', error)
+          })
+
         })
         .catch((error) => {
           // Handle Errors here.
           let errorCode = error.code
           let errorMessage = error.message
-          console.log('Auth errors', errorCode, errorMessage)
-          this.error = `${error.errorCode} ${error.errorMessage}`
+          switch (errorCode) {
+            case 'auth/email-already-in-use':
+              this.error = 'El Email ingresado ya fue registrado'
+              this.errorSnack = true
+              break;
+            default:
+              console.log('Auth errors', errorCode, errorMessage)
+              this.error = `${error.errorCode} ${error.errorMessage}`
+              this.errorSnack = true
+              break;
+          }
         })
     },
     registerWithFirebase () {

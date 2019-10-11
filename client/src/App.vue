@@ -15,9 +15,6 @@
 
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-if="$store.state.isUserLoggedIn"></v-app-bar-nav-icon>
-      <v-btn icon @click="navigate(null,'back')" v-if="$store.state.isUserLoggedIn">
-        <v-icon>mdi-arrow-left-drop-circle</v-icon>
-      </v-btn>
       <v-toolbar-title @click="navigate('/')" style="cursor:pointer">Lectio Divina</v-toolbar-title>
       <div class="flex-grow-1"></div>
 

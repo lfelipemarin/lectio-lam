@@ -21,13 +21,18 @@
             <v-btn color="error" @click="reset">
               Limpiar Formulario
             </v-btn>
-            <v-btn color="primary" :disabled="!valid" @click="validate" :loading="loading">Login</v-btn>
+            <v-btn color="primary" :disabled="!valid" @click="validate" :loading="loading">Ingresar</v-btn>
           </v-card-actions>
-          <v-subheader>¿No tienes cuenta?&nbsp;<router-link to="/signup">Créala aquí.</router-link>
+          <v-subheader :class="['pt-4', !emailVerified?'':'pb-4']">¿No tienes cuenta?&nbsp;<router-link to="/signup">
+              Créala aquí</router-link>.
+          </v-subheader>
+          <v-subheader v-if="!emailVerified" class="pb-4">¿No te llegó el correo de verificación?&nbsp;<a
+               @click="sendVerificationEmail">Enviar de
+              nuevo</a>.
           </v-subheader>
         </v-card>
-        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
-          Nombre de Usuario/Contraseña inválidos
+        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=6000>
+          {{error}}
           <v-btn color="white" text @click="snackbar = false">
             Cerrar
           </v-btn>
@@ -64,7 +69,9 @@ export default {
     ],
     error: null,
     snackbar: false,
-    loading: false
+    loading: false,
+    user: null,
+    emailVerified: true
   }),
   methods: {
     validate () {
@@ -82,39 +89,61 @@ export default {
         email: this.email,
         password: this.password
       }).then((user) => {
-        var docRef = db.collection("users").doc(this.email);
+        this.user = user.user
+        this.emailVerified = this.user.emailVerified
+        if (this.emailVerified) {
+          var docRef = db.collection("users").doc(this.email);
 
-        docRef.get().then((doc) => {
-          if (doc.exists) {
-            console.log("Document data:", doc.data());
-            user.user.getIdToken().then((data) => {
-              this.$store.dispatch('setToken', data)
-            })
-            this.$store.dispatch('setUser', doc.data())
-            this.$router.push({
-              name: 'home'
-            })
-            this.loading = false
-          } else {
-            // doc.data() will be undefined in this case
-            this.loading = false
+          docRef.get().then((doc) => {
+            if (doc.exists) {
+              user.user.getIdToken().then((data) => {
+                this.$store.dispatch('setToken', data)
+              })
+              this.$store.dispatch('setUser', doc.data())
+              this.$router.push('/home')
+              this.loading = false
+            } else {
+              // doc.data() will be undefined in this case
+              this.loading = false
 
-            console.log("No such document!");
-          }
-        }).catch((error) => {
+              console.log("No such document!");
+            }
+          }).catch((error) => {
+            this.loading = false
+            console.log("Error getting document:", error);
+            this.error = error
+          });
+        } else {
+          this.snackbar = true
+          this.error = 'Tu correo no ha sido verificado. Por favor revisa el mensaje de verificación en tu correo electrónico'
           this.loading = false
-          console.log("Error getting document:", error);
-          this.error = error
-        });
+
+        }// eslint-disable-next-line
       }).catch((error) => {
         this.loading = false
 
         this.snackbar = true
-        this.error = error
+        this.error = 'Nombre de Usuario/Contraseña inválidos'
       })
 
+    },
+    sendVerificationEmail () {
+      this.user.sendEmailVerification().then(() => {
+        this.error = 'Se ha enviado el correo de verificación de nuevo'
+        this.snackbar = true
+      }).catch((error) => {
+        console.log('send v email error', error)
+      })
     }
 
   }
 };
 </script>
+<style lang="sass" scoped>
+  .v-subheader
+    height: auto
+
+  a
+    text-decoration: underline
+
+</style>

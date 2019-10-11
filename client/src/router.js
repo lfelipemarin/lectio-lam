@@ -82,6 +82,14 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "saints" */ './views/Saints.vue')
     },
     {
+      path: '/email-verify',
+      name: 'email-verify',
+      // route level code-splitting
+      // this generates a separate chunk (email-verify.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "email-verify" */ './views/EmailVerify.vue')
+    },
+    {
       path: '*', // or '/index.html'
       beforeEnter: (to, from, next) => {
         next('/')
