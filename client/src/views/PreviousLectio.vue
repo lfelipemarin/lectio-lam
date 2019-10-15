@@ -1,61 +1,77 @@
 <template>
-  <v-container fluid>
+  <v-container fluid v-if="!loading">
     <v-row>
-      <v-col>
-
+      <v-col cols="12">
+        <h2>Lectio</h2>
+        <p>{{lectioInfo[0].lectio}}</p>
+        <h2>Meditatio</h2>
+        <p>{{lectioInfo[0].meditatio}}</p>
+        <h2>Oratio</h2>
+        <p>{{lectioInfo[0].oratio}}</p>
+        <h2>Actio</h2>
+        <p>{{lectioInfo[0].actio}}</p>
+      </v-col>
+      <v-col cols="12">
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-header>Ver lecturas del ese día</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <p v-html="todaysReadings"></p>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
+  </v-container>
+  <v-container fill-height v-else>
+    <v-layout align-center>
+      <v-flex xs12 text-center>
+        <v-progress-circular :size="70" :width="7" color="amber" indeterminate></v-progress-circular>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
-import _ from "lodash";
+import moment from 'moment'
 import lectioService from "../services/LectioService";
+import _ from 'lodash'
 
 export default {
-  async mounted () {
-    await this.getTodaysReadings();
-  },
+  props: ['lectio'],
   data () {
     return {
-      evgDetails: {},
-      readings: [],
-      selection: '',
-      snackbar: false
+      todaysReadings: null,
+      lectioInfo: null,
+      loading: true
     };
   },
+  mounted () {
+    lectioService.getDateReadings(moment(this.$route.params.date).format('YYYYMMDD'), 'SP', 'all').then((readings) => {
+      this.todaysReadings = readings.data
+    })
+    let user = this.$store.state.user
+    lectioService.getLectioByCreatedDate(user, this.$route.params.date).then((collection) => {
+      this.lectioInfo = _.map(collection.docs, (doc) => {
+        this.loading = false
+        return doc.data()
+      })
+      this.loading = false
+    }).catch((error) => {
+      this.loading = false
+      console.log('lectio archive', error)
+      this.error = error
+    })
+  },
   computed: {
-    // showReset () {
-    //   return this.items.length < items.length
-    // }
+
   },
   watch: {
-    loading (val) {
-      if (!val) {
-        this.$nextTick(() => {
-          this.addListeners();
-        });
-      }
-    }
+
   },
 
   methods: {
-    // getSelection () {
-    //   const para = document.querySelector('p')
 
-    //   para.addEventListener('pointerup', (event) => {
-    //     console.log('Pointer down event')
-    //     alert(window.getSelection())
-    //   })
-    // },
-    async getTodaysReadings () {
-      const response = await lectioService.getTodaysReadings();
-      this.evgDetails = response.data;
-      this.readings = response.data.data.readings;
-      // this.addListeners();
-    }
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>

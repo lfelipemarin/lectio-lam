@@ -5,6 +5,7 @@
         <v-expansion-panels inset popout>
           <v-expansion-panel>
             <v-expansion-panel-header disable-icon-rotate>
+              Buscar Lectios Anteriores
               <template v-slot:actions>
                 <v-icon color="primary">mdi-magnify</v-icon>
               </template>
@@ -23,8 +24,6 @@
                   </v-date-picker>
                 </v-menu>
                 <v-text-field v-model="searchWord" single-line solo label="Buscar Lectios por palabra" clearable>
-                </v-text-field>
-                <v-text-field v-model="searchVerse" single-line solo label="Buscar Lectios por versículo" clearable>
                 </v-text-field>
               </v-form>
             </v-expansion-panel-content>
@@ -54,7 +53,7 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn text color="amber accent-4" @click.stop="openLectioDialog(lectio)">
+            <v-btn text color="amber accent-4" @click.stop="openLectioView(lectio)">
               Leer
             </v-btn>
             <div class="flex-grow-1"></div>
@@ -68,39 +67,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <template>
-      <v-row justify="center">
-        <v-dialog v-model="dialog.open" fullscreen hide-overlay transition="dialog-bottom-transition">
-          <v-card>
-            <v-toolbar dark color="primary">
-              <v-btn icon dark @click="dialog.open = false">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <v-toolbar-title>Lectio {{beautyDate(dialog.createdAt)}}</v-toolbar-title>
-              <div class="flex-grow-1"></div>
-            </v-toolbar>
-            <v-container fluid>
-              <v-row>
-                <v-col>
-                  <!-- <p v-html="dialog.readings"></p> -->
-                  <h2>Lectio</h2>
-                  <p>{{dialog.lectio}}</p>
-                  <h2>Meditatio</h2>
-                  <p>{{dialog.meditatio}}</p>
-                  <h2>Oratio</h2>
-                  <p>{{dialog.oratio}}</p>
-                  <h2>Actio</h2>
-                  <p>{{dialog.actio}}</p>
-                  <v-btn @click="dialog.open = false" color="amber accent-4">
-                    Cerrar
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </template>
   </v-container>
   <v-container fill-height v-else>
     <v-layout align-center>
@@ -123,7 +89,6 @@ export default {
   data: () => ({
     lectios: [],
     searchWord: '',
-    searchVerse: '',
     searchDate: '',
     menu: false,
     modal: false,
@@ -173,14 +138,8 @@ export default {
     parseSearchDate (date) {
       return moment(date).format('YYYY-MM')
     },
-    async openLectioDialog (lectio) {
-      this.dialog.lectio = lectio.lectio
-      this.dialog.meditatio = lectio.meditatio
-      this.dialog.oratio = lectio.oratio
-      this.dialog.actio = lectio.actio
-      this.dialog.open = true
-      this.dialog.createdAt = lectio.createdAt
-      this.dialog.readings = (await lectioService.getDateReadings(moment(lectio.createdAt).format('YYYYMMDD'), 'SP', 'all')).data
+    openLectioView (lectio) {
+      this.$router.push({ path: `/lectio-archivo/`, name: "previous-lectio", params: { lectio: lectio, date: lectio.createdAt } })
     }
   },
   computed: {

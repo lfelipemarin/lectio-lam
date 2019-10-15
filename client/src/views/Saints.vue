@@ -17,7 +17,7 @@
         <v-list width="100%" subheader>
           <v-subheader>SANTOS DEL DÍA</v-subheader>
 
-          <v-list-item v-for="(saint, index) in saints.data" :key="index" @click="openSaintDialog(saint)">
+          <v-list-item v-for="(saint, index) in saints.data" :key="index" @click="openSaintView(saint)">
             <v-list-item-avatar>
               <v-img :src="showSaintAvatar(saint.image_links)"></v-img>
             </v-list-item-avatar>
@@ -154,10 +154,12 @@ export default {
 
       return result
     },
-    async openSaintDialog (saint) {
+    async openSaintView (saint) {
+      console.log('santo', saint)
       if (saint.has_bio) {
-        this.dialog.saint = (await lectioService.getSaintById(saint.id)).data
-        this.dialog.open = true
+        this.$router.push({ path: '/saints', name: "saint", params: { id: saint.id} })
+        // this.dialog.saint = (await lectioService.getSaintById(saint.id)).data
+        // this.dialog.open = true
       }
     }
   }

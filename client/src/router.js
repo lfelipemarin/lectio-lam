@@ -73,6 +73,16 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "lectio-archivo" */ './views/LectioArchive.vue')
     },
     {
+      path: '/lectio-archivo/:date',
+      name: 'previous-lectio',
+      props: true,
+      meta: { requiresAuth: true },
+      // route level code-splitting
+      // this generates a separate chunk (previous-lectio.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "previous-lectio" */ './views/PreviousLectio.vue')
+    },
+    {
       path: '/saints',
       name: 'saints',
       meta: { requiresAuth: true },
@@ -80,6 +90,16 @@ let router = new Router({
       // this generates a separate chunk (saints.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "saints" */ './views/Saints.vue')
+    },
+    {
+      path: '/saints/:id',
+      name: 'saint',
+      props: true,
+      meta: { requiresAuth: true },
+      // route level code-splitting
+      // this generates a separate chunk (saint.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "saint" */ './views/ViewSaint.vue')
     },
     {
       path: '/email-verify',
