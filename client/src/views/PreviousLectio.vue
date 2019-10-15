@@ -38,7 +38,6 @@ import lectioService from "../services/LectioService";
 import _ from 'lodash'
 
 export default {
-  props: ['lectio'],
   data () {
     return {
       todaysReadings: null,
@@ -62,16 +61,6 @@ export default {
       console.log('lectio archive', error)
       this.error = error
     })
-  },
-  computed: {
-
-  },
-  watch: {
-
-  },
-
-  methods: {
-
   }
 };
 </script>

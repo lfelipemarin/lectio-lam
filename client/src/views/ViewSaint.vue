@@ -56,13 +56,6 @@ export default {
       this.loading = false
     })
   },
-  computed: {
-
-  },
-  watch: {
-
-  },
-
   methods: {
     cleanText (text) {
       const regex1 = /([</].*?>)/gm

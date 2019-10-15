@@ -130,10 +130,6 @@ export default {
       return `${moment().format('dddd D')} de ${moment().format('MMMM')} de ${moment().format('YYYY')}`
     }
   },
-  watch: {
-
-  },
-
   methods: {
     async getTodaysSaints () {
       let date = moment().format()
@@ -144,18 +140,7 @@ export default {
     showSaintAvatar (imageLinks) {
       return (imageLinks && imageLinks.ico) ? imageLinks.ico : require("@/assets/heart-circle-outline.svg")
     },
-
-    cleanText (text) {
-      const regex = /([</].*?>|&nbsp;)/gm
-      const subst = ``
-
-      // The substituted value will be contained in the result variable
-      const result = text.replace(regex, subst)
-
-      return result
-    },
     async openSaintView (saint) {
-      console.log('santo', saint)
       if (saint.has_bio) {
         this.$router.push({ path: '/saints', name: "saint", params: { id: saint.id} })
         // this.dialog.saint = (await lectioService.getSaintById(saint.id)).data

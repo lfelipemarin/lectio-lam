@@ -139,7 +139,7 @@ export default {
       return moment(date).format('YYYY-MM')
     },
     openLectioView (lectio) {
-      this.$router.push({ path: `/lectio-archivo/`, name: "previous-lectio", params: { lectio: lectio, date: lectio.createdAt } })
+      this.$router.push({ path: `/lectio-archivo/`, name: "previous-lectio", params: { date: lectio.createdAt } })
     }
   },
   computed: {
