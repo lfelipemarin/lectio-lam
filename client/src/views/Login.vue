@@ -21,7 +21,7 @@
             <v-btn color="error" @click="reset">
               Limpiar Formulario
             </v-btn>
-            <v-btn color="primary" :disabled="!valid" @click="validate" :loading="loading">Ingresar</v-btn>
+            <v-btn color="primary" :disabled="!valid" @click="validate" :loading="isLoading">Ingresar</v-btn>
           </v-card-actions>
           <div :class="['pt-4','pl-4','caption', !emailVerified?'':'pb-4']">¿No tienes cuenta?&nbsp;<router-link to="/signup">
               Créala aquí</router-link>.
@@ -67,7 +67,7 @@ export default {
     ],
     error: null,
     snackbar: false,
-    loading: false,
+    isLoading: false,
     user: null,
     emailVerified: true
   }),
@@ -81,7 +81,7 @@ export default {
       this.$refs.form.reset()
     },
     login () {
-      this.loading = true
+      this.isLoading = true
       this.email = this.email.toLowerCase().trim()
       AuthenticationService.login({
         email: this.email,
@@ -99,26 +99,26 @@ export default {
               })
               this.$store.dispatch('setUser', doc.data())
               this.$router.push('/home')
-              this.loading = false
+              this.isLoading = false
             } else {
               // doc.data() will be undefined in this case
-              this.loading = false
+              this.isLoading = false
 
               console.log("No such document!");
             }
           }).catch((error) => {
-            this.loading = false
+            this.isLoading = false
             console.log("Error getting document:", error);
             this.error = error
           });
         } else {
           this.snackbar = true
           this.error = 'Tu correo no ha sido verificado. Por favor revisa el mensaje de verificación en tu correo electrónico'
-          this.loading = false
+          this.isLoading = false
 
         }// eslint-disable-next-line
       }).catch((error) => {
-        this.loading = false
+        this.isLoading = false
 
         this.snackbar = true
         this.error = 'Nombre de Usuario/Contraseña inválidos'

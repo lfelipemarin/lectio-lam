@@ -127,6 +127,7 @@ export default {
       this.lectioDivina.actio.reminder = this.$store.state.lectioDivina.actioReminder || false
     },
     saveLectio () {
+      this.isLoading = true
       let lectioToSave = {
         lectio: this.lectioDivina.lectio.text,
         meditatio: this.lectioDivina.meditatio.text,
@@ -138,12 +139,13 @@ export default {
       }
       let user = this.$store.state.user
       lectioService.saveLectio(lectioToSave, user).then(() => {
+        this.isLoading = false
         this.$refs.form.reset()
         this.lectioDivina.actio.reminder = false
         this.snackbar = true
-
         console.log('All good')
       }).catch((error) => {
+        this.isLoading = false
         console.log('lectio error', error)
         this.error = error
       })
