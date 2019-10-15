@@ -107,11 +107,12 @@
 import { VueContext } from "vue-context";
 import _ from "lodash";
 import lectioService from "../services/LectioService";
+import moment from 'moment';
 
 export default {
   components: { VueContext },
   async mounted () {
-    await this.getTodaysGospel();
+    await this.getTodaysReadings();
     this.loading = false;
   },
   data () {
@@ -136,8 +137,9 @@ export default {
   },
 
   methods: {
-    async getTodaysGospel () {
-      const response = await lectioService.getTodaysGospel();
+    async getTodaysReadings () {
+      let today = moment().format('YYYY-MM-DD')
+      const response = await lectioService.getTodaysReadings(today);
       this.evgDetails = response.data;
       this.readings = response.data.data.readings;
     },

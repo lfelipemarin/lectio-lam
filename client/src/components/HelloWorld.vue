@@ -50,7 +50,7 @@ export default {
   components: { VueContext },
   async mounted () {
     let loading = true
-    await this.getTodaysGospel()
+    await this.getTodaysReadings()
     this.addListeners()
     loading = false
   },
@@ -81,8 +81,8 @@ export default {
     //     alert(window.getSelection())
     //   });
     // },
-    async getTodaysGospel () {
-      const response = await evgService.getTodaysGospel()
+    async getTodaysReadings () {
+      const response = await evgService.getTodaysReadings()
       this.evgDetails = response.data
       this.readings = response.data.data.readings
       this.addListeners()

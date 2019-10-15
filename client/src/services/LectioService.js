@@ -5,9 +5,12 @@ require("firebase/firestore")
 const db = firebase.firestore()
 
 export default {
-    getTodaysGospel () {
-        // let today = moment().format('YYYY-MM-DD')
-        return Api().get('readings')
+    getTodaysReadings (today) {
+        return Api().get('readings', {
+            params: {
+                date: today
+            }
+        })
     },
     getDateReadings (date, lang, type) {
         return Api().get('date-readings', {

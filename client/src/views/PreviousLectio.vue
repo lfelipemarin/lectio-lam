@@ -14,7 +14,7 @@ import lectioService from "../services/LectioService";
 
 export default {
   async mounted () {
-    await this.getTodaysGospel();
+    await this.getTodaysReadings();
   },
   data () {
     return {
@@ -48,8 +48,8 @@ export default {
     //     alert(window.getSelection())
     //   })
     // },
-    async getTodaysGospel () {
-      const response = await lectioService.getTodaysGospel();
+    async getTodaysReadings () {
+      const response = await lectioService.getTodaysReadings();
       this.evgDetails = response.data;
       this.readings = response.data.data.readings;
       // this.addListeners();

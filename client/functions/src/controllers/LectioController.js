@@ -6,7 +6,7 @@ const dbHelper = require('../helpers/dbHelper')
 
 module.exports = {
   async getReadings (req, res) {
-    let today = moment().format('YYYY-MM-DD')
+    let today = req.query.date
     try {
       let readings = await axios.get(`${config.apiConfig.baseUrl}days/${today}?include=readings,commentary`)
       console.log(readings.data)
