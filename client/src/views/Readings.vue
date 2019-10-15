@@ -16,14 +16,10 @@
       <v-col v-for="(reading, index) in readings" :key="index" cols="12" sm="12" md="6" lg="4">
         <v-card>
           <v-list-item>
-            <!-- <v-chip class="mt-2" color="primary" label text-color="white">
-              <v-icon left>mdi-calendar-month</v-icon>
-              {{beautyDate(lectio.createdAt)}}
-            </v-chip> -->
             <v-list-item-content>
-              <v-list-item-title class="headline">{{`${reading.title}`}}
+              <v-list-item-title class="headline text-wrap">{{`${reading.title}`}}
               </v-list-item-title>
-               <v-list-item-subtitle>{{`${reading.reference_displayed}`}}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{`${reading.reference_displayed}`}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-card-text>
@@ -55,6 +51,37 @@
           </v-btn>
         </v-snackbar>
 
+      </v-col>
+      <v-col cols="12">
+        <v-card>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title class="headline text-wrap">Comentario de las lecturas
+              </v-list-item-title>
+              <v-list-item-subtitle>{{`Por: ${evgDetails.data.commentary.author.name}`}}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{evgDetails.data.commentary.author.short_description}}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-card-text>
+            {{evgDetails.data.commentary.description}}
+          </v-card-text>
+          <v-card-actions>
+
+            <div class="flex-grow-1"></div>
+
+            <v-btn icon>
+              <v-icon>mdi-heart</v-icon>
+            </v-btn>
+
+            <v-btn icon>
+              <v-icon>mdi-bookmark</v-icon>
+            </v-btn>
+
+            <v-btn icon>
+              <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-col>
     </v-row>
     <v-flex xs12>
@@ -97,9 +124,6 @@ export default {
     };
   },
   computed: {
-    // showReset () {
-    //   return this.items.length < items.length
-    // }
   },
   watch: {
     loading (val) {
@@ -112,19 +136,10 @@ export default {
   },
 
   methods: {
-    // getSelection () {
-    //   const para = document.querySelector('p')
-
-    //   para.addEventListener('pointerup', (event) => {
-    //     console.log('Pointer down event')
-    //     alert(window.getSelection())
-    //   })
-    // },
     async getTodaysGospel () {
       const response = await lectioService.getTodaysGospel();
       this.evgDetails = response.data;
       this.readings = response.data.data.readings;
-      // this.addListeners();
     },
     addListeners () {
       const para = document.querySelectorAll("p");
@@ -175,8 +190,3 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-ul {
-  padding: 0;
-}
-</style>

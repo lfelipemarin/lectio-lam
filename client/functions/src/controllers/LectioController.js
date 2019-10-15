@@ -8,7 +8,7 @@ module.exports = {
   async getReadings (req, res) {
     let today = moment().format('YYYY-MM-DD')
     try {
-      let readings = await axios.get(config.apiConfig.baseUrl + 'days/' + today)
+      let readings = await axios.get(`${config.apiConfig.baseUrl}days/${today}?include=readings,commentary`)
       console.log(readings.data)
       res.send(readings.data)
     } catch (err) {
