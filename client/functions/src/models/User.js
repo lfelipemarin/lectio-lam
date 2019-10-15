@@ -1,6 +1,7 @@
 const Promise = require('bluebird')
 const bcrypt = Promise.promisifyAll(require('bcrypt-nodejs'))
 
+// eslint-disable-next-line no-unused-vars
 function hashPassword (user, options) {
   const SALT_FACTOR = 8
 
@@ -47,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
     return bcrypt.compareAsync(password, this.password)
   }
 
+  // eslint-disable-next-line no-unused-vars
   User.associate = function (models) {
   }
 

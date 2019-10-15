@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     tab: DataTypes.TEXT
   })
 
+  // eslint-disable-next-line no-unused-vars
   Song.associate = function (models) {
   }
 
