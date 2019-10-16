@@ -7,7 +7,7 @@
             <v-list-item three-line>
               <v-list-item-content>
                 <div class="overline mb-4">Santo del día</div>
-                <v-list-item-title class="headline mb-1">{{saintInfo.name}}</v-list-item-title>
+                <v-list-item-title class="headline mb-1 text-wrap">{{saintInfo.name}}</v-list-item-title>
                 <v-list-item-subtitle>{{saintInfo.date_displayed}}</v-list-item-subtitle>
               </v-list-item-content>
 
@@ -72,7 +72,6 @@ export default {
           return img
         }
       })
-
     }
   }
 };

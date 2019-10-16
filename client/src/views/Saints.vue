@@ -19,7 +19,8 @@
 
           <v-list-item v-for="(saint, index) in saints.data" :key="index" @click="openSaintView(saint)">
             <v-list-item-avatar>
-              <v-img :src="showSaintAvatar(saint.image_links)"></v-img>
+              <v-img :src="showSaintAvatar(saint.image_links)[0] || require('@/assets/heart-circle-outline.svg')">
+              </v-img>
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -63,35 +64,6 @@
         </p>
       </v-col>
     </v-row>
-    <template v-if="dialog.saint">
-      <v-row justify="center">
-        <v-dialog v-model="dialog.open" fullscreen hide-overlay transition="dialog-bottom-transition">
-          <v-card>
-            <v-toolbar dark color="primary">
-              <v-btn icon dark @click="dialog.open = false">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <v-toolbar-title>{{dialog.saint.data.name}}</v-toolbar-title>
-              <div class="flex-grow-1"></div>
-              <!-- <v-toolbar-items>
-                <v-btn dark text @click="dialog.open = false">Save</v-btn>
-              </v-toolbar-items> -->
-            </v-toolbar>
-            <v-container fluid>
-              <v-row>
-                <v-col>
-                  <p v-html="cleanText(dialog.saint.data.bio)"></p>
-                  <v-btn @click="dialog.open = false" color="amber accent-4">
-                    Cerrar
-                  </v-btn>
-                </v-col>
-              </v-row>
-
-            </v-container>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </template>
   </v-container>
   <v-container fill-height v-else>
     <v-layout align-center>
@@ -106,6 +78,7 @@
 // import _ from "lodash";
 import lectioService from "../services/LectioService";
 import moment from 'moment';
+import _ from 'lodash';
 moment.locale('es')
 
 export default {
@@ -119,10 +92,6 @@ export default {
       loading: true,
       snackbar: false,
       moment: moment,
-      dialog: {
-        open: false,
-        saint: null
-      },
     };
   },
   computed: {
@@ -137,14 +106,24 @@ export default {
       this.saints = response.data;
     },
 
-    showSaintAvatar (imageLinks) {
-      return (imageLinks && imageLinks.ico) ? imageLinks.ico : require("@/assets/heart-circle-outline.svg")
+    showSaintAvatar (imgObj) {
+      return _.map(imgObj, (img) => {
+        if (img) {
+          return img
+        }
+      })
+      // return (imageLinks && imageLinks.ico) ? imageLinks.ico : require("@/assets/heart-circle-outline.svg")
     },
-    async openSaintView (saint) {
+    // showImage (imgObj) {
+    //   return _.map(imgObj, (img) => {
+    //     if (img) {
+    //       return img
+    //     }
+    //   })
+    // },
+    openSaintView (saint) {
       if (saint.has_bio) {
-        this.$router.push({ path: '/saints', name: "saint", params: { id: saint.id} })
-        // this.dialog.saint = (await lectioService.getSaintById(saint.id)).data
-        // this.dialog.open = true
+        this.$router.push({ path: '/saints', name: "saint", params: { id: saint.id } })
       }
     }
   }
