@@ -9,7 +9,7 @@ module.exports = {
     let today = req.query.date
     try {
       let readings = await axios.get(`${config.apiConfig.baseUrl}days/${today}?include=readings,commentary`)
-      console.log(readings.data)
+      // console.log(readings.data)
       res.send(readings.data)
     } catch (err) {
       console.log(err)
@@ -32,13 +32,16 @@ module.exports = {
     }
   },
   async getSaintsByDate (req, res) {
+    console.log('saint date ', req.query.date)
     let day = moment(req.query.date).format('DD')
     let month = moment(req.query.date).format('MM')
+    console.log('saint day ', day)
+    console.log('saint month ', month)
     try {
       let saints = await axios.get(config.apiConfig.baseUrl + 'saints', {
         params: { day: day, month: month }
       })
-      console.log(saints.data)
+      // console.log(saints.data)
       res.send(saints.data)
     } catch (err) {
       console.log(err)
@@ -51,7 +54,7 @@ module.exports = {
     let id = req.params.id
     try {
       let saint = await axios.get(`${config.apiConfig.baseUrl}saints/${id}`)
-      console.log(saint.data)
+      // console.log(saint.data)
       res.send(saint.data)
     } catch (err) {
       console.log(err)

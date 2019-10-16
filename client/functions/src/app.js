@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-const { sequelize } = require('./models')
+// const { sequelize } = require('./models')
 const config = require('./config/config')
 const functions = require('firebase-functions')
 
@@ -15,11 +15,14 @@ require('./passport')
 
 require('./routes')(app)
 
-sequelize.sync({ force: false })
-  .then(() => {
-    app.listen(config.port)
+// sequelize.sync({ force: false })
+//   .then(() => {
+//     app.listen(config.port)
+//     console.log(`Server started on port ${config.port}`)
+//   })
+
+  app.listen(config.port)
     console.log(`Server started on port ${config.port}`)
-  })
 
 const api = functions.https.onRequest(app)
 

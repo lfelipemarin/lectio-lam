@@ -1,6 +1,6 @@
 {
-  "name": "Lectio Divina",
-  "short_name": "Lectio Divina",
+  "name": "lectio-lam",
+  "short_name": "lectio-lam",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

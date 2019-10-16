@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.0b2a088b24d4ebe2de85575c4fdd8717.js"
+  "/precache-manifest.75b1fe1fb100557356f70f6589e8b216.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "lectio-lam"});
