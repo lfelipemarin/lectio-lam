@@ -53,14 +53,16 @@ export default {
   },
   methods: {
     cleanText (text) {
-      const regex1 = /([</].*?>)/gm
-      const regex2 = /&nbsp;/gm
+      let regex = /([</].*?>)/gm
       let subst = ''
+      let result = text.replace(regex, subst)
 
-      // The substituted value will be contained in the result variable
-      let result = text.replace(regex1, subst)
+      regex = /(\s)+/gm
       subst = ' '
-      result = result.replace(regex2, subst)
+      result = result.replace(regex, subst)
+
+      regex = /(&nbsp;)+/gm
+      result = result.replace(regex, subst)
 
       return result
     },

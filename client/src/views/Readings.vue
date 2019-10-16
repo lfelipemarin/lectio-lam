@@ -58,12 +58,12 @@
             <v-list-item-content>
               <v-list-item-title class="headline text-wrap">Comentario de las lecturas
               </v-list-item-title>
-              <v-list-item-subtitle>{{`Por: ${evgDetails.data.commentary.author.name}`}}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{evgDetails.data.commentary.author.name}}</v-list-item-subtitle>
               <v-list-item-subtitle>{{evgDetails.data.commentary.author.short_description}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-card-text>
-            {{evgDetails.data.commentary.description}}
+            {{cleanText(evgDetails.data.commentary.description)}}
           </v-card-text>
           <v-card-actions>
 
@@ -121,7 +121,8 @@ export default {
       readings: [],
       loading: true,
       selection: '',
-      snackbar: false
+      snackbar: false,
+      text: ''
     };
   },
   computed: {
@@ -181,13 +182,17 @@ export default {
       this.$delete(this.items, index);
     },
     cleanText (text) {
-      const regex = /\[{2}.*?\]{2}/gm;
-      const subst = ``;
+      let regex = /\[{2}.*?\]{2}/gm
+      let subst = ''
+      let result = text.replace(regex, subst)
 
-      // The substituted value will be contained in the result variable
-      const result = text.replace(regex, subst);
+      subst = ' '
+      result = result.replace(regex, subst)
 
-      return result
+      regex = /(\s)+/gm
+      result = result.replace(regex, subst)
+
+      return result.trim()
     }
   }
 };
