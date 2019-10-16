@@ -2,7 +2,25 @@
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
-        <v-card class="elevation-12">
+        <v-card class="elevation-12" v-if="mode=='verifyEmail'">
+          <v-toolbar color="primary" dark flat>
+            <v-toolbar-title>Recuperar Contraseña</v-toolbar-title>
+          </v-toolbar>
+          <v-card-text>
+            <v-form ref="form" v-model="valid" lazy-validation>
+              <v-text-field v-model="email" :rules="emailRules" required label="Email" name="login"
+                            prepend-icon="mdi-account" type="text"></v-text-field>
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <div class="flex-grow-1"></div>
+            <v-btn color="error" @click="mode='login'">
+              Cancelar
+            </v-btn>
+            <v-btn color="primary" :disabled="!valid" @click="validate" :loading="isLoading">Enviar</v-btn>
+          </v-card-actions>
+        </v-card>
+        <v-card class="elevation-12" v-else>
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title>Login</v-toolbar-title>
           </v-toolbar>
@@ -23,10 +41,14 @@
             </v-btn>
             <v-btn color="primary" :disabled="!valid" @click="validate" :loading="isLoading">Ingresar</v-btn>
           </v-card-actions>
-          <div :class="['pt-4','pl-4','caption', !emailVerified?'':'pb-4']">¿No tienes cuenta?&nbsp;<router-link to="/signup">
+          <div :class="['pt-4','pl-4','caption']">¿No tienes cuenta? <router-link to="/signup">
               Créala aquí</router-link>.
           </div>
-          <div v-if="!emailVerified" class="caption pb-4 pl-4">¿No te llegó el correo de verificación? <a @click="sendVerificationEmail">Enviar de nuevo</a>.
+          <div :class="['pl-4','caption', !emailVerified?'':'pb-4']">¿Olvidaste la contraseña? <a
+               @click="changeToVerifyEmail">Recupérala aquí</a>.
+          </div>
+          <div v-if="!emailVerified" class="caption pb-4 pl-4">¿No te llegó el correo de verificación? <a
+               @click="sendVerificationEmail">Enviar de nuevo</a>.
           </div>
         </v-card>
         <v-snackbar v-model="snackbar" multi-line color="info" :timeout=6000>
@@ -57,7 +79,7 @@ export default {
     valid: true,
     email: '',
     emailRules: [
-      v => !!v || 'E-mail is required',
+      v => !!v || 'El campo Email es obligatorio',
       v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3}) *$/.test(v) || 'E-mail debe ser válido'
 
     ],
@@ -69,12 +91,15 @@ export default {
     snackbar: false,
     isLoading: false,
     user: null,
-    emailVerified: true
+    emailVerified: true,
+    mode: 'login'
   }),
   methods: {
     validate () {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate() && this.mode == 'login') {
         this.login()
+      } else if (this.$refs.form.validate() && this.mode == 'verifyEmail') {
+        this.sendPasswordRecoveryEmail()
       }
     },
     reset () {
@@ -130,10 +155,25 @@ export default {
         this.error = 'Se ha enviado el correo de verificación de nuevo'
         this.snackbar = true
       }).catch((error) => {
-        console.log('send v email error', error)
+        console.log('send verification email error', error)
       })
+    },
+    sendPasswordRecoveryEmail () {
+      this.isLoading = true
+      let auth = firebase.auth()
+      auth.sendPasswordResetEmail(this.email).then(() => {
+        this.error = `Se ha enviado un correo de recuperación a ${this.email}`
+        this.snackbar = true
+        this.mode = 'login'
+        this.isLoading = false
+      }).catch((error) => {
+        console.log('send reset email error', error)
+        this.isLoading = false
+      })
+    },
+    changeToVerifyEmail () {
+      this.mode = 'verifyEmail'
     }
-
   }
 };
 </script>
