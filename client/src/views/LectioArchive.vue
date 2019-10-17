@@ -33,24 +33,30 @@
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
-        <v-card class="mx-auto" hover>
+        <v-card shaped>
           <v-list-item>
-            <v-chip class="mt-2" color="primary" label text-color="white">
+            <v-chip outlined class="mt-2" color="primary" label text-color="white">
               <v-icon left>mdi-calendar-month</v-icon>
               {{beautyDate(lectio.createdAt)}}
             </v-chip>
           </v-list-item>
-
           <v-card-text>
             <h4>Lectio</h4>
-            <p>{{lectio.lectio | truncate(50)}}</p>
+            <p>{{lectio.lectio | truncate(75)}}</p>
             <h4>Meditatio</h4>
-            <p>{{lectio.meditatio | truncate(50)}}</p>
+            <p>{{lectio.meditatio | truncate(75)}}</p>
             <h4>Oratio</h4>
-            <p>{{lectio.oratio | truncate(50)}}</p>
+            <p>{{lectio.oratio | truncate(75)}}</p>
             <h4>Actio</h4>
-            <p>{{lectio.actio | truncate(50)}}</p>
+            <p>{{lectio.actio | truncate(75)}}</p>
           </v-card-text>
+          <v-list-item v-if="!lectio.completedActio">
+          <div class="flex-grow-1"></div>
+            <v-chip class="mt-2" color="warning" label text-color="white">
+              <v-icon left>mdi-alarm</v-icon>
+              Tienes un compromiso sin completar
+            </v-chip>
+          </v-list-item>
 
           <v-card-actions>
             <v-btn text color="amber accent-4" @click.stop="openLectioView(lectio)">
@@ -93,19 +99,11 @@ export default {
     menu: false,
     modal: false,
     moment: moment,
-    dialog: {
-      open: false,
-      lectio: '',
-      meditatio: '',
-      oratio: '',
-      actio: '',
-      createdAt: '',
-      readings: ''
-    },
     page: 0,
     pageSize: 10,
     error: null,
-    loading: true
+    loading: true,
+    completedActio: false
   }),
   mounted () {
     this.getAllLectios()
@@ -190,49 +188,6 @@ export default {
 }
 </script>
 <style scoped>
-@media only screen and (min-width: 500px) {
-  .cards {
-    column-count: 1;
-  }
-}
-
-@media only screen and (min-width: 700px) {
-  .cards {
-    column-count: 3;
-  }
-}
-
-@media only screen and (min-width: 900px) {
-  .cards {
-    column-count: 4;
-  }
-}
-
-.card {
-  background: #f5f5f5;
-  padding: 10px;
-  margin: 0 0 1em;
-  width: 100%;
-  cursor: pointer;
-  display: inline-block;
-  color: black;
-  -webkit-perspective: 1000;
-  perspective: 1000;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  transition: all 100ms ease-in-out;
-}
-
-.card:hover {
-  transform: translateY(-0.5em);
-  background: #ebebeb;
-}
-
-img {
-  display: block;
-  width: 100%;
-}
-
 .v-expansion-panel::before {
   box-shadow: none;
 }

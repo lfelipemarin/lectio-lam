@@ -134,6 +134,7 @@ export default {
         oratio: this.lectioDivina.oratio.text,
         actio: this.lectioDivina.actio.text,
         reminder: this.lectioDivina.actio.reminder,
+        completedActio: false,
         createdAt: moment().toISOString(),
         updatedAt: moment().toISOString()
       }

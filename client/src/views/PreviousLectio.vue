@@ -10,6 +10,10 @@
         <p>{{lectioInfo[0].oratio}}</p>
         <h2>Actio</h2>
         <p>{{lectioInfo[0].actio}}</p>
+        <v-checkbox v-model="lectioInfo[0].completedActio" @change="changeCompletedActio(lectioInfo[0].completedActio)"
+                    label="¿Cumpliste el compromiso?">
+        </v-checkbox>
+
       </v-col>
       <v-col cols="12">
         <v-expansion-panels>
@@ -20,6 +24,12 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
+          Compromiso {{lectioInfo[0].completedActio?'cumplido':'no cumplido'}}
+          <v-btn color="white" text @click="snackbar = false">
+            Cerrar
+          </v-btn>
+        </v-snackbar>
       </v-col>
     </v-row>
   </v-container>
@@ -42,7 +52,8 @@ export default {
     return {
       todaysReadings: null,
       lectioInfo: null,
-      loading: true
+      loading: true,
+      snackbar: false
     };
   },
   mounted () {
@@ -61,6 +72,20 @@ export default {
       console.log('lectio archive', error)
       this.error = error
     })
-  }
+  },
+  methods: {
+    changeCompletedActio (value) {
+      let user = this.$store.state.user
+      lectioService.updateLectio(this.lectioInfo[0], user, { completedActio: value }).then(() => {
+        // this.isLoading = false
+        this.snackbar = true
+        console.log('All good')
+      }).catch((error) => {
+        // this.isLoading = false
+        console.log('lectio error', error)
+        this.error = error
+      })
+    },
+  },
 };
 </script>

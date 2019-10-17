@@ -25,16 +25,12 @@ export default {
         return db.collection('users').doc(user.email).collection('lectios').doc(`lectio-${lectio.createdAt}`).set(lectio)
         // return Api().post('lectios', lectio)
     },
+    updateLectio (lectio, user, value) {
+        return db.collection('users').doc(user.email).collection('lectios').doc(`lectio-${lectio.createdAt}`).update(value)
+    },
     getAllLectios (user) {
         let docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt')
         return docRef.get()
-
-        // return Api().get('lectios', {
-        //     params: {
-        //         page: page,
-        //         pageSize: pageSize
-        //     }
-        // })
     },
     getLectioByCreatedDate (user, date) {
         let docRef = db.collection('users').doc(user.email).collection('lectios').where('createdAt', '==', date)
