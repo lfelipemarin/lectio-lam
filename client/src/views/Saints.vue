@@ -5,7 +5,7 @@
         <v-list-item>
           <v-icon left>mdi-calendar-month</v-icon>
           <v-list-item-content>
-            <v-list-item-title class="headline text-capitalize">{{beautyDate}}
+            <v-list-item-title class="headline text-capitalize text-wrap">{{beautyDate}}
             </v-list-item-title>
             <!-- <v-list-item-subtitle>{{evgDetails.data.liturgic_title}}</v-list-item-subtitle> -->
           </v-list-item-content>
@@ -32,13 +32,6 @@
             </v-list-item-icon> -->
           </v-list-item>
         </v-list>
-        <v-divider></v-divider>
-        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
-          Por favor selecciona una parte del texto
-          <v-btn color="white" text @click="snackbar = false">
-            Cerrar
-          </v-btn>
-        </v-snackbar>
       </v-col>
       <v-col cols="12" sm="12" md="6" order="1" order-sm="1" order-md="2">
         <p>¿Quienes son los santos? Son esa multitud innumerable de hombres y mujeres, de toda raza, edad y condición,
@@ -90,7 +83,6 @@ export default {
     return {
       saints: [],
       loading: true,
-      snackbar: false,
       moment: moment,
     };
   },
@@ -112,15 +104,7 @@ export default {
           return img
         }
       })
-      // return (imageLinks && imageLinks.ico) ? imageLinks.ico : require("@/assets/heart-circle-outline.svg")
     },
-    // showImage (imgObj) {
-    //   return _.map(imgObj, (img) => {
-    //     if (img) {
-    //       return img
-    //     }
-    //   })
-    // },
     openSaintView (saint) {
       if (saint.has_bio) {
         this.$router.push({ path: '/saints', name: "saint", params: { id: saint.id } })

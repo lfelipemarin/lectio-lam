@@ -5,9 +5,9 @@
         <v-list-item>
           <v-icon left>mdi-calendar-month</v-icon>
           <v-list-item-content>
-            <v-list-item-title class="headline">{{evgDetails.data.date_displayed}}
+            <v-list-item-title class="headline text-wrap">{{evgDetails.data.date_displayed}}
             </v-list-item-title>
-            <v-list-item-subtitle>{{evgDetails.data.liturgic_title}}</v-list-item-subtitle>
+            <v-list-item-subtitle class="text-wrap">{{evgDetails.data.liturgic_title}}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-col>
@@ -19,7 +19,7 @@
             <v-list-item-content>
               <v-list-item-title class="headline text-wrap">{{`${reading.title}`}}
               </v-list-item-title>
-              <v-list-item-subtitle>{{`${reading.reference_displayed}`}}</v-list-item-subtitle>
+              <v-list-item-subtitle class="text-wrap">{{`${reading.reference_displayed}`}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-card-text>
@@ -58,8 +58,8 @@
             <v-list-item-content>
               <v-list-item-title class="headline text-wrap">Comentario de las lecturas
               </v-list-item-title>
-              <v-list-item-subtitle>{{evgDetails.data.commentary.author.name}}</v-list-item-subtitle>
-              <v-list-item-subtitle>{{evgDetails.data.commentary.author.short_description}}</v-list-item-subtitle>
+              <v-list-item-subtitle class="text-wrap">{{evgDetails.data.commentary.author.name}}</v-list-item-subtitle>
+              <v-list-item-subtitle class="text-wrap">{{evgDetails.data.commentary.author.short_description}}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-card-text>

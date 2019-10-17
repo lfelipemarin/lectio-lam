@@ -14,10 +14,10 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.75b1fe1fb100557356f70f6589e8b216.js"
+  "/precache-manifest.c83badd7d9ba793b984c933aa8f046b1.js"
 );
 
-workbox.core.setCacheNameDetails({prefix: "lectio-lam"});
+workbox.core.setCacheNameDetails({prefix: "lectio-divina"});
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
