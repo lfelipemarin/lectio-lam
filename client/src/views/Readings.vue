@@ -59,7 +59,8 @@
               <v-list-item-title class="headline text-wrap">Comentario de las lecturas
               </v-list-item-title>
               <v-list-item-subtitle class="text-wrap">{{evgDetails.data.commentary.author.name}}</v-list-item-subtitle>
-              <v-list-item-subtitle class="text-wrap">{{evgDetails.data.commentary.author.short_description}}</v-list-item-subtitle>
+              <v-list-item-subtitle class="text-wrap">{{evgDetails.data.commentary.author.short_description}}
+              </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-card-text>
@@ -172,7 +173,7 @@ export default {
     sendSelectionToLectio () {
       this.selection = window.getSelection().toString()
       if (this.selection) {
-        this.$router.push({ name: 'lectio', params: { copiedLectioText: this.selection, readings: this.readings } })
+        this.$router.push({ name: 'lectio', params: { copiedLectioText: this.selection } })
       } else {
         this.snackbar = true
       }

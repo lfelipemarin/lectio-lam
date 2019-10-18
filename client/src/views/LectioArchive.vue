@@ -15,7 +15,7 @@
                 <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="searchDate"
                         transition="scale-transition" offset-y max-width="290px" min-width="290px">
                   <template v-slot:activator="{ on }">
-                    <v-text-field v-model="searchDate" single-line solo label="Buscar Lectios por fecha" readonly
+                    <v-text-field v-model="searchDate" single-line solo label="por fecha" readonly
                                   clearable v-on="on">
                     </v-text-field>
                   </template>
@@ -23,7 +23,7 @@
                                  @change="$refs.menu.save(searchDate)">
                   </v-date-picker>
                 </v-menu>
-                <v-text-field v-model="searchWord" single-line solo label="Buscar Lectios por palabra" clearable>
+                <v-text-field v-model="searchWord" single-line solo label="por palabra" clearable>
                 </v-text-field>
               </v-form>
             </v-expansion-panel-content>

@@ -23,6 +23,8 @@ export default new Vuex.Store({
   state: {
     token: null,
     user: null,
+    readings: null,
+    evgDetails: null,
     lectioDivina: {
       lectioText: null,
       meditatioText: null,
@@ -30,8 +32,13 @@ export default new Vuex.Store({
       actioText: null,
       actioReminder: null
     },
+    lectioArchive:null,
     isUserLoggedIn: false,
-    history: 0
+    history: 0,
+    expiryDate: null
+  },
+  getters: {
+    isExpired: state => (new Date(state.expiryDate) < new Date()),
   },
   mutations: {
     setToken (state, token) {
@@ -40,6 +47,12 @@ export default new Vuex.Store({
     },
     setUser (state, user) {
       state.user = user
+    },
+    setReadings (state, readings) {
+      state.readings = readings
+    },
+    setEvgDetails (state, evgDetails) {
+      state.evgDetails = evgDetails
     },
     setLectioText (state, lectioText) {
       state.lectioDivina.lectioText = lectioText
@@ -56,8 +69,19 @@ export default new Vuex.Store({
     setActioReminder (state, actioReminder) {
       state.lectioDivina.actioReminder = actioReminder
     },
+    setLectioArchive (state, lectioArchive) {
+      state.lectioArchive = lectioArchive
+    },
     setHistory (state, history) {
       state.history = history
+    },
+    setExpiryDate (state) {
+      // Create a date
+      let date = new Date()
+      // Add your delta for expiry. I am expiring in one day.
+      date.setDate(date.getDate() + 1)
+      // Set the state
+      state.expiryDate = date
     },
   },
   actions: {
@@ -66,6 +90,12 @@ export default new Vuex.Store({
     },
     setUser ({ commit }, user) {
       commit('setUser', user)
+    },
+    setReadings ({ commit }, readings) {
+      commit('setReadings', readings)
+    },
+    setEvgDetails ({ commit }, evgDetails) {
+      commit('setEvgDetails', evgDetails)
     },
     setLectioText ({ commit }, lectioText) {
       commit('setLectioText', lectioText)
@@ -82,8 +112,14 @@ export default new Vuex.Store({
     setActioReminder ({ commit }, actioReminder) {
       commit('setActioReminder', actioReminder)
     },
+    setLectioArchive ({ commit }, lectioArchive) {
+      commit('setLectioArchive', lectioArchive)
+    },
     setHistory ({ commit }, history) {
       commit('setHistory', history)
+    },
+    setExpiryDate ({ commit }) {
+      commit('setExpiryDate')
     },
   }
 })

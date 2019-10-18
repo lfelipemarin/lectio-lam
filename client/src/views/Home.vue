@@ -1,6 +1,6 @@
 <template>
-  <v-container grid-list-xs fill-height class="flex-column" justify-center>
-    <v-row :align="$store.state.isUserLoggedIn?'center':'end'" justify="center">
+  <v-container grid-list-xs fill-height class="flex-column" justify-center v-if="!$store.state.isUserLoggedIn">
+    <v-row align="end" justify="center">
       <!-- <img src="../assets/logo-lam-white.png" width="300"/> -->
       <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"
            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
@@ -91,16 +91,164 @@
         </g>
       </svg>
     </v-row>
-    <v-row v-if="!$store.state.isUserLoggedIn" class="mt-3">
+    <v-row class="mt-3">
       <v-btn color="amber" class="mt-5 mr-5" to="/login">Ingresar</v-btn>
       <v-btn color="amber" class="mt-5" to="/signup">Registrarse</v-btn>
+    </v-row>
+  </v-container>
+  <v-container fluid v-else>
+    <v-row>
+      <v-col sm="12" md="6">
+        <v-card class="mt-4 mx-auto">
+          <v-sheet class="v-sheet--offset mx-auto" color="cyan" elevation="12" max-width="calc(100% - 32px)">
+            <div class="hello" ref="chartdiv">
+            </div>
+          </v-sheet>
+
+          <v-card-text class="pt-0">
+            <div class="title font-weight-light mb-2">User Registrations</div>
+            <div class="subheading font-weight-light grey--text">Last Campaign Performance</div>
+            <v-divider class="my-2"></v-divider>
+            <v-icon class="mr-2" small>
+              mdi-clock
+            </v-icon>
+            <span class="caption grey--text font-weight-light">last registration 26 minutes ago</span>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" sm="12" md="6">
+        <v-card class="mt-4 mx-auto">
+          <v-sheet class="v-sheet--offset mx-auto" color="cyan" elevation="12" max-width="calc(100% - 32px)">
+            <v-sparkline :labels="labels" :value="value" type="bar" color="white" line-width="2" padding="16">
+            </v-sparkline>
+          </v-sheet>
+
+          <v-card-text class="pt-0">
+            <div class="title font-weight-light mb-2">User Registrations</div>
+            <div class="subheading font-weight-light grey--text">Last Campaign Performance</div>
+            <v-divider class="my-2"></v-divider>
+            <v-icon class="mr-2" small>
+              mdi-clock
+            </v-icon>
+            <span class="caption grey--text font-weight-light">last registration 26 minutes ago</span>
+          </v-card-text>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import lectioService from "../services/LectioService";
+import moment from 'moment';
+import { mapGetters } from 'vuex'
+import _ from 'lodash'
+import * as am4core from "@amcharts/amcharts4/core";
+import * as am4charts from "@amcharts/amcharts4/charts";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+
+am4core.useTheme(am4themes_animated);
+
 
 export default {
+  data: () => ({
+    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+      'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    // value:[1,2,4,100]
+  }),
+  async mounted () {
+    if (this.isExpired) {
+      await this.getTodaysReadings()
+      await this.getAllLectios()
+      console.log('done loading')
+    }
+    let chart = am4core.create(this.$refs.chartdiv, am4charts.XYChart);
 
-};
+    chart.paddingRight = 20;
+
+    let data = [];
+    let visits = 10;
+    for (let i = 1; i < 10; i++) {
+      visits += Math.round(Math.random() * 10);
+      data.push({ date: new Date(2018, 0, i), name: "name" + i, value: visits });
+    }
+
+    chart.data = data;
+
+    let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.grid.template.location = 0;
+
+    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.tooltip.disabled = true;
+    valueAxis.renderer.minWidth = 35;
+
+    let series = chart.series.push(new am4charts.ColumnSeries());
+    series.dataFields.dateX = "date";
+    series.dataFields.valueY = "value";
+
+    series.tooltipText = "{valueY.value}";
+    chart.cursor = new am4charts.XYCursor();
+
+//     let scrollbarX = new am4charts.XYChartScrollbar();
+//     scrollbarX.series.push(series);
+//     chart.scrollbarX = scrollbarX;
+
+    this.chart = chart;
+  },
+  beforeDestroy () {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  },
+  methods: {
+    async getTodaysReadings () {
+      let today = moment().format('YYYY-MM-DD')
+      const response = await lectioService.getTodaysReadings(today);
+      this.$store.dispatch('setReadings', response.data.data.readings)
+      this.$store.dispatch('setEvgDetails', response.data)
+      this.$store.dispatch('setExpiryDate')
+    },
+    getAllLectios () {
+      let user = this.$store.state.user
+      let lectios
+      lectioService.getAllLectios(user).then((collection) => {
+        lectios = _.map(collection.docs, (doc) => {
+          return doc.data()
+        })
+        this.$store.dispatch('setLectioArchive', lectios)
+        this.loading = false
+      }).catch((error) => {
+        console.log('lectio archive', error)
+        this.error = error
+      })
+    },
+  },
+  computed: {
+    ...mapGetters([
+      'isExpired'
+    ]),
+    //     labels () {
+    //       let months = _.map(this.$store.state.lectioArchive, (lectio) => {
+    //         return moment(lectio.createdAt).format('MMMM')
+    //       })
+    //       return _.uniq(months)
+    //     },
+    value () {
+      // return _.values(_.countBy(this.$store.state.lectioArchive, (lectio) => {
+      //   return moment(lectio.createdAt).format('MMMM')
+      // }))
+      return [2, 4, 3, 5, 6, 7, 8, 3, 4, 6, 7, 8]
+    }
+  },
+}
 </script>
+<style lang="sass">
+.v-sheet--offset 
+  top: -24px
+  position: relative
+
+.hello 
+  width: 100%
+  height: 300px
+  
+</style>

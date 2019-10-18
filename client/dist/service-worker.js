@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.c83badd7d9ba793b984c933aa8f046b1.js"
+  "/precache-manifest.689acd69c7d04281427e50998f2b22b1.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "lectio-divina"});
