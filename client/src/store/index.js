@@ -38,7 +38,7 @@ export default new Vuex.Store({
     expiryDate: null
   },
   getters: {
-    isExpired: state => (new Date(state.expiryDate) < new Date()),
+    isExpired: state => (new Date(state.expiryDate) < new Date())
   },
   mutations: {
     setToken (state, token) {

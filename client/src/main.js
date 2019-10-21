@@ -6,6 +6,7 @@ import { sync } from 'vuex-router-sync'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
 import firebase from 'firebase/app'
+import Moment from 'moment'
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -28,6 +29,9 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+
+Moment.locale('es')
+Vue.prototype.$moment = Moment
 
 // Cut or truncate text
 Vue.filter('truncate', function (text, stop, clamp) {

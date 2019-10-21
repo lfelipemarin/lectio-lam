@@ -34,7 +34,7 @@
           </v-form>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn text @click="$refs.form.reset()">
+            <v-btn text @click="resetForm">
               Limpiar
             </v-btn>
             <div class="flex-grow-1"></div>
@@ -155,6 +155,7 @@ export default {
     resetForm () {
       this.$refs.form.reset()
       this.lectioDivina.actio.reminder = false
+      this.isLoading = false
     }
   },
   watch: {
