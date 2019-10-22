@@ -128,7 +128,7 @@ export default {
     },
     saveLectio () {
       this.isLoading = true
-      let lectioToSave = {
+      let lectioArchive = {
         lectio: this.lectioDivina.lectio.text,
         meditatio: this.lectioDivina.meditatio.text,
         oratio: this.lectioDivina.oratio.text,
@@ -139,7 +139,8 @@ export default {
         updatedAt: moment().toISOString()
       }
       let user = this.$store.state.user
-      lectioService.saveLectio(lectioToSave, user).then(() => {
+      lectioService.saveLectio(lectioArchive, user).then(() => {
+        this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: true })
         this.isLoading = false
         this.$refs.form.reset()
         this.lectioDivina.actio.reminder = false

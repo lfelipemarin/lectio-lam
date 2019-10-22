@@ -73,8 +73,12 @@ export default new Vuex.Store({
     setActioReminder (state, actioReminder) {
       state.lectioDivina.actioReminder = actioReminder
     },
-    setLectioArchive (state, lectioArchive) {
-      state.lectioArchive = lectioArchive
+    setLectioArchive (state, lectioArchiveParams) {
+      if (lectioArchiveParams.letPush) {
+        state.lectioArchive.push(lectioArchiveParams.lectioArchive)
+      } else {
+        state.lectioArchive = lectioArchiveParams.lectioArchive
+      }
     },
     setHistory (state, history) {
       state.history = history
@@ -119,8 +123,8 @@ export default new Vuex.Store({
     setActioReminder ({ commit }, actioReminder) {
       commit('setActioReminder', actioReminder)
     },
-    setLectioArchive ({ commit }, lectioArchive) {
-      commit('setLectioArchive', lectioArchive)
+    setLectioArchive ({ commit }, lectioArchiveParams) {
+      commit('setLectioArchive', lectioArchiveParams)
     },
     setHistory ({ commit }, history) {
       commit('setHistory', history)

@@ -190,15 +190,16 @@ export default {
     },
     getAllLectios () {
       let user = this.$store.state.user
-      let lectios
+      let lectioArchive
       lectioService.getAllLectios(user).then((collection) => {
-        lectios = _.map(collection.docs, (doc) => {
+        lectioArchive = _.map(collection.docs, (doc) => {
           return doc.data()
         })
-        lectios = _.sortBy(lectios, (lectio) => {
+        lectioArchive = _.sortBy(lectioArchive, (lectio) => {
           return lectio.createdAt
         })
-        this.$store.dispatch('setLectioArchive', lectios)
+
+        this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: false })
         this.loading = false
       }).catch((error) => {
         this.error = error
