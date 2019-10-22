@@ -128,12 +128,9 @@ export default {
             } else {
               // doc.data() will be undefined in this case
               this.isLoading = false
-
-              console.log("No such document!");
             }
           }).catch((error) => {
             this.isLoading = false
-            console.log("Error getting document:", error);
             this.error = error
           });
         } else {
@@ -155,7 +152,7 @@ export default {
         this.error = 'Se ha enviado el correo de verificación de nuevo'
         this.snackbar = true
       }).catch((error) => {
-        console.log('send verification email error', error)
+        this.error = error
       })
     },
     sendPasswordRecoveryEmail () {
@@ -167,7 +164,7 @@ export default {
         this.mode = 'login'
         this.isLoading = false
       }).catch((error) => {
-        console.log('send reset email error', error)
+        this.error = error
         this.isLoading = false
       })
     },

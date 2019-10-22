@@ -145,15 +145,9 @@ export default {
           credentials.uid = user.user.uid
           db.collection('users').doc(credentials.email).set(credentials)
             .then(() => {
-              console.log('success')
-              // user.user.getIdToken().then((data) => {
-              //   this.$store.dispatch('setToken', data)
-              // })
-              // this.$store.dispatch('setUser', credentials)
               firebase.auth().signOut()
             }).catch((error) => {
               this.loading = false
-              console.log('Error adding document', error)
               this.error = error
             })
           user.user.sendEmailVerification().then(() => {
@@ -165,7 +159,7 @@ export default {
             this.reset()
           }).catch((error) => {
             this.loading = false
-            console.log('send v email error', error)
+            this.error = error
           })
 
         })
@@ -180,8 +174,7 @@ export default {
               this.errorSnack = true
               break;
             default:
-              console.log('Auth errors', errorCode, errorMessage)
-              this.error = `${error.errorCode} ${error.errorMessage}`
+              this.error = `${errorCode} ${errorMessage}`
               this.errorSnack = true
               break;
           }

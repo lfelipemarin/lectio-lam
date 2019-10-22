@@ -69,7 +69,6 @@ export default {
       this.loading = false
     }).catch((error) => {
       this.loading = false
-      console.log('lectio archive', error)
       this.error = error
     })
   },
@@ -77,12 +76,8 @@ export default {
     changeCompletedActio (value) {
       let user = this.$store.state.user
       lectioService.updateLectio(this.lectioInfo[0], user, { completedActio: value }).then(() => {
-        // this.isLoading = false
         this.snackbar = true
-        console.log('All good')
       }).catch((error) => {
-        // this.isLoading = false
-        console.log('lectio error', error)
         this.error = error
       })
     },

@@ -144,10 +144,8 @@ export default {
         this.$refs.form.reset()
         this.lectioDivina.actio.reminder = false
         this.snackbar = true
-        console.log('All good')
       }).catch((error) => {
         this.isLoading = false
-        console.log('lectio error', error)
         this.error = error
       })
 

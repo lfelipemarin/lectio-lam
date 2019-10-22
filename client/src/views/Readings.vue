@@ -143,7 +143,6 @@ export default {
       _.each(para, par => {
         _.each(tEvents, tEvent => {
           par.addEventListener(tEvent, e => {
-            console.log(e.type);
             var selection;
 
             if (window.getSelection) {

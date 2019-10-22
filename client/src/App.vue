@@ -120,10 +120,9 @@ export default {
       this.drawer = false
       firebase.auth().signOut().then(function () {
         // Sign-out successful.
-        console.log('signed out')
       }).catch(function (error) {
+        this.error = error
         // An error happened.
-        console.log('signed out error', error)
       });
 
       this.$store.dispatch('setToken', null)
@@ -138,7 +137,6 @@ export default {
       } else {
         this.$router.push(route).catch(err => {
           this.error = err
-          console.log('Already there')
         })
       }
     }

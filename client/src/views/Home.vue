@@ -159,7 +159,6 @@ export default {
       await this.getTodaysReadings()
       await this.getAllLectios()
       await this.getTodaysSaints()
-      console.log('done loading')
     }
     this.$nextTick(() => {
       setTimeout(() => {
@@ -202,7 +201,6 @@ export default {
         this.$store.dispatch('setLectioArchive', lectios)
         this.loading = false
       }).catch((error) => {
-        console.log('lectio archive', error)
         this.error = error
       })
     },
@@ -251,7 +249,7 @@ export default {
       thisChart = chart
     },
     beautyDate (date) {
-      return `${this.$moment(date).format('dddd D')} de ${this.$moment(date).format('MMMM')} de ${this.$moment(date).format('YYYY')}`
+      return `${this.$moment(date).format('D')} de ${this.$moment(date).format('MMM')} de ${this.$moment(date).format('YYYY')}`
     }
   },
   computed: {
