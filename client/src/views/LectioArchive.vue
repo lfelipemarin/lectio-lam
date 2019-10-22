@@ -15,8 +15,7 @@
                 <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :return-value.sync="searchDate"
                         transition="scale-transition" offset-y max-width="290px" min-width="290px">
                   <template v-slot:activator="{ on }">
-                    <v-text-field v-model="searchDate" single-line solo label="por fecha" readonly
-                                  clearable v-on="on">
+                    <v-text-field v-model="searchDate" single-line solo label="por fecha" readonly clearable v-on="on">
                     </v-text-field>
                   </template>
                   <v-date-picker v-model="searchDate" type="month" no-title scrollable
@@ -51,7 +50,7 @@
             <p>{{lectio.actio | truncate(75)}}</p>
           </v-card-text>
           <v-list-item v-if="!lectio.completedActio">
-          <div class="flex-grow-1"></div>
+            <div class="flex-grow-1"></div>
             <v-chip class="mt-2" color="warning" label text-color="white">
               <v-icon left>mdi-alarm</v-icon>
               Tienes un compromiso sin completar
@@ -83,22 +82,14 @@
   </v-container>
 </template>
 <script>
-import lectioService from "../services/LectioService";
-import moment from 'moment'
 import _ from 'lodash'
-moment.locale('es')
 
 export default {
-  components: {
-
-  },
   data: () => ({
-    lectios: [],
     searchWord: '',
     searchDate: '',
     menu: false,
     modal: false,
-    moment: moment,
     page: 0,
     pageSize: 10,
     error: null,
@@ -106,41 +97,32 @@ export default {
     completedActio: false
   }),
   mounted () {
-    this.getAllLectios()
+    this.loading = false
   },
   methods: {
-    getAllLectios () {
-      let user = this.$store.state.user
-      lectioService.getAllLectios(user).then((collection) => {
-        this.lectios = _.map(collection.docs, (doc) => {
-          return doc.data()
-        })
-        this.loading = false
-      }).catch((error) => {
-        console.log('lectio archive', error)
-        this.error = error
-      })
-    },
     checkLectioYear (year, lectioYear) {
-      return year == moment(lectioYear).format('YYYY')
+      return year == this.$moment(lectioYear).format('YYYY')
     },
     checkLectioMonth (month, lectioMonth) {
-      return month == moment(lectioMonth).format('MMMM')
+      return month == this.$moment(lectioMonth).format('MMMM')
     },
     displayCard (year, month, createdAt) {
       return this.checkLectioYear(year.year, createdAt) && this.checkLectioMonth(month.month, createdAt) && year.year == month.year
     },
     beautyDate (date) {
-      return moment(date).format('MMMM-DD-YYYY')
+      return this.$moment(date).format('MMMM-DD-YYYY')
     },
     parseSearchDate (date) {
-      return moment(date).format('YYYY-MM')
+      return this.$moment(date).format('YYYY-MM')
     },
     openLectioView (lectio) {
       this.$router.push({ path: `/lectio-archivo/`, name: "previous-lectio", params: { date: lectio.createdAt } })
     }
   },
   computed: {
+    lectios () {
+      return this.$store.state.lectioArchive
+    },
     filter () {
       return (item, search, textKey) => item[textKey].indexOf(search) > -1
     },

@@ -25,6 +25,7 @@ export default new Vuex.Store({
     user: null,
     readings: null,
     evgDetails: null,
+    saints: null,
     lectioDivina: {
       lectioText: null,
       meditatioText: null,
@@ -32,7 +33,7 @@ export default new Vuex.Store({
       actioText: null,
       actioReminder: null
     },
-    lectioArchive:null,
+    lectioArchive: null,
     isUserLoggedIn: false,
     history: 0,
     expiryDate: null
@@ -53,6 +54,9 @@ export default new Vuex.Store({
     },
     setEvgDetails (state, evgDetails) {
       state.evgDetails = evgDetails
+    },
+    setSaints (state, saints) {
+      state.saints = saints
     },
     setLectioText (state, lectioText) {
       state.lectioDivina.lectioText = lectioText
@@ -96,6 +100,9 @@ export default new Vuex.Store({
     },
     setEvgDetails ({ commit }, evgDetails) {
       commit('setEvgDetails', evgDetails)
+    },
+    setSaints ({ commit }, saints) {
+      commit('setSaints', saints)
     },
     setLectioText ({ commit }, lectioText) {
       commit('setLectioText', lectioText)

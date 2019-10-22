@@ -68,36 +68,25 @@
 </template>
 
 <script>
-// import _ from "lodash";
-import lectioService from "../services/LectioService";
-import moment from 'moment';
 import _ from 'lodash';
-moment.locale('es')
 
 export default {
   async mounted () {
-    await this.getTodaysSaints();
+    // await this.getTodaysSaints();
     this.loading = false;
   },
   data () {
     return {
-      saints: [],
+      saints: this.$store.state.saints,
       loading: true,
-      moment: moment,
     };
   },
   computed: {
     beautyDate () {
-      return `${moment().format('dddd D')} de ${moment().format('MMMM')} de ${moment().format('YYYY')}`
+      return `${this.$moment().format('dddd D')} de ${this.$moment().format('MMMM')} de ${this.$moment().format('YYYY')}`
     }
   },
   methods: {
-    async getTodaysSaints () {
-      let date = moment().format()
-      const response = await lectioService.getSaintsByDate(date);
-      this.saints = response.data;
-    },
-
     showSaintAvatar (imgObj) {
       return _.map(imgObj, (img) => {
         if (img) {

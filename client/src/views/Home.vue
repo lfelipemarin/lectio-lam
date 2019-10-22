@@ -100,9 +100,8 @@
     <v-row>
       <v-col sm="12" md="6">
         <v-card class="mt-4 mx-auto">
-          <v-sheet class="v-sheet--offset mx-auto" color="cyan" elevation="12" max-width="calc(100% - 32px)">
-            <div class="chart" ref="chartdiv">
-            </div>
+          <v-sheet class="v-sheet--offset mx-auto pb-3" color="cyan" elevation="12" max-width="calc(100% - 32px)">
+            <div class="chart" ref="lectiosChart"> </div>
           </v-sheet>
 
           <v-card-text class="pt-0">
@@ -114,25 +113,25 @@
             <v-icon class="mr-2" small>
               mdi-clock
             </v-icon>
-            <span class="caption grey--text font-weight-light text-wrap">última Lectio Divina hecha:
+            <span class="caption grey--text font-weight-light text-wrap">tu última Lectio Divina:
               {{beautyDate(lastLectio.createdAt)}}</span>
           </v-card-text>
         </v-card>
       </v-col>
       <v-col cols="12" sm="12" md="6">
         <v-card class="mt-4 mx-auto">
-          <v-sheet class="v-sheet--offset mx-auto" color="cyan" elevation="12" max-width="calc(100% - 32px)">
-
+          <v-sheet class="v-sheet--offset mx-auto pb-3" color="cyan" elevation="12" max-width="calc(100% - 32px)">
+            <div class="chart" ref="commitmentChart"></div>
           </v-sheet>
 
           <v-card-text class="pt-0">
-            <div class="title font-weight-light mb-2">Tus Lectios Mensuales</div>
-            <div class="subheading font-weight-light grey--text">Last Campaign Performance</div>
+            <div class="title font-weight-light mb-2">Compromisos Cumplidos Mensualmente</div>
+            <!-- <div class="subheading font-weight-light grey--text">Last Campaign Performance</div> -->
             <v-divider class="my-2"></v-divider>
-            <v-icon class="mr-2" small>
+            <!-- <v-icon class="mr-2" small>
               mdi-clock
-            </v-icon>
-            <span class="caption grey--text font-weight-light">last registration 26 minutes ago</span>
+            </v-icon> -->
+            <!-- <span class="caption grey--text font-weight-light">last registration 26 minutes ago</span> -->
           </v-card-text>
         </v-card>
       </v-col>
@@ -142,7 +141,6 @@
 
 <script>
 import lectioService from "../services/LectioService"
-import moment from 'moment'
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
 import * as am4core from "@amcharts/amcharts4/core"
@@ -151,34 +149,45 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated"
 
 am4core.useTheme(am4themes_animated)
 
-
 export default {
   data: () => ({
+    chartLectios: null,
+    chartCommit: null,
   }),
   async mounted () {
-    //     if (this.isExpired) {
-    await this.getTodaysReadings()
-    await this.getAllLectios()
-    console.log('done loading')
-    //     }
+    if (this.isExpired) {
+      await this.getTodaysReadings()
+      await this.getAllLectios()
+      await this.getTodaysSaints()
+      console.log('done loading')
+    }
     this.$nextTick(() => {
       setTimeout(() => {
-        this.createChart(this.data, am4charts.XYChart, this.$refs.chartdiv)
+        this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month', this.chartLectios)
+        // this.createChart(this.countCommitments, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)
       }, 500)
     })
   },
   beforeDestroy () {
-    if (this.chart) {
-      this.chart.dispose()
+    if (this.chartLectios) {
+      this.chartLectios.dispose()
+    }
+    if (this.chartCommit) {
+      this.chartCommit.dispose()
     }
   },
   methods: {
     async getTodaysReadings () {
-      let today = moment().format('YYYY-MM-DD')
+      let today = this.$moment().format('YYYY-MM-DD')
       const response = await lectioService.getTodaysReadings(today)
       this.$store.dispatch('setReadings', response.data.data.readings)
       this.$store.dispatch('setEvgDetails', response.data)
       this.$store.dispatch('setExpiryDate')
+    },
+    async getTodaysSaints () {
+      let date = this.$moment().format()
+      const response = await lectioService.getSaintsByDate(date);
+      this.$store.dispatch('setSaints', response.data)
     },
     getAllLectios () {
       let user = this.$store.state.user
@@ -197,7 +206,8 @@ export default {
         this.error = error
       })
     },
-    createChart (data, chartType, container) {
+    // eslint-disable-next-line no-unused-vars
+    createChart (data, chartType, container, categoryX, thisChart) {
       let chart = am4core.create(container, chartType)
 
       chart.paddingRight = 20
@@ -212,20 +222,20 @@ export default {
       categoryAxis.renderer.minGridDistance = 20
       categoryAxis.renderer.labels.template.adapter.add("dy", function (dy, target) {
         if (target.dataItem && target.dataItem.index & 2 == 2) {
-          return dy + 25
+          return dy + 20
         }
         return dy
       })
       setTimeout(() => {
         categoryAxis.zoomToIndexes(chart.data.length / 2, chart.data.length)
-      }, 500)
+      }, 1000)
 
       let valueAxis = chart.yAxes.push(new am4charts.ValueAxis())
       valueAxis.tooltip.disabled = true
       valueAxis.renderer.minWidth = 35
 
       let series = chart.series.push(new am4charts.ColumnSeries())
-      series.dataFields.categoryX = "month"
+      series.dataFields.categoryX = categoryX
       series.dataFields.valueY = "value"
 
       series.tooltipText = "{valueY.value}"
@@ -233,38 +243,45 @@ export default {
 
       if (chart.data.length > 11) {
         let scrollbarX = new am4core.Scrollbar()
-      //   scrollbarX.series.push(series)
+        //   scrollbarX.series.push(series)
         chart.scrollbarX = scrollbarX
         chart.scrollbarX.thumb.minWidth = 50
       }
 
-      this.chart = chart
+      thisChart = chart
     },
     beautyDate (date) {
-      return `${moment(date).format('dddd D')} de ${moment(date).format('MMMM')} de ${moment(date).format('YYYY')}`
+      return `${this.$moment(date).format('dddd D')} de ${this.$moment(date).format('MMMM')} de ${this.$moment(date).format('YYYY')}`
     }
   },
   computed: {
     ...mapGetters([
-      'isExpired', 'sortedLectios'
+      'isExpired'
     ]),
 
-    data () {
+    lectioData () {
       return _.countBy(this.$store.state.lectioArchive, (lectio) => {
         return this.$moment(lectio.createdAt).format('MMMYY')
       })
     },
+    commitmentData () {
+      return _.countBy(this.$store.state.lectioArchive, (lectio) => {
+        return lectio.completedActio
+      })
+    },
     totalLectios () {
       let total = 0
-      _.each(this.data, (val) => {
+      _.each(this.lectioData, (val) => {
         total += val
       })
       return total
     },
     countCommitments () {
-      return _.countBy(this.$store.state.lectioArchive, (lectio) => {
-        return lectio.completedActio
+      let map = _.map(this.$store.state.lectioArchive, (lectio) => {
+
+        return { completedActio: lectio.completedActio, month: this.$moment(lectio.createdAt).format('MMMYY') }
       })
+      return { ...map }
     },
     lastLectio () {
       const lectioLength = this.$store.state.lectioArchive.length

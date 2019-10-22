@@ -107,19 +107,16 @@
 <script>
 import { VueContext } from "vue-context";
 import _ from "lodash";
-import lectioService from "../services/LectioService";
-import moment from 'moment';
 
 export default {
   components: { VueContext },
   async mounted () {
-    await this.getTodaysReadings();
     this.loading = false;
   },
   data () {
     return {
-      evgDetails: {},
-      readings: [],
+      evgDetails: this.$store.state.evgDetails,
+      readings: this.$store.state.readings,
       loading: true,
       selection: '',
       snackbar: false,
@@ -139,12 +136,6 @@ export default {
   },
 
   methods: {
-    async getTodaysReadings () {
-      let today = moment().format('YYYY-MM-DD')
-      const response = await lectioService.getTodaysReadings(today);
-      this.evgDetails = response.data;
-      this.readings = response.data.data.readings;
-    },
     addListeners () {
       const para = document.querySelectorAll("p");
       let tEvents = ["mouseup"];
