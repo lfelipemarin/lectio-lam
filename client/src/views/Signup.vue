@@ -190,7 +190,6 @@ export default {
   },
   computed: {
     passwordRules () {
-      // debugger
       const rules = []
       let rule = v => !!v || 'El campo Contraseña es obligatorio'
       rules.push(rule)

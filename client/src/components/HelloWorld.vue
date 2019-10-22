@@ -73,14 +73,6 @@ export default {
   },
 
   methods: {
-    // getSelection () {
-    //   const para = document.querySelector('p');
-
-    //   para.addEventListener('pointerup', (event) => {
-    //     console.log('Pointer down event');
-    //     alert(window.getSelection())
-    //   });
-    // },
     async getTodaysReadings () {
       const response = await evgService.getTodaysReadings()
       this.evgDetails = response.data
@@ -95,7 +87,6 @@ export default {
       _.each(para, (par) => {
         _.each(tEvents, (tEvent) => {
           par.addEventListener(tEvent, (e) => {
-            console.log(e.type);
             var selection;
 
             if (window.getSelection) {

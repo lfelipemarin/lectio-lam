@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-xs fill-height justify-center>
     <v-row align="center" justify="center" v-if="mode=='resetPassword'">
-      <v-col cols="12" sm="8" md="4" class="text-center" >
+      <v-col cols="12" sm="8" md="4" class="text-center">
         <v-card class="elevation-12">
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title>Recuperar Contraseña</v-toolbar-title>
@@ -75,7 +75,8 @@ export default {
       confirmPassword: '',
       passwordShow: false,
       confirmPasswordShow: false,
-      isLoading: false
+      isLoading: false,
+      error: ''
     }
   },
   mounted () {
@@ -114,7 +115,7 @@ export default {
         }).catch((error) => {
           // Error occurred during confirmation. The code might have expired or the
           // password is too weak.
-          console.log('reset pass ', error)
+          this.error = error
           this.validNewPass = false
           this.message = 'El enlace de verificación de correo ha expirado'
           this.isLoading = false
@@ -146,7 +147,7 @@ export default {
       }).catch((error) => {
         // Invalid or expired action code. Ask user to try to reset the password
         // again.
-        console.log('reset pass ', error)
+        this.error = error
         this.validEmail = false
         this.message = 'El enlace de verificación de correo ha expirado'
       })
@@ -154,7 +155,6 @@ export default {
   },
   computed: {
     passwordRules () {
-      // debugger
       const rules = []
       let rule = v => !!v || 'El campo Contraseña es obligatorio'
       rules.push(rule)
