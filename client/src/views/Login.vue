@@ -7,7 +7,7 @@
             <v-toolbar-title>Recuperar Contraseña</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-form ref="form" v-model="valid" lazy-validation>
+            <v-form ref="form" v-model="valid" lazy-validation v-on:submit.prevent="validate">
               <v-text-field v-model="email" :rules="emailRules" required label="Email" name="login"
                             prepend-icon="mdi-account" type="text"></v-text-field>
             </v-form>
@@ -25,7 +25,7 @@
             <v-toolbar-title>Login</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            <v-form ref="form" v-model="valid" lazy-validation>
+            <v-form ref="form" v-model="valid" lazy-validation @keyup.native.enter="validate">
               <v-text-field v-model="email" :rules="emailRules" required label="Email" name="login"
                             prepend-icon="mdi-account" type="text"></v-text-field>
               <v-text-field id="password" label="Password" name="password" prepend-icon="mdi-lock" v-model="password"

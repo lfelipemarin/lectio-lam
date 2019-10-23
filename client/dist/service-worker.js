@@ -1,23 +1,5 @@
-/**
- * Welcome to your Workbox-powered service worker!
- *
- * You'll need to register this file in your web app and you should
- * disable HTTP caching for this file too.
- * See https://goo.gl/nhQhGp
- *
- * The rest of the code is auto-generated. Please don't update this file
- * directly; instead, make changes to your Workbox build configuration
- * and re-run your build process.
- * See https://goo.gl/2aRDsh
- */
+importScripts("/precache-manifest.e75507b4f81772f2b9627d63f372d625.js", "https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
-
-importScripts(
-  "/precache-manifest.6c5ba0623e60830e3503a313488ff146.js"
-);
-
-workbox.core.setCacheNameDetails({prefix: "lectio-divina"});
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
@@ -27,3 +9,10 @@ workbox.core.setCacheNameDetails({prefix: "lectio-divina"});
 self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+
+// install new service worker when ok, then reload page
+self.addEventListener('message', msg => {
+    if (msg.data.action == 'skipWaiting') {
+        self.skipWaiting()
+    }
+})

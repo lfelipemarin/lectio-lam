@@ -86,6 +86,7 @@ export default new Vuex.Store({
     setExpiryDate (state) {
       // Create a date
       let date = new Date()
+      date.setHours(0, 0, 0, 0)
       // Add your delta for expiry. I am expiring in one day.
       date.setDate(date.getDate() + 1)
       // Set the state
