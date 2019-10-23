@@ -7,7 +7,8 @@ import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
 import firebase from 'firebase/app'
 import Moment from 'moment'
-
+let SocialSharing = require('vue-social-sharing');
+ 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
@@ -20,6 +21,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 Vue.config.productionTip = false
+Vue.use(SocialSharing);
 
 sync(store, router)
 

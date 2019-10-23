@@ -39,7 +39,7 @@
               <v-icon>mdi-bookmark</v-icon>
             </v-btn>
 
-            <v-btn icon>
+            <v-btn icon @click="readingSocialShare(reading)">
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
           </v-card-actions>
@@ -78,7 +78,7 @@
               <v-icon>mdi-bookmark</v-icon>
             </v-btn>
 
-            <v-btn icon>
+            <v-btn icon @click="commentSocialShare(evgDetails.data.commentary)">
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
           </v-card-actions>
@@ -168,9 +168,25 @@ export default {
         this.snackbar = true
       }
     },
-
-    remove (index) {
-      this.$delete(this.items, index);
+    readingSocialShare (reading) {
+      if (navigator.share) {
+        navigator.share({
+          title: `${reading.title} ${reading.reference_displayed}`,
+          text: `*${reading.title} ${reading.reference_displayed}* ${this.cleanText(reading.text)}`,
+        })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing', error));
+      }
+    },
+    commentSocialShare (commentary) {
+      if (navigator.share) {
+        navigator.share({
+          title: `${commentary.author.name} ${commentary.author.short_description}`,
+          text: `*${commentary.author.name} ${commentary.author.short_description}* ${this.cleanText(commentary.description)}`,
+        })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing', error));
+      }
     },
     cleanText (text) {
       let regex = /\[{2}.*?\]{2}/gm
