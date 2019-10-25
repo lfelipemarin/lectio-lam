@@ -35,7 +35,7 @@ export default {
     },
     getLectioByCreatedDate (user, date) {
         let docRef = db.collection('users').doc(user.email).collection('lectios').where('createdAt', '==', date)
-        return docRef.get()
+        return docRef
     },
     getSaintsByDate (date) {
         return Api().get('saints', {

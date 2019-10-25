@@ -3,14 +3,14 @@
     <v-row>
       <v-col cols="12">
         <h2>Lectio</h2>
-        <p>{{lectioInfo[0].lectio}}</p>
+        <p>{{lectioInfo.lectio}}</p>
         <h2>Meditatio</h2>
-        <p>{{lectioInfo[0].meditatio}}</p>
+        <p>{{lectioInfo.meditatio}}</p>
         <h2>Oratio</h2>
-        <p>{{lectioInfo[0].oratio}}</p>
+        <p>{{lectioInfo.oratio}}</p>
         <h2>Actio</h2>
-        <p>{{lectioInfo[0].actio}}</p>
-        <v-checkbox v-model="lectioInfo[0].completedActio" @change="changeCompletedActio(lectioInfo[0].completedActio)"
+        <p>{{lectioInfo.actio}}</p>
+        <v-checkbox v-model="lectioInfo.completedActio" @change="changeCompletedActio(lectioInfo.completedActio)"
                     label="¿Cumpliste el compromiso?">
         </v-checkbox>
 
@@ -25,7 +25,7 @@
           </v-expansion-panel>
         </v-expansion-panels>
         <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
-          Compromiso {{lectioInfo[0].completedActio?'cumplido':'no cumplido'}}
+          Compromiso {{lectioInfo.completedActio?'cumplido':'no cumplido'}}
           <v-btn color="white" text @click="snackbar = false">
             Cerrar
           </v-btn>
@@ -43,9 +43,7 @@
 </template>
 
 <script>
-import moment from 'moment'
 import lectioService from "../services/LectioService";
-import _ from 'lodash'
 
 export default {
   data () {
@@ -57,25 +55,26 @@ export default {
     };
   },
   mounted () {
-    lectioService.getDateReadings(moment(this.$route.params.date).format('YYYYMMDD'), 'SP', 'all').then((readings) => {
+    lectioService.getDateReadings(this.$moment(this.$route.params.date).format('YYYYMMDD'), 'SP', 'all').then((readings) => {
       this.todaysReadings = readings.data
     })
     let user = this.$store.state.user
-    lectioService.getLectioByCreatedDate(user, this.$route.params.date).then((collection) => {
-      this.lectioInfo = _.map(collection.docs, (doc) => {
+    // Listener for lectio changes
+    lectioService.getLectioByCreatedDate(user, this.$route.params.date).onSnapshot(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        this.lectioInfo = doc.data()
         this.loading = false
-        return doc.data()
       })
-      this.loading = false
-    }).catch((error) => {
-      this.loading = false
-      this.error = error
+      if (this.lectioInfo) {
+        this.$store.dispatch('updateLectio', this.lectioInfo)
+      }
     })
   },
   methods: {
     changeCompletedActio (value) {
       let user = this.$store.state.user
-      lectioService.updateLectio(this.lectioInfo[0], user, { completedActio: value }).then(() => {
+      const now = this.$moment().format()
+      lectioService.updateLectio(this.lectioInfo, user, { completedActio: value, updatedAt: now }).then(() => {
         this.snackbar = true
       }).catch((error) => {
         this.error = error

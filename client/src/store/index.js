@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
+import _ from 'lodash'
 
 Vue.use(Vuex)
 
@@ -92,6 +93,12 @@ export default new Vuex.Store({
       // Set the state
       state.expiryDate = date
     },
+    updateLectio (state, lectio) {
+      let foundLectio = _.findIndex(state.lectioArchive, (lec) => {
+        return lec.createdAt == lectio.createdAt
+      })
+      state.lectioArchive[foundLectio] = lectio
+    }
   },
   actions: {
     setToken ({ commit }, token) {
@@ -132,6 +139,9 @@ export default new Vuex.Store({
     },
     setExpiryDate ({ commit }) {
       commit('setExpiryDate')
+    },
+    updateLectio ({ commit }, lectio) {
+      commit('updateLectio', lectio)
     },
   }
 })
