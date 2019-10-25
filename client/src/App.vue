@@ -125,8 +125,7 @@ export default {
         // An error happened.
       });
 
-      this.$store.dispatch('setToken', null)
-      this.$store.dispatch('setUser', null)
+      this.resetStore()
       this.$router.push({
         name: 'login'
       })
@@ -139,6 +138,20 @@ export default {
           this.error = err
         })
       }
+    },
+    resetStore () {
+      this.$store.dispatch('setToken', null)
+      this.$store.dispatch('setUser', null)
+      this.$store.dispatch('setReadings', null)
+      this.$store.dispatch('setEvgDetails', null)
+      this.$store.dispatch('setSaints', null)
+      this.$store.dispatch('setLectioText', null)
+      this.$store.dispatch('setMeditatioText', null)
+      this.$store.dispatch('setOratioText', null)
+      this.$store.dispatch('setActioText', null)
+      this.$store.dispatch('setActioReminder', null)
+      this.$store.dispatch('setLectioArchive', { letPush: null, lectioArchive: null })
+      this.$store.dispatch('resetExpiryDate', null)
     }
   },
 }

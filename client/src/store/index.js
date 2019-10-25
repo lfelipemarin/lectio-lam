@@ -93,6 +93,9 @@ export default new Vuex.Store({
       // Set the state
       state.expiryDate = date
     },
+    resetExpiryDate (state, date) {
+      state.expiryDate = date
+    },
     updateLectio (state, lectio) {
       let foundLectio = _.findIndex(state.lectioArchive, (lec) => {
         return lec.createdAt == lectio.createdAt
@@ -139,6 +142,9 @@ export default new Vuex.Store({
     },
     setExpiryDate ({ commit }) {
       commit('setExpiryDate')
+    },
+    resetExpiryDate ({ commit }, date) {
+      commit('resetExpiryDate', date)
     },
     updateLectio ({ commit }, lectio) {
       commit('updateLectio', lectio)

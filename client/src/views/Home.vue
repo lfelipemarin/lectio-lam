@@ -26,7 +26,7 @@
               mdi-clock
             </v-icon>
             <span class="caption grey--text font-weight-light text-wrap">tu última Lectio Divina:
-              {{beautyDate(lastLectio.createdAt)}}</span>
+              {{lastLectio?beautyDate(lastLectio.createdAt):''}}</span>
           </v-card-text>
         </v-card>
       </v-col>
@@ -174,14 +174,20 @@ export default {
     ]),
 
     lectioData () {
-      return _.countBy(this.$store.state.lectioArchive, (lectio) => {
-        return this.$moment(lectio.createdAt).format('MMMYY')
-      })
+      if (this.$store.state.lectioArchive) {
+        return _.countBy(this.$store.state.lectioArchive, (lectio) => {
+          return this.$moment(lectio.createdAt).format('MMMYY')
+        })
+      }
+      return null
     },
     commitmentData () {
-      return _.countBy(this.$store.state.lectioArchive, (lectio) => {
-        return lectio.completedActio
-      })
+      if (this.$store.state.lectioArchive) {
+        return _.countBy(this.$store.state.lectioArchive, (lectio) => {
+          return lectio.completedActio
+        })
+      }
+      return null
     },
     totalLectios () {
       let total = 0
@@ -191,15 +197,21 @@ export default {
       return total
     },
     countCommitments () {
-      let map = _.map(this.$store.state.lectioArchive, (lectio) => {
+      if (this.$store.state.lectioArchive) {
 
-        return { completedActio: lectio.completedActio, month: this.$moment(lectio.createdAt).format('MMMYY') }
-      })
-      return { ...map }
+        let map = _.map(this.$store.state.lectioArchive, (lectio) => {
+          return { completedActio: lectio.completedActio, month: this.$moment(lectio.createdAt).format('MMMYY') }
+        })
+        return { ...map }
+      }
+      return null
     },
     lastLectio () {
-      const lectioLength = this.$store.state.lectioArchive.length
-      return this.$store.state.lectioArchive[lectioLength - 1]
+      if (this.$store.state.lectioArchive) {
+        const lectioLength = this.$store.state.lectioArchive.length
+        return this.$store.state.lectioArchive[lectioLength - 1]
+      }
+      return null
     },
   },
 }
