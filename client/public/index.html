@@ -1,20 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>Lectio Divina</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
-    <script src="https://apis.google.com/js/api.js" type="text/javascript"></script>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but lectio-divina doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <!-- fb & Whatsapp -->
+
+  <!-- Site Name, Title, and Description to be displayed -->
+  <meta property="og:site_name" content="Haz la Lectio Divina">
+  <meta property="og:title" content="Haz la Lectio Divina">
+  <meta property="og:description" content="Aplicación para hacer la Lectio Divina">
+
+  <!-- Image to display -->
+  <!-- Replace   «example.com/image01.jpg» with your own -->
+  <meta property="og:image" content="./img/img-share.png">
+
+  <!-- No need to change anything here -->
+  <meta property="og:type" content="website" />
+  <meta property="og:image:type" content="image/jpeg">
+
+  <!-- Size of image. Any size up to 300. Anything above 300px will not work in WhatsApp -->
+  <meta property="og:image:width" content="300">
+  <meta property="og:image:height" content="300">
+
+  <!-- Website to visit when clicked in fb or WhatsApp-->
+  <meta property="og:url" content="https://haz-la-lectio.web.app">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>Lectio Divina</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but lectio-divina doesn't work properly without JavaScript enabled. Please enable it to
+      continue.</strong>
+  </noscript>
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+
 </html>
