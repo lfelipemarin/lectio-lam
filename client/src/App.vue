@@ -10,6 +10,14 @@
             <v-list-item-title>{{path.title}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item @click="logout">
+          <v-list-item-action>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Salir</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
