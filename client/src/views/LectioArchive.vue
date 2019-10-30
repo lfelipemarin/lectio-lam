@@ -28,6 +28,8 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+        <v-chip v-model="filterNotCompleted" filter @click="filterNotCompleted=!filterNotCompleted" outlined
+                color="primary" class="float-right">Ver compromisos no completados</v-chip>
       </v-col>
     </v-row>
     <v-row>
@@ -94,7 +96,8 @@ export default {
     pageSize: 10,
     error: null,
     loading: true,
-    completedActio: false
+    completedActio: false,
+    filterNotCompleted: false
   }),
   mounted () {
     this.loading = false
@@ -117,14 +120,11 @@ export default {
     },
     openLectioView (lectio) {
       this.$router.push({ path: `/lectio-archivo/`, name: "previous-lectio", params: { date: lectio.createdAt } })
-    }
+    },
   },
   computed: {
     lectios () {
       return this.$store.state.lectioArchive
-    },
-    filter () {
-      return (item, search, textKey) => item[textKey].indexOf(search) > -1
     },
     filteredList () {
       let result = _.orderBy(this.lectios, (lectio) => {
@@ -134,7 +134,7 @@ export default {
       let filterValueWord
       let filterValueDate
 
-      if (!this.searchDate && !this.searchWord)
+      if (!this.searchDate && !this.searchWord && !this.filterNotCompleted)
         return result
 
       if (this.searchDate && this.searchWord) {
@@ -147,6 +147,10 @@ export default {
             lectio.meditatio.toLowerCase().includes(filterValueWord) ||
             lectio.oratio.toLowerCase().includes(filterValueWord) ||
             lectio.actio.toLowerCase().includes(filterValueWord))
+        return result.filter(filter)
+      }
+      if (this.filterNotCompleted) {
+        filter = lectio => { return !lectio.completedActio }
         return result.filter(filter)
       }
       if (this.searchWord) {
@@ -166,7 +170,7 @@ export default {
 
       return result.filter(filter)
     }
-  },
+  }
 }
 </script>
 <style scoped>
