@@ -39,12 +39,12 @@
             <v-icon dark class="mr-2">mdi-login-variant</v-icon>              
               Ingresar</v-btn>
           </v-card-actions>
-          <div class="d-flex caption pb-4 pl-4 justify-center flex-column text-center">
+          <div class="d-flex caption pb-4 justify-center flex-column text-center">
             <div class="pa-4">
               ó ingresa con
             </div>
-            <div class="d-flex justify-center">
-              <v-btn color="primary mr-3" @click="loginWithGoogle" :loading="isLoading">
+            <div class="d-flex justify-center pa-2">
+              <v-btn color="primary" @click="loginWithGoogle" :loading="isLoading">
                 <v-icon dark>mdi-google</v-icon>
               </v-btn>
               <!-- <v-btn color="primary" @click="validate" :loading="isLoading">
@@ -54,7 +54,7 @@
 
           </div>
 
-          <div :class="['pt-1','pl-4','caption']">¿No tienes cuenta? <router-link to="/signup">
+          <div :class="['pl-4','caption']">¿No tienes cuenta? <router-link to="/signup">
               Créala aquí</router-link>.
           </div>
           <div :class="['pl-4','caption', !emailVerified?'':'pb-4']">¿Olvidaste la contraseña? <a @click="changeToVerifyEmail">Recupérala aquí</a>.
