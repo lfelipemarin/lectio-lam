@@ -52,7 +52,7 @@
           </template>
           <span>Logout</span>
         </v-tooltip>
-        <v-menu left bottom>
+        <v-menu left bottom :close-on-content-click=false>
           <template v-slot:activator="{ on }">
             <v-btn icon v-on="on">
               <v-icon>mdi-dots-vertical</v-icon>
@@ -60,8 +60,11 @@
           </template>
 
           <v-list>
-            <v-list-item v-for="n in 5" :key="n" @click="() => {}">
-              <v-list-item-title>Option {{ n }}</v-list-item-title>
+            <v-list-item v-for="option in options" :key="option.name">
+              <v-list-item-title>
+                <v-switch class="pl-3 pb-2" v-model="$vuetify.theme.dark" :label="$vuetify.theme.dark?'Claro':'Oscuro'"
+                          color="primary" hide-details>interfaz</v-switch>
+              </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -117,11 +120,17 @@ export default {
         icon: 'mdi-folder-heart'
       },
     ],
+    options: [
+      {
+        name: '',
+        action: ''
+      }
+    ],
     year: moment().format('YYYY'),
     error: null
   }),
   created () {
-    this.$vuetify.theme.dark = true
+    this.$vuetify.theme.dark = this.$store.state.interfaceColor
   },
   methods: {
     logout () {
@@ -147,6 +156,9 @@ export default {
         })
       }
     },
+    changeInterfaceColor () {
+      this.$store.dispatch('setInterfaceColor', this.$vuetify.theme.dark)
+    },
     resetStore () {
       this.$store.dispatch('setToken', null)
       this.$store.dispatch('setUser', null)
@@ -160,6 +172,11 @@ export default {
       this.$store.dispatch('setActioReminder', null)
       this.$store.dispatch('setLectioArchive', { letPush: null, lectioArchive: null })
       this.$store.dispatch('resetExpiryDate', null)
+    }
+  },
+  watch: {
+    '$vuetify.theme.dark': function (val) {
+      this.$store.dispatch('setInterfaceColor', val)
     }
   },
 }

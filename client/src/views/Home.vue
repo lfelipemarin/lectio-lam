@@ -12,15 +12,18 @@
     <v-row>
       <v-col sm="12" md="6">
         <v-card class="mt-4 mx-auto">
-          <v-sheet class="v-sheet--offset mx-auto pb-3" color="cyan" elevation="12" max-width="calc(100% - 32px)">
+          <v-sheet v-if="totalLectios" class="v-sheet--offset mx-auto pb-3" color="grey lighten-1" elevation="12"
+                   max-width="calc(100% - 32px)">
             <div class="chart" ref="lectiosChart"> </div>
           </v-sheet>
 
           <v-card-text class="pt-0">
             <div class="title font-weight-light mb-2 text-wrap">Tus Lectios Mensuales</div>
             <div class="subheading font-weight-light grey--text text-wrap">Llevas en total {{totalLectios}}
-              conversaciones con el
-              Señor</div>
+              conversaciones con el Señor
+              <div class="flex-grow-1"></div>
+              <v-btn text small color="primary" to="/lectio">ve a hacer la lectio</v-btn>
+            </div>
             <v-divider class="my-2"></v-divider>
             <v-icon class="mr-2" small>
               mdi-clock
@@ -32,18 +35,17 @@
       </v-col>
       <v-col cols="12" sm="12" md="6">
         <v-card class="mt-4 mx-auto">
-          <v-sheet class="v-sheet--offset mx-auto pb-3" color="cyan" elevation="12" max-width="calc(100% - 32px)">
+          <v-sheet v-if="totalLectios" class="v-sheet--offset mx-auto pb-3" color="grey lighten-1" elevation="12"
+                   max-width="calc(100% - 32px)">
             <div class="chart" ref="commitmentChart"></div>
           </v-sheet>
 
           <v-card-text class="pt-0">
             <div class="title font-weight-light mb-2">Compromisos Cumplidos Mensualmente</div>
-            <!-- <div class="subheading font-weight-light grey--text">Last Campaign Performance</div> -->
-            <v-divider class="my-2"></v-divider>
-            <!-- <v-icon class="mr-2" small>
-              mdi-clock
-            </v-icon> -->
-            <!-- <span class="caption grey--text font-weight-light">last registration 26 minutes ago</span> -->
+            <div class="subheading font-weight-light grey--text">Tienes {{totalUnfulfilled}} compromisos sin cumplir
+              <div class="flex-grow-1"></div>
+              <v-btn text small color="primary" to="/lectio-archivo">ve a cumplirle al Señor ahora</v-btn>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -63,8 +65,7 @@ am4core.useTheme(am4themes_animated)
 
 export default {
   data: () => ({
-    chartLectios: null,
-    chartCommit: null,
+    charts: [],
   }),
   async mounted () {
     if (this.isExpired && this.$store.state.isUserLoggedIn) {
@@ -74,22 +75,21 @@ export default {
       this.$store.dispatch('setExpiryDate')
     }
     if (this.$store.state.isUserLoggedIn) {
+      if (this.totalLectios) {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month')
+            this.createChart(this.commitmentData, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)
+          }, 500)
+        })
 
-      this.$nextTick(() => {
-        setTimeout(() => {
-          this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month')
-          // this.createChart(this.countCommitments, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)
-        }, 500)
-      })
+      }
     }
   },
   beforeDestroy () {
-    if (this.chartLectios) {
-      this.chartLectios.dispose()
-    }
-    if (this.chartCommit) {
-      this.chartCommit.dispose()
-    }
+    _.each(this.charts, chart => {
+      chart.dispose()
+    })
   },
   methods: {
     async getTodaysReadings () {
@@ -123,7 +123,9 @@ export default {
     // eslint-disable-next-line no-unused-vars
     createChart (data, chartType, container, categoryX) {
       let chart = am4core.create(container, chartType)
-
+      chart.colors.list = [
+        am4core.color("#757575")
+      ];
       chart.paddingRight = 20
 
       _.each(data, (value, key) => {
@@ -140,9 +142,6 @@ export default {
         }
         return dy
       })
-      setTimeout(() => {
-        categoryAxis.zoomToIndexes(chart.data.length / 2, chart.data.length)
-      }, 1000)
 
       let valueAxis = chart.yAxes.push(new am4charts.ValueAxis())
       valueAxis.tooltip.disabled = true
@@ -156,13 +155,16 @@ export default {
       chart.cursor = new am4charts.XYCursor()
 
       if (chart.data.length > 11) {
+        setTimeout(() => {
+          categoryAxis.zoomToIndexes(chart.data.length / 2, chart.data.length)
+        }, 1000)
         let scrollbarX = new am4core.Scrollbar()
         //   scrollbarX.series.push(series)
         chart.scrollbarX = scrollbarX
         chart.scrollbarX.thumb.minWidth = 50
       }
 
-      this.chartLectios = chart
+      this.charts.push(chart)
     },
     beautyDate (date) {
       return `${this.$moment(date).format('D')} de ${this.$moment(date).format('MMM')} de ${this.$moment(date).format('YYYY')}`
@@ -183,11 +185,20 @@ export default {
     },
     commitmentData () {
       if (this.$store.state.lectioArchive) {
-        return _.countBy(this.$store.state.lectioArchive, (lectio) => {
-          return lectio.completedActio
+        return _.countBy(_.pickBy(this.$store.state.lectioArchive, (lectio) => {
+          return lectio.completedActio == true
+        }), lectio => {
+          return this.$moment(lectio.createdAt).format('MMMYY')
         })
       }
       return null
+    },
+    totalUnfulfilled () {
+      let total = 0
+      _.each(this.commitmentData, (val) => {
+        total += val
+      })
+      return this.totalLectios - total
     },
     totalLectios () {
       let total = 0
@@ -195,16 +206,6 @@ export default {
         total += val
       })
       return total
-    },
-    countCommitments () {
-      if (this.$store.state.lectioArchive) {
-
-        let map = _.map(this.$store.state.lectioArchive, (lectio) => {
-          return { completedActio: lectio.completedActio, month: this.$moment(lectio.createdAt).format('MMMYY') }
-        })
-        return { ...map }
-      }
-      return null
     },
     lastLectio () {
       if (this.$store.state.lectioArchive) {

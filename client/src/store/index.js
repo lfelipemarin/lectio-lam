@@ -37,7 +37,8 @@ export default new Vuex.Store({
     lectioArchive: null,
     isUserLoggedIn: false,
     history: 0,
-    expiryDate: null
+    expiryDate: null,
+    interfaceColor: false
   },
   getters: {
     isExpired: state => (new Date(state.expiryDate) < new Date())
@@ -101,6 +102,9 @@ export default new Vuex.Store({
         return lec.createdAt == lectio.createdAt
       })
       state.lectioArchive[foundLectio] = lectio
+    },
+    setInterfaceColor (state, color) {
+      state.interfaceColor = color
     }
   },
   actions: {
@@ -148,6 +152,9 @@ export default new Vuex.Store({
     },
     updateLectio ({ commit }, lectio) {
       commit('updateLectio', lectio)
+    },
+    setInterfaceColor ({ commit }, color) {
+      commit('setInterfaceColor', color)
     },
   }
 })

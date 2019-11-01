@@ -29,14 +29,15 @@
           </v-expansion-panel>
         </v-expansion-panels>
         <v-chip v-model="filterNotCompleted" filter @click="filterNotCompleted=!filterNotCompleted" outlined
-                color="primary" class="float-right">Ver compromisos no completados</v-chip>
+                color="primary" class="float-right mt-4">Ver compromisos no completados</v-chip>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" v-bind:key="lectio.id">
         <v-card shaped>
           <v-list-item>
-            <v-chip outlined class="mt-2" color="primary" label text-color="white">
+            <v-chip outlined class="mt-2" color="primary" label
+                    :text-color="$vuetify.theme.dark?'white':'rgba(0, 0, 0, 0.54)'">
               <v-icon left>mdi-calendar-month</v-icon>
               {{beautyDate(lectio.createdAt)}}
             </v-chip>
