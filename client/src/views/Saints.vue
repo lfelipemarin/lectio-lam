@@ -19,8 +19,9 @@
 
           <v-list-item v-for="(saint, index) in saints.data" :key="index" @click="openSaintView(saint)">
             <v-list-item-avatar>
-              <v-img :src="showSaintAvatar(saint.image_links)[0] || require('@/assets/heart-circle-outline.svg')">
+              <v-img v-if="showSaintAvatar(saint.image_links)[0]" :src="showSaintAvatar(saint.image_links)[0]">
               </v-img>
+              <v-icon v-else>mdi-account-heart</v-icon>
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -37,8 +38,8 @@
         <p>¿Quienes son los santos? Son esa multitud innumerable de hombres y mujeres, de toda raza, edad y condición,
           que se desvivieron por los demás, que vencieron el egoísmo, que perdonaron siempre. Santos son los que han
           hecho de su vida una epifanía de los valores trascendentes; por eso quienes buscan a Dios lo encuentran con
-          facilidad humanizado en los santos.</p>
-
+          facilidad humanizado en los santos.
+        </p>
         <p>
           Me parece que es Bernanos el que ha escrito lo siguiente: "He perdido la infancia y no la puedo reconquistar
           sino por medio de la santidad". ¿Qué es, pues, la santidad? La santidad es la totalidad del espíritu de las
@@ -102,8 +103,12 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-ul {
-  padding: 0;
-}
+<style lang="sass" scoped>
+ul 
+  padding: 0
+
+.v-avatar 
+  i
+    border: 4px solid
+
 </style>
