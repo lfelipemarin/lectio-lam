@@ -42,9 +42,6 @@
           </v-card-text>
           <v-card-actions>
             <div class="flex-grow-1"></div>
-            <v-btn color="error" @click="reset">
-              Limpiar Formulario
-            </v-btn>
             <v-btn color="primary" :disabled="!valid" @click="validate" :loading="loading">Registrarse</v-btn>
           </v-card-actions>
         </v-card>

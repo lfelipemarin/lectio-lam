@@ -26,7 +26,7 @@
             <p>{{cleanText(reading.text)}}</p>
           </v-card-text>
           <v-card-actions>
-            <v-btn class="white--text" color="amber accent-4" @click="sendSelectionToLectio">
+            <v-btn class="white--text" color="primary" @click="sendSelectionToLectio">
               Lectio Divina</v-btn>
 
             <div class="flex-grow-1"></div>
@@ -98,7 +98,7 @@
   <v-container fill-height v-else>
     <v-layout align-center>
       <v-flex xs12 text-center>
-        <v-progress-circular :size="70" :width="7" color="amber" indeterminate></v-progress-circular>
+        <v-progress-circular :size="70" :width="7" color="accent" indeterminate></v-progress-circular>
       </v-flex>
     </v-layout>
   </v-container>

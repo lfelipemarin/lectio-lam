@@ -24,7 +24,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
+        <v-snackbar v-model="snackbar" multi-line color="success" :timeout=4000>
           Compromiso {{lectioInfo.completedActio?'cumplido':'no cumplido'}}
           <v-btn color="white" text @click="snackbar = false">
             Cerrar
@@ -36,7 +36,7 @@
   <v-container fill-height v-else>
     <v-layout align-center>
       <v-flex xs12 text-center>
-        <v-progress-circular :size="70" :width="7" color="amber" indeterminate></v-progress-circular>
+        <v-progress-circular :size="70" :width="7" color="accent" indeterminate></v-progress-circular>
       </v-flex>
     </v-layout>
   </v-container>

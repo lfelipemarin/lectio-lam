@@ -31,7 +31,7 @@
           </v-card-actions>
         </v-card>
         <v-btn v-if="validNewPass" class="mt-5" color="primary" dark to="/login">Ir a la página de ingreso</v-btn>
-        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=6000>
+        <v-snackbar v-model="snackbar" multi-line color="warning" :timeout=6000>
           {{message}}
           <v-btn color="white" text @click="snackbar = false">
             Cerrar

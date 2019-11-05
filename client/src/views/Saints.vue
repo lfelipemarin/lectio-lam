@@ -53,8 +53,12 @@
           lengua, en los días felices y cuando la tribulación arranca lágrimas del corazón; en la soledad del claustro o
           en el vértigo de la ciudad; en la buena y en la mala salud.
         </p>
-        <p>Fuente: <a href="//es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html" target="_blank">
-            Artículo: ¿Quienes son los santos? - Catholic.net </a>
+        <p>
+          Fuente: <br>
+          <v-btn text small color="primary" target="_blank"
+                 href="//es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html">Artículo:
+            ¿Quienes son los santos? - Catholic.net</v-btn>
+
         </p>
       </v-col>
     </v-row>
@@ -62,7 +66,7 @@
   <v-container fill-height v-else>
     <v-layout align-center>
       <v-flex xs12 text-center>
-        <v-progress-circular :size="70" :width="7" color="amber" indeterminate></v-progress-circular>
+        <v-progress-circular :size="70" :width="7" color="accent" indeterminate></v-progress-circular>
       </v-flex>
     </v-layout>
   </v-container>

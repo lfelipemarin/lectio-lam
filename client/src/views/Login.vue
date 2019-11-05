@@ -63,7 +63,7 @@
                @click="sendVerificationEmail">Enviar de nuevo</a>.
           </div>
         </v-card>
-        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=6000>
+        <v-snackbar v-model="snackbar" multi-line color="warning" :timeout=6000>
           {{error}}
           <v-btn color="white" text @click="snackbar = false">
             Cerrar

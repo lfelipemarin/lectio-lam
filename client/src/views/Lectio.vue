@@ -9,13 +9,13 @@
               Invoca al Espíritu Santo. Pídele que te ilumine y te abra a la comprensión de la Palabra y que te anime a
               la respuesta con tu vida.
               <template v-slot:actions>
-                <v-btn text color="amber accent-4" to="/readings">
+                <v-btn text color="primary" to="/readings">
                   Ir a las lecturas
                 </v-btn>
               </template>
             </v-banner>
             <div v-for="(step, index) in lectioDivina" v-bind:key="index">
-              <v-textarea v-model="step.text" auto-grow filled color="amber" :label="step.label" rows="6"
+              <v-textarea v-model="step.text" auto-grow filled :label="step.label" rows="6"
                           :rules="rules.required" v-if="!step.type">
                 <v-tooltip slot="append" top open-on-hover>
                   <template #activator="{ on }">
@@ -38,12 +38,12 @@
               Limpiar
             </v-btn>
             <div class="flex-grow-1"></div>
-            <v-btn :disabled="!form" :loading="isLoading" class="white--text" color="amber accent-4" depressed
+            <v-btn :disabled="!form" :loading="isLoading" class="white--text" color="primary" depressed
                    @click="saveLectio">
               Guardar</v-btn>
           </v-card-actions>
         </v-card>
-        <v-snackbar v-model="snackbar" multi-line color="info" :timeout=4000>
+        <v-snackbar v-model="snackbar" multi-line color="success" :timeout=4000>
           Lectio Guardada
           <v-btn color="white" text @click="snackbar = false">
             Cerrar

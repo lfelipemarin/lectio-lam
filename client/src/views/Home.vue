@@ -4,8 +4,8 @@
       <h1>LECTIO DIVINA</h1>
     </v-row>
     <v-row class="mt-3">
-      <v-btn color="amber" class="mt-5 mr-5" to="/login">Ingresar</v-btn>
-      <v-btn color="amber" class="mt-5" to="/signup">Registrarse</v-btn>
+      <v-btn color="primary" class="mt-5 mr-5" to="/login">Ingresar</v-btn>
+      <v-btn color="primary" class="mt-5" to="/signup">Registrarse</v-btn>
     </v-row>
   </v-container>
   <v-container fluid v-else>
@@ -22,7 +22,7 @@
             <div class="subheading font-weight-light grey--text text-wrap">Llevas en total {{totalLectios}}
               conversaciones con el Señor
               <div class="flex-grow-1"></div>
-              <v-btn text small color="primary" to="/lectio">ve a hacer la lectio</v-btn>
+              <v-btn outlined small color="primary" to="/lectio" class="mt-2">ve a hacer la lectio</v-btn>
             </div>
             <v-divider class="my-2"></v-divider>
             <v-icon class="mr-2" small>
@@ -44,7 +44,7 @@
             <div class="title font-weight-light mb-2">Compromisos Cumplidos Mensualmente</div>
             <div class="subheading font-weight-light grey--text">Tienes {{totalUnfulfilled}} compromisos sin cumplir
               <div class="flex-grow-1"></div>
-              <v-btn text small color="primary" to="/lectio-archivo">ve a cumplirle al Señor ahora</v-btn>
+              <v-btn outlined small color="primary" to="/lectio-archivo" class="mt-2">ve a cumplirle al Señor ahora</v-btn>
             </div>
           </v-card-text>
         </v-card>
