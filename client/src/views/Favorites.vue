@@ -35,7 +35,7 @@ export default {
     tree: [],
     items: [
       {
-        name: '.git',
+        name: 'Lecturas',
       },
       {
         name: 'node_modules',
