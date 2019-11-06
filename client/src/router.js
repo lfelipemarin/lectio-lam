@@ -82,6 +82,15 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "previous-lectio" */ './views/PreviousLectio.vue')
     },
     {
+      path: '/favorites',
+      name: 'favorites',
+      meta: { requiresAuth: true },
+      // route level code-splitting
+      // this generates a separate chunk (favorites.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "favorites" */ './views/Favorites.vue')
+    },
+    {
       path: '/saints',
       name: 'saints',
       meta: { requiresAuth: true },

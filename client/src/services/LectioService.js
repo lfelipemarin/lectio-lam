@@ -33,6 +33,10 @@ export default {
         let docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt')
         return docRef.get()
     },
+    getAllFavorites (user) {
+        let docRef = db.collection('users').doc(user.email).collection('favorites').orderBy('createdAt')
+        return docRef.get()
+    },
     getLectioByCreatedDate (user, date) {
         let docRef = db.collection('users').doc(user.email).collection('lectios').where('createdAt', '==', date)
         return docRef

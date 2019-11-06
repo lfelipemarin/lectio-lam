@@ -52,7 +52,7 @@
         </v-snackbar>
 
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" v-if="evgDetails.data.commentary">
         <v-card>
           <v-list-item>
             <v-list-item-content>

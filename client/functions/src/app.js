@@ -24,6 +24,7 @@ require('./routes')(app)
   app.listen(config.port)
     console.log(`Server started on port ${config.port}`)
 
-const api = functions.https.onRequest(app)
+// For google functions
+// const api = functions.https.onRequest(app)
 
-exports.widgets = api
+// exports.widgets = api

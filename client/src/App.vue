@@ -119,6 +119,11 @@ export default {
         title: 'Lectios Guardadas',
         icon: 'mdi-folder-heart'
       },
+      {
+        path: '/favorites',
+        title: 'Favoritos',
+        icon: 'mdi-heart'
+      },
     ],
     options: [
       {
