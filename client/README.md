@@ -12,10 +12,10 @@ npm run serve
 
 ### Compiles and minifies for production
 ```
-npm run build
-Uncomment production code in client Api.js
-Change dist/manifest.json name to Lectio Divina
-Copy the following to dist/service-worker.js
+1. npm run build
+2. Uncomment production code in client Api.js
+3. Change dist/manifest.json name to Lectio Divina
+4. Copy the following to dist/service-worker.js
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
  * requests for URLs in the manifest.
@@ -31,6 +31,10 @@ self.addEventListener('message', msg => {
         self.skipWaiting()
     }
 })
+5. To deploy server on heroku run on functions folder:
+    - git add .
+    - git commit -ma "message"
+    - git push heroku master
 ```
 
 ### Run your tests

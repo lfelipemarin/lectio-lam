@@ -30,11 +30,7 @@ export default {
         return db.collection('users').doc(user.email).collection('lectios').doc(`lectio-${lectio.createdAt}`).update(value)
     },
     getAllLectios (user) {
-        let docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt')
-        return docRef.get()
-    },
-    getAllFavorites (user) {
-        let docRef = db.collection('users').doc(user.email).collection('favorites').orderBy('createdAt')
+        let docRef = db.collection('users').doc(user.email).collection('lectios')
         return docRef.get()
     },
     getLectioByCreatedDate (user, date) {
@@ -50,5 +46,16 @@ export default {
     },
     getSaintById (id) {
         return Api().get(`saints/${id}`)
+    },
+    getAllFavoriteReadings (user) {
+        let docRef = db.collection('users').doc(user.email).collection('favorite-readings')
+        return docRef
+    },
+    saveFavoriteReading (reading, user) {
+        return db.collection('users').doc(user.email).collection('favorite-readings').doc(`${reading.id}`).set(reading)
+    },
+    deleteFavoriteReading (reading, user) {
+        return db.collection('users').doc(user.email).collection('favorite-readings').doc(`${reading.id}`).delete()
     }
+
 }

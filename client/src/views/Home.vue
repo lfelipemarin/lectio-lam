@@ -44,7 +44,8 @@
             <div class="title font-weight-light mb-2">Compromisos Cumplidos Mensualmente</div>
             <div class="subheading font-weight-light grey--text">Tienes {{totalUnfulfilled}} compromisos sin cumplir
               <div class="flex-grow-1"></div>
-              <v-btn outlined small color="primary" to="/lectio-archivo" class="mt-2">ve a cumplirle al Señor ahora</v-btn>
+              <v-btn outlined small color="primary" to="/lectio-archivo" class="mt-2">ve a cumplirle al Señor ahora
+              </v-btn>
             </div>
           </v-card-text>
         </v-card>
@@ -66,23 +67,15 @@ am4core.useTheme(am4themes_animated)
 export default {
   data: () => ({
     charts: [],
+    lectioArchive: []
   }),
   async mounted () {
-    if (this.isExpired && this.$store.state.isUserLoggedIn) {
-      await this.getTodaysReadings()
-      await this.getAllLectios()
-      await this.getTodaysSaints()
-      this.$store.dispatch('setExpiryDate')
-    }
     if (this.$store.state.isUserLoggedIn) {
-      if (this.totalLectios) {
-        this.$nextTick(() => {
-          setTimeout(() => {
-            this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month')
-            this.createChart(this.commitmentData, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)
-          }, 500)
-        })
-
+      await this.getAllLectios()
+      if (this.isExpired) {
+        await this.getTodaysReadings()
+        await this.getTodaysSaints()
+        this.$store.dispatch('setExpiryDate')
       }
     }
   },
@@ -110,11 +103,18 @@ export default {
         lectioArchive = _.map(collection.docs, (doc) => {
           return doc.data()
         })
-        lectioArchive = _.sortBy(lectioArchive, (lectio) => {
+        this.lectioArchive = _.sortBy(lectioArchive, (lectio) => {
           return lectio.createdAt
         })
 
-        this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: false })
+       setTimeout(() => {
+          if (this.totalLectios) {
+            this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month')
+            this.createChart(this.commitmentData, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)
+          }
+        }, 500)
+
+        // this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: false })
         this.loading = false
       }).catch((error) => {
         this.error = error
@@ -176,16 +176,16 @@ export default {
     ]),
 
     lectioData () {
-      if (this.$store.state.lectioArchive) {
-        return _.countBy(this.$store.state.lectioArchive, (lectio) => {
+      if (this.lectioArchive) {
+        return _.countBy(this.lectioArchive, (lectio) => {
           return this.$moment(lectio.createdAt).format('MMMYY')
         })
       }
       return null
     },
     commitmentData () {
-      if (this.$store.state.lectioArchive) {
-        return _.countBy(_.pickBy(this.$store.state.lectioArchive, (lectio) => {
+      if (this.lectioArchive) {
+        return _.countBy(_.pickBy(this.lectioArchive, (lectio) => {
           return lectio.completedActio == true
         }), lectio => {
           return this.$moment(lectio.createdAt).format('MMMYY')
@@ -208,9 +208,9 @@ export default {
       return total
     },
     lastLectio () {
-      if (this.$store.state.lectioArchive) {
-        const lectioLength = this.$store.state.lectioArchive.length
-        return this.$store.state.lectioArchive[lectioLength - 1]
+      if (this.lectioArchive) {
+        const lectioLength = this.lectioArchive.length
+        return this.lectioArchive[lectioLength - 1]
       }
       return null
     },

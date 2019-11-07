@@ -140,7 +140,7 @@ export default {
       }
       let user = this.$store.state.user
       lectioService.saveLectio(lectioArchive, user).then(() => {
-        this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: true })
+        // this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: true })
         this.isLoading = false
         this.$refs.form.reset()
         this.lectioDivina.actio.reminder = false

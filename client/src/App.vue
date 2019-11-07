@@ -1,63 +1,10 @@
 <template>
   <v-app id="inspire">
-    <!-- <v-navigation-drawer v-model="drawer" app clipped disable-resize-watcher>
-      <v-list dense>
-        <v-list-item v-for="(item, index) in items" :key="index" @click="navigate(item.path)">
-          <v-list-item-action>
-            <v-icon>{{item.icon}}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{item.title}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item @click="logout">
-          <v-list-item-action>
-            <v-icon>mdi-logout</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Salir</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-group v-if="item.children" :key="item.title" v-model="item.model" :prepend-icon="item.icon"
-                      append-icon="">
-          <template v-slot:activator>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ item.title }}
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
-          <v-list-item v-for="(child, i) in item.children" :key="i" link>
-            <v-list-item-action v-if="child.icon">
-              <v-icon>{{ child.icon }}</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ child.title }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-navigation-drawer> -->
-
     <v-navigation-drawer v-model="drawer" :clipped="$vuetify.breakpoint.lgAndUp" app>
       <v-list dense>
         <template v-for="item in items">
-          <v-row v-if="item.heading" :key="item.heading" align="center">
-            <v-col cols="6">
-              <v-subheader v-if="item.heading">
-                {{ item.heading }}
-              </v-subheader>
-            </v-col>
-            <v-col cols="6" class="text-center">
-              <a href="#!" class="body-2 black--text">EDIT</a>
-            </v-col>
-          </v-row>
-          <v-list-group v-else-if="item.children" :key="item.title" v-model="item.model"
-                        :prepend-icon="item.icon" append-icon="">
+          <v-list-group v-if="item.children" :key="item.title" v-model="item.model" :prepend-icon="item.icon"
+                        append-icon="">
             <template v-slot:activator>
               <v-list-item class="pl-0">
                 <v-list-item-content>
@@ -67,7 +14,7 @@
                 </v-list-item-content>
               </v-list-item>
             </template>
-            <v-list-item class="ml-3" v-for="(child, i) in item.children" :key="i" link>
+            <v-list-item class="ml-3" v-for="(child, i) in item.children" :key="i" link :to="child.path">
               <v-list-item-action v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-item-action>
@@ -78,7 +25,7 @@
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
-          <v-list-item v-else :key="item.title" link>
+          <v-list-item v-else :key="item.title" link :to="item.path">
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
@@ -201,8 +148,8 @@ export default {
         title: 'Favoritos',
         model: false,
         children: [
-          { title: 'Lecturas Favoritas', icon: 'mdi-heart' },
-          { title: 'Santos Favoritos', icon: 'mdi-heart' }
+          { title: 'Lecturas Favoritas', icon: 'mdi-heart', path: 'favorite-readings' },
+          // { title: 'Santos Favoritos', icon: 'mdi-heart', path: 'favorite-saints' }
         ],
       },
     ],

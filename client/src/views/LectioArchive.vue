@@ -32,49 +32,49 @@
                 color="primary" class="float-right mt-4">Ver compromisos no completados</v-chip>
       </v-col>
     </v-row>
-      <v-fade-transition group class="row">
-        <v-col cols="12" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" :key="lectio.createdAt">
-          <v-card shaped>
-            <v-list-item>
-              <v-chip outlined class="mt-2" color="primary" label
-                      :text-color="$vuetify.theme.dark?'white':'rgba(0, 0, 0, 0.54)'">
-                <v-icon left>mdi-calendar-month</v-icon>
-                {{beautyDate(lectio.createdAt)}}
-              </v-chip>
-            </v-list-item>
-            <v-card-text>
-              <h4>Lectio</h4>
-              <p>{{lectio.lectio | truncate(75)}}</p>
-              <h4>Meditatio</h4>
-              <p>{{lectio.meditatio | truncate(75)}}</p>
-              <h4>Oratio</h4>
-              <p>{{lectio.oratio | truncate(75)}}</p>
-              <h4>Actio</h4>
-              <p>{{lectio.actio | truncate(75)}}</p>
-            </v-card-text>
-            <v-list-item v-if="!lectio.completedActio">
-              <div class="flex-grow-1"></div>
-              <v-chip class="mt-2" color="warning" label text-color="white">
-                <v-icon left>mdi-alarm</v-icon>
-                Tienes un compromiso sin completar
-              </v-chip>
-            </v-list-item>
+    <v-fade-transition group class="row">
+      <v-col cols="12" sm="6" md="4" lg="3" v-for="(lectio) in filteredList" :key="lectio.createdAt">
+        <v-card shaped>
+          <v-list-item>
+            <v-chip outlined class="mt-2" color="primary" label
+                    :text-color="$vuetify.theme.dark?'white':'rgba(0, 0, 0, 0.54)'">
+              <v-icon left>mdi-calendar-month</v-icon>
+              {{beautyDate(lectio.createdAt)}}
+            </v-chip>
+          </v-list-item>
+          <v-card-text>
+            <h4>Lectio</h4>
+            <p>{{lectio.lectio | truncate(75)}}</p>
+            <h4>Meditatio</h4>
+            <p>{{lectio.meditatio | truncate(75)}}</p>
+            <h4>Oratio</h4>
+            <p>{{lectio.oratio | truncate(75)}}</p>
+            <h4>Actio</h4>
+            <p>{{lectio.actio | truncate(75)}}</p>
+          </v-card-text>
+          <v-list-item v-if="!lectio.completedActio">
+            <div class="flex-grow-1"></div>
+            <v-chip class="mt-2" color="warning" label text-color="white">
+              <v-icon left>mdi-alarm</v-icon>
+              Tienes un compromiso sin completar
+            </v-chip>
+          </v-list-item>
 
-            <v-card-actions>
-              <v-btn text color="primary" @click.stop="openLectioView(lectio)">
-                Leer
-              </v-btn>
-              <div class="flex-grow-1"></div>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-share-variant</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-fade-transition>
+          <v-card-actions>
+            <v-btn text color="primary" @click.stop="openLectioView(lectio)">
+              Leer
+            </v-btn>
+            <div class="flex-grow-1"></div>
+            <v-btn icon>
+              <v-icon>mdi-heart</v-icon>
+            </v-btn>
+            <v-btn icon>
+              <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-fade-transition>
   </v-container>
   <v-container fill-height v-else>
     <v-layout align-center>
@@ -86,6 +86,7 @@
 </template>
 <script>
 import _ from 'lodash'
+import lectioService from "../services/LectioService"
 
 export default {
   data: () => ({
@@ -98,12 +99,31 @@ export default {
     error: null,
     loading: true,
     completedActio: false,
-    filterNotCompleted: false
+    filterNotCompleted: false,
+    lectioArchive:[]
   }),
   mounted () {
-    this.loading = false
+    // this.loading = false
+    this.getAllLectios()
   },
   methods: {
+    getAllLectios () {
+      let user = this.$store.state.user
+      let lectioArchive
+      lectioService.getAllLectios(user).then((collection) => {
+        lectioArchive = _.map(collection.docs, (doc) => {
+          return doc.data()
+        })
+        this.lectioArchive = _.sortBy(lectioArchive, (lectio) => {
+          return lectio.createdAt
+        })
+
+        // this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: false })
+        this.loading = false
+      }).catch((error) => {
+        this.error = error
+      })
+    },
     checkLectioYear (year, lectioYear) {
       return year == this.$moment(lectioYear).format('YYYY')
     },
@@ -128,7 +148,7 @@ export default {
       return this.$store.state.lectioArchive
     },
     filteredList () {
-      let result = _.orderBy(this.lectios, (lectio) => {
+      let result = _.orderBy(this.lectioArchive, (lectio) => {
         return lectio.createdAt
       }, ['desc'])
       let filter
@@ -183,13 +203,15 @@ export default {
   background-color: transparent;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: all .2s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.2s;
 }
-.fade-enter, .fade-leave-to{
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 .fade-enter-active {
-  transition-delay: .2s;
+  transition-delay: 0.2s;
 }
 </style>

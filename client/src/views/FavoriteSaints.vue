@@ -1,19 +1,7 @@
 <template>
   <v-container fluid v-if="!loading">
     <v-row>
-      <v-col>
-        <v-list-item>
-          <v-icon left>mdi-calendar-month</v-icon>
-          <v-list-item-content>
-            <v-list-item-title class="headline text-wrap">{{evgDetails.data.date_displayed}}
-            </v-list-item-title>
-            <v-list-item-subtitle class="text-wrap">{{evgDetails.data.liturgic_title}}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col v-for="(reading, index) in readings" :key="index" cols="12" sm="12" md="6" lg="4">
+      <v-col v-for="(reading, index) in favoriteReadings" :key="index" cols="12" sm="12" md="6" lg="4">
         <v-card>
           <v-list-item>
             <v-list-item-content>
@@ -28,17 +16,7 @@
           <v-card-actions>
             <v-btn class="white--text" color="primary" @click="sendSelectionToLectio">
               Lectio Divina</v-btn>
-
             <div class="flex-grow-1"></div>
-
-            <v-btn icon @click="addReadingToFavorites(reading)">
-              <v-icon>mdi-heart</v-icon>
-            </v-btn>
-
-            <v-btn icon>
-              <v-icon>mdi-bookmark</v-icon>
-            </v-btn>
-
             <v-btn icon @click="readingSocialShare(reading)">
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
@@ -51,38 +29,6 @@
           </v-btn>
         </v-snackbar>
 
-      </v-col>
-      <v-col cols="12" v-if="evgDetails.data.commentary">
-        <v-card>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline text-wrap">Comentario de las lecturas
-              </v-list-item-title>
-              <v-list-item-subtitle class="text-wrap">{{evgDetails.data.commentary.author.name}}</v-list-item-subtitle>
-              <v-list-item-subtitle class="text-wrap">{{evgDetails.data.commentary.author.short_description}}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          <v-card-text>
-            {{cleanText(evgDetails.data.commentary.description)}}
-          </v-card-text>
-          <v-card-actions>
-
-            <div class="flex-grow-1"></div>
-
-            <v-btn icon>
-              <v-icon>mdi-heart</v-icon>
-            </v-btn>
-
-            <v-btn icon>
-              <v-icon>mdi-bookmark</v-icon>
-            </v-btn>
-
-            <v-btn icon @click="commentSocialShare(evgDetails.data.commentary)">
-              <v-icon>mdi-share-variant</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
       </v-col>
     </v-row>
     <v-flex xs12>
@@ -111,18 +57,18 @@ import lectioService from "../services/LectioService"
 
 export default {
   components: { VueContext },
-  async mounted () {
-    this.loading = false;
+  mounted () {
+    this.loading = false
+    this.getAllFavoriteReadings()
   },
   data () {
     return {
-      evgDetails: this.$store.state.evgDetails,
-      readings: this.$store.state.readings,
       loading: true,
       selection: '',
       snackbar: false,
       text: '',
-      message: ''
+      message: '',
+      favoriteReadings: []
     };
   },
   computed: {
@@ -138,6 +84,22 @@ export default {
   },
 
   methods: {
+    getAllFavoriteReadings () {
+      let user = this.$store.state.user
+      let favoriteReadings
+      lectioService.getAllFavoriteReadings(user).then((collection) => {
+        favoriteReadings = _.map(collection.docs, (doc) => {
+          return doc.data()
+        })
+        this.favoriteReadings = _.sortBy(favoriteReadings, (reading) => {
+          return reading.createdAt
+        })
+
+        this.loading = false
+      }).catch((error) => {
+        this.error = error
+      })
+    },
     addListeners () {
       const para = document.querySelectorAll("p");
       let tEvents = ["mouseup"];
@@ -181,33 +143,7 @@ export default {
           .catch((error) => console.log('Error sharing', error));
       }
     },
-    commentSocialShare (commentary) {
-      if (navigator.share) {
-        navigator.share({
-          title: `${commentary.author.name} ${commentary.author.short_description}`,
-          text: `*${commentary.author.name} ${commentary.author.short_description}* ${this.cleanText(commentary.description)}`,
-        })
-          .then(() => console.log('Successful share'))
-          .catch((error) => console.log('Error sharing', error));
-      }
-    },
-    addReadingToFavorites (reading) {
-      this.isLoading = true
-      let readingToSave = _.clone(reading)
-      let user = this.$store.state.user
-      let now = this.$moment(new Date()).format()
-      readingToSave.createdAt = now
-      readingToSave.updatedAt = now
-      lectioService.saveFavoriteReading(readingToSave, user).then(() => {
-        // this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: true })
-        this.isLoading = false
-        this.message = 'Lectura agregada a favoritos'
-        this.snackbar = true
-      }).catch((error) => {
-        this.isLoading = false
-        this.error = error
-      })
-    },
+
     cleanText (text) {
       let regex = /\[{2}.*?\]{2}/gm
       let subst = ''
