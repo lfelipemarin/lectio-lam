@@ -55,9 +55,9 @@
         </p>
         <p>
           Fuente: <br>
-          <v-btn text small color="primary" target="_blank"
-                 href="//es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html">Artículo:
-            ¿Quienes son los santos? - Catholic.net</v-btn>
+          <v-btn text small color="primary" target="_blank" class="text-wrap"
+                 href="//es.catholic.net/op/articulos/67197/cat/1069/quienes-son-los-santos.html">¿Quienes son los
+            santos? - Catholic.net</v-btn>
 
         </p>
       </v-col>

@@ -56,6 +56,16 @@ export default {
     },
     deleteFavoriteReading (reading, user) {
         return db.collection('users').doc(user.email).collection('favorite-readings').doc(`${reading.id}`).delete()
+    },
+    getAllFavoriteSaints (user) {
+        let docRef = db.collection('users').doc(user.email).collection('favorite-saints')
+        return docRef
+    },
+    saveFavoriteSaint (saint, user) {
+        return db.collection('users').doc(user.email).collection('favorite-saints').doc(`${saint.id}`).set(saint)
+    },
+    deleteFavoriteSaint (saint, user) {
+        return db.collection('users').doc(user.email).collection('favorite-saints').doc(`${saint.id}`).delete()
     }
 
 }

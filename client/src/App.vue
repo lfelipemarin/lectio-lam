@@ -137,19 +137,14 @@ export default {
         title: 'Lectios Guardadas',
         icon: 'mdi-folder-heart'
       },
-      // {
-      //   path: '/favorites',
-      //   title: 'Favoritos',
-      //   icon: 'mdi-heart'
-      // },
       {
         icon: 'mdi-heart',
         path: '',
         title: 'Favoritos',
         model: false,
         children: [
-          { title: 'Lecturas Favoritas', icon: 'mdi-heart', path: 'favorite-readings' },
-          // { title: 'Santos Favoritos', icon: 'mdi-heart', path: 'favorite-saints' }
+          { title: 'Lecturas Favoritas', icon: 'mdi-tag-heart', path: '/favorite-readings' },
+          { title: 'Santos Favoritos', icon: 'mdi-heart-circle', path: '/favorite-saints' }
         ],
       },
     ],

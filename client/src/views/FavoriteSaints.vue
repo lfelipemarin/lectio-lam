@@ -1,45 +1,68 @@
 <template>
   <v-container fluid v-if="!loading">
     <v-row>
-      <v-col v-for="(reading, index) in favoriteReadings" :key="index" cols="12" sm="12" md="6" lg="4">
-        <v-card>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline text-wrap">{{`${reading.title}`}}
-              </v-list-item-title>
-              <v-list-item-subtitle class="text-wrap">{{`${reading.reference_displayed}`}}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          <v-card-text>
-            <p>{{cleanText(reading.text)}}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn class="white--text" color="primary" @click="sendSelectionToLectio">
-              Lectio Divina</v-btn>
-            <div class="flex-grow-1"></div>
-            <v-btn icon @click="readingSocialShare(reading)">
-              <v-icon>mdi-share-variant</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+      <v-col cols="12" md="5">
+        <v-text-field label="Buscar Santo" prepend-icon="mdi-magnify" v-model="searchWord"></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-list width="100%" subheader>
+          <v-subheader>MIS SANTOS FAVORITOS</v-subheader>
+          <v-fade-transition group>
+
+            <v-list-item v-for="saint in filteredList" :key="saint.id" two-line hover>
+              <v-list-item-avatar @click="openSaintView(saint)">
+                <v-img v-if="showSaintAvatar(saint.image_links)[0]" :src="showSaintAvatar(saint.image_links)[0]">
+                </v-img>
+                <v-icon v-else>mdi-account-heart</v-icon>
+              </v-list-item-avatar>
+
+              <v-list-item-content @click="openSaintView(saint)">
+                <v-list-item-title v-text="saint.name"></v-list-item-title>
+                <v-list-item-subtitle>{{saint.date_displayed}}</v-list-item-subtitle>
+              </v-list-item-content>
+
+              <v-list-item-icon @click="readyToDelete(saint)">
+                <v-icon>mdi-close</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-fade-transition>
+        </v-list>
         <v-snackbar v-model="snackbar" multi-line color="success" :timeout=4000>
           {{message}}
           <v-btn color="white" text @click="snackbar = false">
             Cerrar
           </v-btn>
         </v-snackbar>
+        <template>
+          <v-row justify="center">
 
+            <v-dialog v-model="dialog" max-width="290">
+              <v-card>
+                <v-card-title class="headline text-wrap">¿Eliminar santo de favoritos?</v-card-title>
+
+                <v-card-text>
+                  Si eliminas al santo de favoritos no lo podrás recuperar después.
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+
+                  <v-btn color="green darken-1" text @click="dialog = false">
+                    Cancelar
+                  </v-btn>
+
+                  <v-btn color="green darken-1" text @click="removeFavoriteSaint()">
+                    Eliminar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+        </template>
       </v-col>
     </v-row>
-    <v-flex xs12>
-      <vue-context ref="menu">
-        <template slot-scope="child" v-if="child.data">
-          <li>
-            <a href="#" @click.prevent="sendSelectionToLectio()">Agregar a Lectio de hoy</a>
-          </li>
-        </template>
-      </vue-context>
-    </v-flex>
   </v-container>
   <v-container fill-height v-else>
     <v-layout align-center>
@@ -51,112 +74,116 @@
 </template>
 
 <script>
-import { VueContext } from "vue-context";
-import _ from "lodash";
+import _ from 'lodash';
 import lectioService from "../services/LectioService"
 
 export default {
-  components: { VueContext },
-  mounted () {
+  async mounted () {
     this.loading = false
-    this.getAllFavoriteReadings()
+    this.getAllFavoriteSaints()
   },
   data () {
     return {
+      // saints: this.$store.state.saints,
       loading: true,
-      selection: '',
+      favoriteSaints: [],
+      saintToDelete: {},
+      dialog: false,
       snackbar: false,
-      text: '',
       message: '',
-      favoriteReadings: []
+      searchWord: ''
     };
   },
   computed: {
-  },
-  watch: {
-    loading (val) {
-      if (!val) {
-        this.$nextTick(() => {
-          this.addListeners();
-        });
+    beautyDate () {
+      return `${this.$moment().format('dddd D')} de ${this.$moment().format('MMMM')} de ${this.$moment().format('YYYY')}`
+    },
+    filteredList () {
+      let result = _.orderBy(this.favoriteSaints, (saint) => {
+        return saint.date_displayed
+      }, ['desc'])
+      if (!this.searchWord)
+        return result
+        
+      let filter
+      let filterValueWord
+
+      if (this.searchWord) {
+
+        filterValueWord = this.searchWord.toLowerCase()
+        filter = saint =>
+          saint.name.toLowerCase().includes(filterValueWord) ||
+          saint.date_displayed.toLowerCase().includes(filterValueWord)
       }
+
+      return result.filter(filter)
     }
   },
-
   methods: {
-    getAllFavoriteReadings () {
+    getAllFavoriteSaints () {
       let user = this.$store.state.user
-      let favoriteReadings
-      lectioService.getAllFavoriteReadings(user).then((collection) => {
-        favoriteReadings = _.map(collection.docs, (doc) => {
-          return doc.data()
+      lectioService.getAllFavoriteSaints(user).onSnapshot((querySnapshot) => {
+        let favoriteSaints = []
+        querySnapshot.forEach(doc => {
+          favoriteSaints.push(doc.data())
         })
-        this.favoriteReadings = _.sortBy(favoriteReadings, (reading) => {
-          return reading.createdAt
+        favoriteSaints = _.sortBy(favoriteSaints, (saint) => {
+          return saint.createdAt
         })
+        this.favoriteSaints = favoriteSaints
 
         this.loading = false
+      })
+    },
+    readyToDelete (saint) {
+      this.dialog = true
+      this.saintToDelete = saint
+    },
+    removeFavoriteSaint () {
+      let user = this.$store.state.user
+      lectioService.deleteFavoriteSaint(this.saintToDelete, user).then(() => {
+        this.message = "Santo removido de favoritos"
+        this.dialog = false
+        this.snackbar = true
       }).catch((error) => {
         this.error = error
       })
     },
-    addListeners () {
-      const para = document.querySelectorAll("p");
-      let tEvents = ["mouseup"];
-
-      _.each(para, par => {
-        _.each(tEvents, tEvent => {
-          par.addEventListener(tEvent, e => {
-            var selection;
-
-            if (window.getSelection) {
-              selection = window.getSelection();
-            } else if (document.selection) {
-              selection = document.selection.createRange();
-            }
-            if (selection.toString()) {
-              this.selection = selection.toString()
-              setTimeout(() => {
-                this.$refs.menu.open(e, selection.toString());
-              }, 0);
-            }
-          });
-        });
-      });
+    showSaintAvatar (imgObj) {
+      return _.map(imgObj, (img) => {
+        if (img) {
+          return img
+        }
+      })
     },
-    sendSelectionToLectio () {
-      this.selection = window.getSelection().toString()
-      if (this.selection) {
-        this.$router.push({ name: 'lectio', params: { copiedLectioText: this.selection } })
-      } else {
-        this.message = 'Por favor selecciona una parte del texto'
-        this.snackbar = true
-      }
-    },
-    readingSocialShare (reading) {
-      if (navigator.share) {
-        navigator.share({
-          title: `${reading.title} ${reading.reference_displayed}`,
-          text: `*${reading.title} ${reading.reference_displayed}* ${this.cleanText(reading.text)}`,
-        })
-          .then(() => console.log('Successful share'))
-          .catch((error) => console.log('Error sharing', error));
-      }
-    },
-
-    cleanText (text) {
-      let regex = /\[{2}.*?\]{2}/gm
-      let subst = ''
-      let result = text.replace(regex, subst)
-
-      subst = ' '
-      result = result.replace(regex, subst)
-
-      regex = /(\s)+/gm
-      result = result.replace(regex, subst)
-
-      return result.trim()
+    openSaintView (saint) {
+      this.$router.push({ path: '/saints', name: "saint", params: { id: saint.id } })
     }
   }
 };
 </script>
+<style lang="sass" scoped>
+ul 
+  padding: 0
+
+.v-avatar 
+  i
+    border: 4px solid
+
+.v-card__text, .v-card__title
+  word-break: normal
+
+.fade-enter-active,
+.fade-leave-active
+  transition: all 0.2s
+
+.fade-enter,
+.fade-leave-to
+  opacity: 0
+
+.fade-enter-active
+  transition-delay: 0.2s
+
+.v-list-item__avatar, .v-list-item__content, .v-list-item__icon
+  cursor: pointer
+</style>

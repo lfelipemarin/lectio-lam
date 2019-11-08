@@ -19,7 +19,24 @@
               <v-list-item-content v-html="cleanText(saintInfo.bio)">
               </v-list-item-content>
             </v-list-item>
+            <v-card-actions>
+              <div class="flex-grow-1"></div>
+
+              <v-btn icon @click="addSaintToFavorites(saintInfo)">
+                <v-icon>mdi-heart</v-icon>
+              </v-btn>
+
+              <v-btn icon @click="saintSocialShare(saintInfo)">
+                <v-icon>mdi-share-variant</v-icon>
+              </v-btn>
+            </v-card-actions>
           </v-card>
+          <v-snackbar v-model="snackbar" multi-line color="success" :timeout=4000>
+            {{message}}
+            <v-btn color="white" text @click="snackbar = false">
+              Cerrar
+            </v-btn>
+          </v-snackbar>
         </template>
       </v-col>
     </v-row>
@@ -41,7 +58,9 @@ export default {
   data () {
     return {
       saintInfo: null,
-      loading: true
+      loading: true,
+      snackbar: false,
+      message: ''
     };
   },
   mounted () {
@@ -52,6 +71,37 @@ export default {
     })
   },
   methods: {
+    saintSocialShare (saint) {
+      if (navigator.share) {
+        navigator.share({
+          title: `${saint.name} ${saint.date_displayed}`,
+          text: `*${saint.name} ${saint.date_displayed}* ${this.cleanText(saint.bio)}`,
+        })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing', error));
+      }
+    },
+    addSaintToFavorites (saint) {
+      this.isLoading = true
+      let now = this.$moment(new Date()).format()
+      let saintToSave = {
+        id: saint.id,
+        name: saint.name,
+        image_links: saint.image_links,
+        date_displayed: saint.date_displayed,
+        createdAt: now,
+        updatedAt: now,
+      }
+      let user = this.$store.state.user
+      lectioService.saveFavoriteSaint(saintToSave, user).then(() => {
+        this.isLoading = false
+        this.message = 'Santo agregado a favoritos'
+        this.snackbar = true
+      }).catch((error) => {
+        this.isLoading = false
+        this.error = error
+      })
+    },
     cleanText (text) {
       let regex = /([</].*?>)/gm
       let subst = ''

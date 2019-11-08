@@ -1,7 +1,12 @@
 <template>
   <v-container fluid v-if="!loading">
     <v-row>
-      <v-col v-for="(reading, index) in favoriteReadings" :key="index" cols="12" sm="12" md="6" lg="4">
+      <v-col cols="12" md="5">
+        <v-text-field label="Buscar Lectura" prepend-icon="mdi-magnify" v-model="searchWord"></v-text-field>
+      </v-col>
+    </v-row>
+    <v-fade-transition group class="row">
+      <v-col v-for="reading in filteredList" :key="reading.id" cols="12" sm="12" md="6" lg="4">
         <v-card>
           <v-list-item>
             <v-list-item-content>
@@ -9,7 +14,7 @@
               </v-list-item-title>
               <v-list-item-subtitle class="text-wrap">{{`${reading.reference_displayed}`}}</v-list-item-subtitle>
             </v-list-item-content>
-            <v-icon class="mb-4" @click="dialog=true">mdi-close</v-icon>
+            <v-icon class="mb-4" @click="readyToDelete(reading)">mdi-close</v-icon>
           </v-list-item>
           <v-card-text>
             <p>{{cleanText(reading.text)}}</p>
@@ -47,7 +52,7 @@
                     Cancelar
                   </v-btn>
 
-                  <v-btn color="green darken-1" text @click="removeFavoriteReading(reading)">
+                  <v-btn color="green darken-1" text @click="removeFavoriteReading()">
                     Eliminar
                   </v-btn>
                 </v-card-actions>
@@ -56,7 +61,7 @@
           </v-row>
         </template>
       </v-col>
-    </v-row>
+    </v-fade-transition>
     <v-flex xs12>
       <vue-context ref="menu">
         <template slot-scope="child" v-if="child.data">
@@ -96,10 +101,32 @@ export default {
       text: '',
       message: '',
       favoriteReadings: [],
-      dialog: false
+      dialog: false,
+      readingToDelete: {},
+      searchWord: ''
     };
   },
   computed: {
+    filteredList () {
+      let result = _.orderBy(this.favoriteReadings, (reading) => {
+        return reading.createdAt
+      }, ['desc'])
+      if (!this.searchWord)
+        return result
+
+      let filter
+      let filterValueWord
+
+      if (this.searchWord) {
+
+        filterValueWord = this.searchWord.toLowerCase()
+        filter = reading =>
+          reading.title.toLowerCase().includes(filterValueWord) ||
+          reading.reference_displayed.toLowerCase().includes(filterValueWord)
+      }
+
+      return result.filter(filter)
+    }
   },
   watch: {
     loading (val) {
@@ -118,9 +145,6 @@ export default {
         let favoriteReadings = []
         querySnapshot.forEach(doc => {
           favoriteReadings.push(doc.data())
-          // favoriteReadings = _.map(collection.docs, (doc) => {
-          //   return doc.data()
-          // })
         })
         favoriteReadings = _.sortBy(favoriteReadings, (reading) => {
           return reading.createdAt
@@ -130,9 +154,13 @@ export default {
         this.loading = false
       })
     },
-    removeFavoriteReading (reading) {
+    readyToDelete (reading) {
+      this.dialog = true
+      this.readingToDelete = reading
+    },
+    removeFavoriteReading () {
       let user = this.$store.state.user
-      lectioService.deleteFavoriteReading(reading, user).then(() => {
+      lectioService.deleteFavoriteReading(this.readingToDelete, user).then(() => {
         this.message = "Lectura removida de favoritos"
         this.dialog = false
         this.snackbar = true
@@ -201,7 +229,17 @@ export default {
 };
 </script>
 <style lang="sass">
-.v-card__text, .v-card__title 
+.v-card__text, .v-card__title
 	word-break: normal
 
+.fade-enter-active,
+.fade-leave-active
+	transition: all 0.2s
+
+.fade-enter,
+.fade-leave-to
+	opacity: 0
+
+.fade-enter-active
+	transition-delay: 0.2s
 </style>
