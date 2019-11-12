@@ -16,17 +16,33 @@
             </v-list-item-content>
             <v-icon class="mb-4" @click="readyToDelete(reading)">mdi-close</v-icon>
           </v-list-item>
-          <v-card-text>
-            <p>{{cleanText(reading.text)}}</p>
-          </v-card-text>
           <v-card-actions>
-            <v-btn class="white--text" color="primary" @click="sendSelectionToLectio">
-              Lectio Divina</v-btn>
-            <div class="flex-grow-1"></div>
-            <v-btn icon @click="readingSocialShare(reading)">
-              <v-icon>mdi-share-variant</v-icon>
+            <v-chip outlined class="mt-2" color="primary" label
+                    :text-color="$vuetify.theme.dark?'white':'rgba(0, 0, 0, 0.54)'">
+              <v-icon left>mdi-calendar-month</v-icon>
+              {{beautyDate(reading.createdAt)}}
+            </v-chip>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="reading.showText = !reading.showText">
+              <v-icon>{{ reading.showText ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
             </v-btn>
           </v-card-actions>
+          <v-expand-transition>
+            <div v-show="reading.showText">
+              <v-divider></v-divider>
+              <v-card-text>
+                {{cleanText(reading.text)}}
+              </v-card-text>
+              <v-card-actions>
+                <v-btn class="white--text" color="primary" @click="sendSelectionToLectio">
+                  Lectio Divina</v-btn>
+                <div class="flex-grow-1"></div>
+                <v-btn icon @click="readingSocialShare(reading)">
+                  <v-icon>mdi-share-variant</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </div>
+          </v-expand-transition>
         </v-card>
         <v-snackbar v-model="snackbar" multi-line color="success" :timeout=4000>
           {{message}}
@@ -103,7 +119,8 @@ export default {
       favoriteReadings: [],
       dialog: false,
       readingToDelete: {},
-      searchWord: ''
+      searchWord: '',
+      showText: false
     };
   },
   computed: {
@@ -144,7 +161,9 @@ export default {
       lectioService.getAllFavoriteReadings(user).onSnapshot((querySnapshot) => {
         let favoriteReadings = []
         querySnapshot.forEach(doc => {
-          favoriteReadings.push(doc.data())
+          let reading = doc.data()
+          reading.showText = false
+          favoriteReadings.push(reading)
         })
         favoriteReadings = _.sortBy(favoriteReadings, (reading) => {
           return reading.createdAt
@@ -167,6 +186,9 @@ export default {
       }).catch((error) => {
         this.error = error
       })
+    },
+    beautyDate (date) {
+      return this.$moment(date).format('MMMM-DD-YYYY')
     },
     addListeners () {
       const para = document.querySelectorAll("p");

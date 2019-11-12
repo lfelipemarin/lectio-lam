@@ -126,3 +126,7 @@ export default {
   }
 };
 </script>
+<style lang="sass">
+  .v-list-item__content
+    user-select: text
+</style>

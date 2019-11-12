@@ -160,7 +160,6 @@ export default {
   }),
   created () {
     this.$vuetify.theme.dark = this.$store.state.interfaceColor
-    this.$store.dispatch('setIsLoadingData', true)
   },
   methods: {
     logout () {
