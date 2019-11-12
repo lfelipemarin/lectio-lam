@@ -140,6 +140,7 @@ export default {
           // User is signed in.
           delete credentials.password
           credentials.uid = user.user.uid
+          credentials.avatar = user.user.photoURL
           db.collection('users').doc(credentials.email).set(credentials)
             .then(() => {
               firebase.auth().signOut()

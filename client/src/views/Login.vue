@@ -36,8 +36,9 @@
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn color="primary" :disabled="!valid" @click="validate" :loading="isLoading">
-            <v-icon dark class="mr-2">mdi-login-variant</v-icon>              
-              Ingresar</v-btn>
+              <v-icon dark class="mr-2">mdi-login-variant</v-icon>
+              Ingresar
+            </v-btn>
           </v-card-actions>
           <div class="d-flex caption pb-4 justify-center flex-column text-center">
             <div class="pa-4">
@@ -57,7 +58,8 @@
           <div :class="['pl-4','caption']">¿No tienes cuenta? <router-link to="/signup">
               Créala aquí</router-link>.
           </div>
-          <div :class="['pl-4','caption', !emailVerified?'':'pb-4']">¿Olvidaste la contraseña? <a @click="changeToVerifyEmail">Recupérala aquí</a>.
+          <div :class="['pl-4','caption', !emailVerified?'':'pb-4']">¿Olvidaste la contraseña? <a
+               @click="changeToVerifyEmail">Recupérala aquí</a>.
           </div>
           <div v-if="!emailVerified" class="caption pb-4 pl-4">¿No te llegó el correo de verificación? <a
                @click="sendVerificationEmail">Enviar de nuevo</a>.
@@ -131,7 +133,8 @@ export default {
         this.user = user.user
         this.emailVerified = this.user.emailVerified
         if (this.emailVerified) {
-          var docRef = db.collection("users").doc(this.email);
+
+          var docRef = db.collection("users").doc(this.email)
 
           docRef.get().then((doc) => {
             if (doc.exists) {
@@ -139,8 +142,15 @@ export default {
                 this.$store.dispatch('setToken', data)
               })
               this.$store.dispatch('setUser', doc.data())
-              this.$router.push('/home')
-              this.isLoading = false
+              /* Remember to delete this block when all the users have their avatar */
+              docRef.update({
+                avatar: user.user.photoURL
+              }).then(() => {
+                this.$router.push('/home')
+                this.isLoading = false
+              }).catch((error) => {
+                this.error = error
+              })
             } else {
               // doc.data() will be undefined in this case
               this.isLoading = false
@@ -217,7 +227,6 @@ export default {
           AuthenticationService.getPersonFromGoogle('me', 'birthdays', token).then(resp => {
             let user = {}
             if (resp.data.birthdays) {
-              console.log(resp.data.birthdays[1])
               let birthdate = ''
               _.each(resp.data.birthdays[1].date, (param) => {
                 console.log(param)
@@ -230,18 +239,23 @@ export default {
 
             docRef.get().then((doc) => {
               if (doc.exists) {
-                // result.user.getIdToken().then((data) => {
-                //   this.$store.dispatch('setToken', data)
-                // })
                 this.$store.dispatch('setUser', doc.data())
                 this.$store.dispatch('setToken', token)
-                this.$router.push('/home')
-                this.isLoading = false
+                /* Remember to delete this block when all the users have their avatar */
+                docRef.update({
+                  avatar: result.user.photoURL
+                }).then(() => {
+                  this.$router.push('/home')
+                  this.isLoading = false
+                }).catch((error) => {
+                  this.error = error
+                })
               } else {
                 user.firstName = result.additionalUserInfo.profile.given_name
                 user.lastName = result.additionalUserInfo.profile.family_name
                 user.email = result.additionalUserInfo.profile.email
                 user.uid = result.user.uid
+                user.avatar = result.user.photoURL
                 user.createdAt = this.$moment().format()
                 user.updatedAt = this.$moment().format()
                 // doc.data() will be undefined in this case
@@ -261,8 +275,9 @@ export default {
               this.error = error
             });
           })
+        } else {
+          this.isLoading = false
         }
-        this.isLoading = false
       }).catch((error) => {
         // Handle Errors here.
         this.isLoading = false
