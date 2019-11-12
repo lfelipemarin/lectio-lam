@@ -81,11 +81,11 @@ export default {
     if (this.$store.state.isUserLoggedIn) {
       this.$store.dispatch('setIsLoadingData', true)
       await this.getAllLectios()
-      // if (this.isExpired) {
+      if (this.isExpired) {
         await this.getTodaysReadings()
         await this.getTodaysSaints()
         this.$store.dispatch('setExpiryDate')
-      // }
+      }
       this.$store.dispatch('setIsLoadingData', false)
     }
   },
