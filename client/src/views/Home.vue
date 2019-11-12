@@ -7,9 +7,17 @@
       <v-btn color="primary" class="mt-5 mr-5" to="/login">Ingresar</v-btn>
       <v-btn color="primary" class="mt-5" to="/signup">Registrarse</v-btn>
     </v-row>
+
   </v-container>
-  <v-container fluid v-else>
-    <v-row>
+  <v-container fluid v-else fill-height>
+    <v-container fill-height v-if="$store.state.isLoadingData">
+      <v-layout align-center>
+        <v-flex xs12 text-center>
+          <v-progress-circular :size="70" :width="7" color="accent" indeterminate></v-progress-circular>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    <v-row v-else>
       <v-col sm="12" md="6">
         <v-card class="mt-4 mx-auto">
           <v-sheet v-if="totalLectios" class="v-sheet--offset mx-auto pb-3" color="grey lighten-1" elevation="12"
@@ -71,12 +79,14 @@ export default {
   }),
   async mounted () {
     if (this.$store.state.isUserLoggedIn) {
+      this.$store.dispatch('setIsLoadingData', true)
       await this.getAllLectios()
-      if (this.isExpired) {
+      // if (this.isExpired) {
         await this.getTodaysReadings()
         await this.getTodaysSaints()
         this.$store.dispatch('setExpiryDate')
-      }
+      // }
+      this.$store.dispatch('setIsLoadingData', false)
     }
   },
   beforeDestroy () {
@@ -107,7 +117,7 @@ export default {
           return lectio.createdAt
         })
 
-       setTimeout(() => {
+        setTimeout(() => {
           if (this.totalLectios) {
             this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month')
             this.createChart(this.commitmentData, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)

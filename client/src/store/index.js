@@ -38,7 +38,8 @@ export default new Vuex.Store({
     isUserLoggedIn: false,
     history: 0,
     expiryDate: null,
-    interfaceColor: false
+    interfaceColor: false,
+    isLoadingData: true
   },
   getters: {
     isExpired: state => (new Date(state.expiryDate) < new Date())
@@ -105,6 +106,9 @@ export default new Vuex.Store({
     },
     setInterfaceColor (state, color) {
       state.interfaceColor = color
+    },
+    setIsLoadingData (state, loading) {
+      state.isLoadingData = loading
     }
   },
   actions: {
@@ -155,6 +159,9 @@ export default new Vuex.Store({
     },
     setInterfaceColor ({ commit }, color) {
       commit('setInterfaceColor', color)
+    },
+    setIsLoadingData ({ commit }, loading) {
+      commit('setIsLoadingData', loading)
     },
   }
 })
