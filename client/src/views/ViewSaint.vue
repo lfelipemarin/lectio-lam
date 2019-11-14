@@ -11,7 +11,8 @@
                 <v-list-item-subtitle>{{saintInfo.date_displayed}}</v-list-item-subtitle>
               </v-list-item-content>
 
-              <v-list-item-avatar v-if="showImage(saintInfo.image_links)[0]" tile size="80" color="grey">
+              <v-list-item-avatar v-if="showImage(saintInfo.image_links)[0]" @click="dialog = true" tile size="80"
+                                  color="grey">
                 <v-img :src="showImage(saintInfo.image_links)[0]"></v-img>
               </v-list-item-avatar>
             </v-list-item>
@@ -38,6 +39,17 @@
             </v-btn>
           </v-snackbar>
         </template>
+        <v-row justify="center">
+          <v-dialog v-model="dialog" max-width="500">
+            <v-card>
+              <v-row align="center" justify="center">
+                <v-img :src="showImage(saintInfo.image_links)[0]" :lazy-src="showImage(saintInfo.image_links)[0]"
+                       aspect-ratio="1" class="grey lighten-2" contain></v-img>
+              </v-row>
+            </v-card>
+          </v-dialog>
+        </v-row>
+
       </v-col>
     </v-row>
   </v-container>
@@ -60,7 +72,8 @@ export default {
       saintInfo: null,
       loading: true,
       snackbar: false,
-      message: ''
+      message: '',
+      dialog: false
     };
   },
   mounted () {
@@ -129,4 +142,7 @@ export default {
 <style lang="sass">
   .v-list-item__content
     user-select: text
+
+  .v-responsive.v-image
+    cursor: pointer
 </style>
