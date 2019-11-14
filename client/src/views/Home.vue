@@ -75,7 +75,8 @@ am4core.useTheme(am4themes_animated)
 export default {
   data: () => ({
     charts: [],
-    lectioArchive: []
+    lectioArchive: [],
+    error: ''
   }),
   async mounted () {
     if (this.$store.state.isUserLoggedIn) {
@@ -87,6 +88,14 @@ export default {
         this.$store.dispatch('setExpiryDate')
       }
       this.$store.dispatch('setIsLoadingData', false)
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.totalLectios) {
+            this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month')
+            this.createChart(this.commitmentData, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)
+          }
+        }, 1500)
+      })
     }
   },
   beforeDestroy () {
@@ -97,9 +106,14 @@ export default {
   methods: {
     async getTodaysReadings () {
       let today = this.$moment().format('YYYY-MM-DD')
-      const response = await lectioService.getTodaysReadings(today)
-      this.$store.dispatch('setReadings', response.data.data.readings)
-      this.$store.dispatch('setEvgDetails', response.data)
+      try {
+        const response = await lectioService.getTodaysReadings(today)
+        this.$store.dispatch('setReadings', response.data.data.readings)
+        this.$store.dispatch('setEvgDetails', response.data)
+      } catch (error) {
+        this.$store.dispatch('setIsLoadingData', false)
+        this.$router.push('/404')
+      }
     },
     async getTodaysSaints () {
       let date = this.$moment().format()
@@ -116,13 +130,6 @@ export default {
         this.lectioArchive = _.sortBy(lectioArchive, (lectio) => {
           return lectio.createdAt
         })
-
-        setTimeout(() => {
-          if (this.totalLectios) {
-            this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month')
-            this.createChart(this.commitmentData, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)
-          }
-        }, 500)
 
         // this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: false })
         this.loading = false
@@ -237,6 +244,5 @@ export default {
   height: 300px
 
 h1
-  font-size: 50px
-  
+  font-size: 50px  
 </style>
