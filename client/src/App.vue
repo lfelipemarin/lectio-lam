@@ -92,6 +92,12 @@
 
     <v-content>
       <router-view></router-view>
+      <v-btn fab large bottom right fixed small color="error" class="v-btn--report" @click="sendMail()">
+        <v-icon>mdi-bug</v-icon>
+      </v-btn>
+      <v-snackbar v-model="snackbar" :timeout="6000" color="info" right bottom class="v-snackbar--report">
+        Reporta cualquier error aquí
+      </v-snackbar>
     </v-content>
 
     <v-footer>
@@ -105,6 +111,7 @@ const firebase = require("firebase/app")
 // Add the Firebase products that you want to use
 require("firebase/auth")
 import moment from 'moment'
+import mailService from "./services/MailService"
 
 export default {
   props: {
@@ -155,6 +162,7 @@ export default {
         action: ''
       }
     ],
+    snackbar: true,
     year: moment().format('YYYY'),
     error: null
   }),
@@ -188,6 +196,9 @@ export default {
     changeInterfaceColor () {
       this.$store.dispatch('setInterfaceColor', this.$vuetify.theme.dark)
     },
+    sendMail () {
+      mailService.sendMail('lfelipe.marin@gmail.com','test','text test')
+    },
     resetStore () {
       this.$store.dispatch('setToken', null)
       this.$store.dispatch('setUser', null)
@@ -210,3 +221,10 @@ export default {
   },
 }
 </script>
+<style lang="sass">
+  .v-snackbar--report
+    bottom: 88px !important
+    .v-snack__wrapper
+      min-width: 200px
+      margin-right: 0
+</style>
