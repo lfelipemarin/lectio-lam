@@ -92,13 +92,48 @@
 
     <v-content>
       <router-view></router-view>
-      <v-btn fab large bottom right fixed small color="error" class="v-btn--report" @click="sendMail()">
+      <v-btn fab large bottom right fixed small color="error" class="v-btn--report" @click="dialog=true">
         <v-icon>mdi-bug</v-icon>
       </v-btn>
-      <v-snackbar v-model="snackbar" :timeout="6000" color="info" right bottom class="v-snackbar--report">
-        Reporta cualquier error aquí
+      <v-snackbar v-model="snackbar" :timeout="6000" color="info" right bottom :class="snackbarClass">
+        {{snackbarMessage}}
       </v-snackbar>
     </v-content>
+
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialog" max-width="500px">
+          <v-card>
+            <v-card-title class="text-wrap">
+              <span class="headline text-wrap">Reporte</span>
+              <v-spacer></v-spacer>
+              <v-icon @click="dialog=false">mdi-close</v-icon>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-form ref="form" v-model="valid" lazy-validation>
+                  <v-text-field label="Nombre" v-model="emailToSend.firstName"></v-text-field>
+                  <v-text-field label="Apellido" v-model="emailToSend.lastName"></v-text-field>
+                  <v-text-field label="Correo*" required v-model="emailToSend.email" :rules="emailRules">
+                  </v-text-field>
+                  <v-textarea v-model="emailToSend.text" auto-grow filled label="Mensaje*" rows="3"
+                              :rules="textRules.required">
+                  </v-textarea>
+                  <v-file-input :rules="rules" accept="image/png, image/jpeg, image/bmp"
+                                placeholder="Sube una imagen del error" prepend-icon="mdi-camera"
+                                label="Imagen de Error" v-model="emailToSend.attachment"></v-file-input>
+                </v-form>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="dialog = false">Cancelar</v-btn>
+              <v-btn color="blue darken-1" text :disabled="!valid" @click="validate" :loading="isLoading">Enviar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
 
     <v-footer>
       <span>&copy; {{year}}</span>
@@ -112,6 +147,7 @@ const firebase = require("firebase/app")
 require("firebase/auth")
 import moment from 'moment'
 import mailService from "./services/MailService"
+import _ from 'lodash'
 
 export default {
   props: {
@@ -119,6 +155,17 @@ export default {
   },
   data: () => ({
     drawer: false,
+    rules: [
+      value => !value || value.size < 10000000 || 'El tamaño de la imagen debe ser de menos de 10mb',
+    ],
+    textRules: {
+      required: [v => !!v || 'Este campo es requerido'],
+    },
+    emailRules: [
+      v => !!v || 'El campo Email es obligatorio',
+      v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3}) *$/.test(v) || 'E-mail debe ser válido'
+    ],
+    valid: true,
     items: [
       {
         path: '/',
@@ -162,9 +209,20 @@ export default {
         action: ''
       }
     ],
+    emailToSend: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      text: '',
+      attachment: null
+    },
     snackbar: true,
+    snackbarMessage: 'Envía comentarios ó reporta cualquier error aquí',
+    snackbarClass: 'v-snackbar--report',
     year: moment().format('YYYY'),
-    error: null
+    error: null,
+    dialog: false,
+    isLoading: false
   }),
   created () {
     this.$vuetify.theme.dark = this.$store.state.interfaceColor
@@ -196,8 +254,30 @@ export default {
     changeInterfaceColor () {
       this.$store.dispatch('setInterfaceColor', this.$vuetify.theme.dark)
     },
+    validate () {
+      if (this.$refs.form.validate()) {
+        // this.registerWithFirebase()
+        this.sendMail()
+      }
+    },
     sendMail () {
-      mailService.sendMail('lfelipe.marin@gmail.com','test','text test')
+      this.isLoading = true
+      let formData = new FormData()
+      formData.append('image', this.emailToSend.attachment)
+      formData.append('uid', this.$store.state.user.uid)
+      _.map(this.emailToSend, (prop, key) => {
+        if (key !== 'attachment')
+          formData.append(key, prop)
+      })
+      mailService.sendMail(formData).then(() => {
+        this.snackbarClass = ''
+        this.snackbar = true
+        this.snackbarMessage = '¡Dios te pague! Estamos trabajando para mejorar con la ayuda de Dios'
+        this.isLoading = false
+        this.dialog = false
+      }).catch(err => {
+        this.error = err
+      })
     },
     resetStore () {
       this.$store.dispatch('setToken', null)
@@ -227,4 +307,7 @@ export default {
     .v-snack__wrapper
       min-width: 200px
       margin-right: 0
+
+  .v-card__text, .v-card__title
+    word-break: normal !important
 </style>

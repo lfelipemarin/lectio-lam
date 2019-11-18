@@ -35,10 +35,6 @@
               <v-icon>mdi-heart</v-icon>
             </v-btn>
 
-            <v-btn icon>
-              <v-icon>mdi-bookmark</v-icon>
-            </v-btn>
-
             <v-btn icon @click="readingSocialShare(reading)">
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
@@ -70,13 +66,14 @@
 
             <div class="flex-grow-1"></div>
 
-            <v-btn icon>
+            <!-- ToDO -->
+            <!-- <v-btn icon>
               <v-icon>mdi-heart</v-icon>
             </v-btn>
 
             <v-btn icon>
               <v-icon>mdi-bookmark</v-icon>
-            </v-btn>
+            </v-btn> -->
 
             <v-btn icon @click="commentSocialShare(evgDetails.data.commentary)">
               <v-icon>mdi-share-variant</v-icon>

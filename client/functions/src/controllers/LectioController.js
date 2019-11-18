@@ -1,5 +1,5 @@
 const axios = require('axios')
-const moment = require('moment')
+// const moment = require('moment')
 const config = require('../config/config')
 const { Lectio } = require('../models')
 const dbHelper = require('../helpers/dbHelper')
@@ -32,9 +32,8 @@ module.exports = {
     }
   },
   async getSaintsByDate (req, res) {
-    console.log('saint date ', req.query.date)
-    let day = moment(req.query.date).format('DD')
-    let month = moment(req.query.date).format('MM')
+    let day = req.query.day
+    let month = req.query.month
     console.log('saint day ', day)
     console.log('saint month ', month)
     try {

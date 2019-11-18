@@ -16,6 +16,7 @@ npm run serve
 2. Uncomment production code in client Api.js
 3. Change dist/manifest.json name to Lectio Divina
 4. Copy the following to dist/service-worker.js
+
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
  * requests for URLs in the manifest.
@@ -31,6 +32,7 @@ self.addEventListener('message', msg => {
         self.skipWaiting()
     }
 })
+
 5. To deploy server on heroku run on functions folder:
     - git add .
     - git commit -ma "message"

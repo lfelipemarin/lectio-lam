@@ -37,10 +37,11 @@ export default {
         let docRef = db.collection('users').doc(user.email).collection('lectios').where('createdAt', '==', date)
         return docRef
     },
-    getSaintsByDate (date) {
+    getSaintsByDate (month, day) {
         return Api().get('saints', {
             params: {
-                date: date
+                month: month,
+                day: day
             }
         })
     },

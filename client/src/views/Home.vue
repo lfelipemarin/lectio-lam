@@ -87,15 +87,15 @@ export default {
         await this.getTodaysSaints()
         this.$store.dispatch('setExpiryDate')
       }
-      this.$store.dispatch('setIsLoadingData', false)
       this.$nextTick(() => {
         setTimeout(() => {
           if (this.totalLectios) {
             this.createChart(this.lectioData, am4charts.XYChart, this.$refs.lectiosChart, 'month')
             this.createChart(this.commitmentData, am4charts.XYChart, this.$refs.commitmentChart, 'month', this.chartCommit)
           }
-        }, 1500)
+        }, 3000)
       })
+      this.$store.dispatch('setIsLoadingData', false)
     }
   },
   beforeDestroy () {
@@ -116,8 +116,9 @@ export default {
       }
     },
     async getTodaysSaints () {
-      let date = this.$moment().format()
-      const response = await lectioService.getSaintsByDate(date);
+      const day = this.$moment().format('DD')
+      const month = this.$moment().format('MM')
+      const response = await lectioService.getSaintsByDate(month, day);
       this.$store.dispatch('setSaints', response.data)
     },
     getAllLectios () {

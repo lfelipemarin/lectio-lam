@@ -8,6 +8,9 @@ const MailController = require('./controllers/MailController')
 
 const isAuthenticated = require('./policies/isAuthenticated')
 
+var multer = require('multer')
+var upload = multer()
+
 module.exports = (app) => {
   // Registration & Login
   app.post('/register',
@@ -58,6 +61,6 @@ module.exports = (app) => {
     LectioController.getAllLectios)
 
   // Email send
-  app.post('/mail',
+  app.post('/mail', upload.single('image'),
     MailController.sendMail)
 }

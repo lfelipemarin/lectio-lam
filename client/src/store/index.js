@@ -8,18 +8,20 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   strict: true,
   plugins: [
-    createPersistedState({
-      reducer: (persistedState) => {
-        const stateFilter = Object.assign({}, persistedState)
-        const blackList = ['lectioDivina']
+    // Use if do not need to persist a state
+    // createPersistedState({
+    //   reducer: (persistedState) => {
+    //     const stateFilter = Object.assign({}, persistedState)
+    //     const blackList = ['lectioDivina']
 
-        blackList.forEach((item) => {
-          delete stateFilter[item]
-        })
+    //     blackList.forEach((item) => {
+    //       delete stateFilter[item]
+    //     })
 
-        return stateFilter
-      }
-    })
+    //     return stateFilter
+    //   }
+    // })
+    createPersistedState()
   ],
   state: {
     token: null,
