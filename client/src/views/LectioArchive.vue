@@ -42,16 +42,18 @@
               {{beautyDate(lectio.createdAt)}}
             </v-chip>
           </v-list-item>
-          <v-card-text>
-            <h4>Lectio</h4>
-            <p>{{lectio.lectio | truncate(75)}}</p>
-            <h4>Meditatio</h4>
-            <p>{{lectio.meditatio | truncate(75)}}</p>
-            <h4>Oratio</h4>
-            <p>{{lectio.oratio | truncate(75)}}</p>
-            <h4>Actio</h4>
-            <p>{{lectio.actio | truncate(75)}}</p>
-          </v-card-text>
+          <v-expand-transition>
+            <v-card-text v-show="lectio.show">
+              <h4>Lectio</h4>
+              <p>{{lectio.lectio | truncate(75)}}</p>
+              <h4>Meditatio</h4>
+              <p>{{lectio.meditatio | truncate(75)}}</p>
+              <h4>Oratio</h4>
+              <p>{{lectio.oratio | truncate(75)}}</p>
+              <h4>Actio</h4>
+              <p>{{lectio.actio | truncate(75)}}</p>
+            </v-card-text>
+          </v-expand-transition>
           <v-list-item v-if="!lectio.completedActio">
             <div class="flex-grow-1"></div>
             <v-chip class="mt-2" color="warning" label text-color="white">
@@ -59,7 +61,6 @@
               Tienes un compromiso sin completar
             </v-chip>
           </v-list-item>
-
           <v-card-actions>
             <v-btn text color="primary" @click.stop="openLectioView(lectio)">
               Leer
@@ -71,10 +72,15 @@
             <v-btn icon>
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
+            <v-btn icon @click="lectio.show = !lectio.show">
+              <v-icon>{{ lectio.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
     </v-fade-transition>
+    <v-progress-linear id="loading-progress" v-show="loadingMore" :size="70" :width="7" color="accent" indeterminate>
+    </v-progress-linear>
   </v-container>
   <v-container fill-height v-else>
     <v-layout align-center>
@@ -94,30 +100,55 @@ export default {
     searchDate: '',
     menu: false,
     modal: false,
-    page: 0,
-    pageSize: 10,
+    limit: 10,
+    lastVisible: null,
     error: null,
     loading: true,
+    loadingMore: false,
     completedActio: false,
     filterNotCompleted: false,
-    lectioArchive:[]
+    lectioArchive: []
   }),
   mounted () {
-    // this.loading = false
     this.getAllLectios()
+    this.scroll()
   },
   methods: {
+    scroll () {
+      let user = this.$store.state.user
+      window.onscroll = () => {
+        if (this.lastVisible) {
+          let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) +
+            window.innerHeight + document.getElementById('loading-progress').offsetHeight === document.documentElement.offsetHeight
+
+          if (bottomOfWindow) {
+            this.loadingMore = true
+            lectioService.getAllLectios(user, this.limit, this.lastVisible).then((collection) => {
+              this.lastVisible = collection.docs[collection.docs.length - 1]
+              _.map(collection.docs, (doc) => {
+                let lectio = doc.data()
+                lectio.show = false
+                this.lectioArchive.push(lectio)
+              })
+              this.loadingMore = false
+            })
+          }
+        }
+      }
+    },
     getAllLectios () {
       let user = this.$store.state.user
       let lectioArchive
       lectioService.getAllLectios(user).then((collection) => {
+        this.lastVisible = collection.docs[collection.docs.length - 1]
         lectioArchive = _.map(collection.docs, (doc) => {
-          return doc.data()
+          let lectio = doc.data()
+          lectio.show = false
+          return lectio
         })
         this.lectioArchive = _.sortBy(lectioArchive, (lectio) => {
           return lectio.createdAt
         })
-
         // this.$store.dispatch('setLectioArchive', { lectioArchive, letPush: false })
         this.loading = false
       }).catch((error) => {

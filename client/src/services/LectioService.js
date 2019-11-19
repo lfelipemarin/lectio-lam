@@ -29,8 +29,13 @@ export default {
     updateLectio (lectio, user, value) {
         return db.collection('users').doc(user.email).collection('lectios').doc(`lectio-${lectio.createdAt}`).update(value)
     },
-    getAllLectios (user) {
-        let docRef = db.collection('users').doc(user.email).collection('lectios')
+    getAllLectios (user, limit, startAfter) {
+        let docRef
+        if (startAfter) {
+            docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt', 'desc').startAfter(startAfter).limit(limit ? limit : 10)
+        } else {
+            docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt', 'desc').limit(limit ? limit : 10)
+        }
         return docRef.get()
     },
     getLectioByCreatedDate (user, date) {
