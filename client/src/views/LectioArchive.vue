@@ -139,7 +139,7 @@ export default {
     getAllLectios () {
       let user = this.$store.state.user
       let lectioArchive
-      lectioService.getAllLectios(user).then((collection) => {
+      lectioService.getAllLectios(user, this.limit).then((collection) => {
         this.lastVisible = collection.docs[collection.docs.length - 1]
         lectioArchive = _.map(collection.docs, (doc) => {
           let lectio = doc.data()

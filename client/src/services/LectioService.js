@@ -34,7 +34,11 @@ export default {
         if (startAfter) {
             docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt', 'desc').startAfter(startAfter).limit(limit ? limit : 10)
         } else {
-            docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt', 'desc').limit(limit ? limit : 10)
+            if (limit) {
+                docRef = db.collection('users').doc(user.email).collection('lectios').orderBy('createdAt', 'desc').limit(limit)
+            } else {
+                docRef = db.collection('users').doc(user.email).collection('lectios')
+            }
         }
         return docRef.get()
     },
