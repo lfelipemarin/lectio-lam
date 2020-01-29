@@ -13,9 +13,7 @@ npm run serve
 ### Compiles and minifies for production
 ```
 1. npm run build
-2. Uncomment production code in client Api.js
-3. Change dist/manifest.json name to Lectio Divina
-4. Copy the following to dist/service-worker.js
+2. Copy the following to dist/service-worker.js
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
@@ -32,6 +30,8 @@ self.addEventListener('message', msg => {
         self.skipWaiting()
     }
 })
+
+3. Run 'firebase deploy --only hosting'
 
 5. To deploy server on heroku run on functions folder:
     - git add .
