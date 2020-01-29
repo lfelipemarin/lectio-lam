@@ -17,7 +17,7 @@
               </v-list-item-avatar>
             </v-list-item>
             <v-list-item>
-              <v-list-item-content v-html="cleanText(saintInfo.bio)">
+              <v-list-item-content ref="saintBio" v-html="cleanText(saintInfo.bio)">
               </v-list-item-content>
             </v-list-item>
             <v-card-actions>
@@ -85,10 +85,12 @@ export default {
   },
   methods: {
     saintSocialShare (saint) {
+      let bioText = this.$refs.saintBio.innerHTML
+        debugger
       if (navigator.share) {
         navigator.share({
           title: `${saint.name} ${saint.date_displayed}`,
-          text: `*${saint.name} ${saint.date_displayed}* ${this.cleanText(saint.bio)}`,
+          text: `*${saint.name} ${saint.date_displayed}* ${bioText}`,
         })
           .then(() => console.log('Successful share'))
           .catch((error) => console.log('Error sharing', error));

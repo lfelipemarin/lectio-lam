@@ -21,8 +21,8 @@ require('./routes')(app)
 //     console.log(`Server started on port ${config.port}`)
 //   })
 
-  app.listen(config.port)
-    console.log(`Server started on port ${config.port}`)
+app.listen(config.port)
+console.log(`Server started on port ${config.port}`)
 
 // For google functions
 // const api = functions.https.onRequest(app)

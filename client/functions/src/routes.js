@@ -4,7 +4,6 @@ const AuthenticationControllerPolicy = require('./policies/AuthenticationControl
 const BookmarksController = require('./controllers/BookmarksController')
 // const HistoriesController = require('./controllers/HistoriesController')
 const LectioController = require('./controllers/LectioController')
-const MailController = require('./controllers/MailController')
 
 const isAuthenticated = require('./policies/isAuthenticated')
 
@@ -59,8 +58,4 @@ module.exports = (app) => {
     LectioController.saveLectio)
   app.get('/lectios',
     LectioController.getAllLectios)
-
-  // Email send
-  app.post('/mail', upload.single('image'),
-    MailController.sendMail)
 }
