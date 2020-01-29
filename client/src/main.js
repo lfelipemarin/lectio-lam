@@ -7,6 +7,7 @@ import './registerServiceWorker'
 import vuetify from './plugins/vuetify';
 import firebase from 'firebase/app'
 import Moment from 'moment'
+import VueAnalytics from 'vue-analytics'
 let SocialSharing = require('vue-social-sharing');
 
 const firebaseConfig = {
@@ -38,6 +39,11 @@ db.enablePersistence()
 
 Vue.config.productionTip = false
 Vue.use(SocialSharing);
+Vue.use(VueAnalytics, {
+  id: process.env.VUE_APP_GA_ID,
+  router
+})
+
 
 sync(store, router)
 
