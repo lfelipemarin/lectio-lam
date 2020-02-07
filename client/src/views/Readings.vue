@@ -1,7 +1,12 @@
 <template>
   <v-container fluid v-if="!loading">
     <v-row>
-      <v-col>
+      <v-col cols="1" class="arrow">
+        <v-btn text icon @click="getPreviousDayReadings">
+          <v-icon>mdi-arrow-left-circle</v-icon>
+        </v-btn>
+      </v-col>
+      <v-col cols="10">
         <v-list-item>
           <v-icon left>mdi-calendar-month</v-icon>
           <v-list-item-content>
@@ -10,6 +15,11 @@
             <v-list-item-subtitle class="text-wrap">{{evgDetails.data.liturgic_title}}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
+      </v-col>
+      <v-col cols="1" class="arrow">
+        <v-btn text icon @click="getNextDayReadings">
+          <v-icon>mdi-arrow-right-circle</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -119,7 +129,8 @@ export default {
       selection: '',
       snackbar: false,
       text: '',
-      message: ''
+      message: '',
+      date: Date.now()
     };
   },
   computed: {
@@ -167,6 +178,24 @@ export default {
         this.message = 'Por favor selecciona una parte del texto'
         this.snackbar = true
       }
+    },
+    getNextDayReadings () {
+      this.loading = true
+      this.date = this.$moment(this.date).add(1, 'days').format('YYYY-MM-DD')
+      lectioService.getTodaysReadings(this.date).then((response) => {
+        this.evgDetails = response.data
+        this.readings = response.data.data.readings
+        this.loading = false
+      })
+    },
+    getPreviousDayReadings () {
+      this.loading = true
+      this.date = this.$moment(this.date).subtract(1, 'days').format('YYYY-MM-DD')
+      lectioService.getTodaysReadings(this.date).then((response) => {
+        this.evgDetails = response.data
+        this.readings = response.data.data.readings
+        this.loading = false
+      })
     },
     readingSocialShare (reading) {
       if (navigator.share) {
@@ -221,3 +250,11 @@ export default {
   }
 };
 </script>
+<style lang="sass" scoped>
+.arrow
+  display: flex
+  justify-content: center
+  align-items: center
+  .v-icon
+    font-size: 40px
+</style>
