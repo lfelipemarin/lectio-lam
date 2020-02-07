@@ -1,7 +1,7 @@
 <template>
   <v-container fluid v-if="!loading">
     <v-row>
-      <v-col cols="12">
+      <v-col cols="12" v-if="lectioInfo">
         <h2>Lectio</h2>
         <p>{{lectioInfo.lectio}}</p>
         <h2>Meditatio</h2>
@@ -16,11 +16,35 @@
 
       </v-col>
       <v-col cols="12">
-        <v-expansion-panels>
+        <v-expansion-panels :accordion="true" :flat="true" v-if="evgDetails">
           <v-expansion-panel>
             <v-expansion-panel-header>Ver lecturas del ese día</v-expansion-panel-header>
             <v-expansion-panel-content>
-              <p v-html="todaysReadings"></p>
+              <v-row>
+                <v-col cols="10">
+                  <v-list-item>
+                    <v-icon left>mdi-calendar-month</v-icon>
+                    <v-list-item-content>
+                      <v-list-item-title class="headline text-wrap">{{evgDetails.date_displayed}}
+                      </v-list-item-title>
+                      <v-list-item-subtitle class="text-wrap">{{evgDetails.liturgic_title}}</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col v-for="(reading, index) in readings" :key="index" cols="12" sm="12" md="6" lg="4">
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title class="headline text-wrap">{{`${reading.title}`}}
+                      </v-list-item-title>
+                      <v-list-item-subtitle class="text-wrap">{{`${reading.reference_displayed}`}}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <p>{{cleanText(reading.text)}}</p>
+                </v-col>
+              </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -48,16 +72,15 @@ import lectioService from "../services/LectioService";
 export default {
   data () {
     return {
-      todaysReadings: null,
+      evgDetails: {},
+      readings: [],
       lectioInfo: null,
       loading: true,
       snackbar: false
     };
   },
   mounted () {
-    lectioService.getDateReadings(this.$moment(this.$route.params.date).format('YYYYMMDD'), 'SP', 'all').then((readings) => {
-      this.todaysReadings = readings.data
-    })
+    this.getDateReadings()
     let user = this.$store.state.user
     // Listener for lectio changes
     lectioService.getLectioByCreatedDate(user, this.$route.params.date).onSnapshot(querySnapshot => {
@@ -65,9 +88,6 @@ export default {
         this.lectioInfo = doc.data()
         this.loading = false
       })
-      if (this.lectioInfo) {
-        this.$store.dispatch('updateLectio', this.lectioInfo)
-      }
     })
   },
   methods: {
@@ -80,6 +100,33 @@ export default {
         this.error = error
       })
     },
-  },
+    getDateReadings () {
+      this.loading = true
+      let date = this.$moment(this.$route.params.date).format('YYYY-MM-DD')
+      lectioService.getTodaysReadings(date).then((response) => {
+        this.evgDetails = response.data.data
+        this.readings = response.data.data.readings
+        this.loading = false
+      })
+    },
+    cleanText (text) {
+      let regex = /\[{2}.*?\]{2}/gm
+      let subst = ''
+      let result = text.replace(regex, subst)
+
+      subst = ' '
+      result = result.replace(regex, subst)
+
+      regex = /(\s)+/gm
+      result = result.replace(regex, subst)
+
+      return result.trim()
+    }
+  }
 };
 </script>
+<style lang="sass">
+.v-expansion-panel-content
+  .v-list-item
+    padding: 0
+</style>
