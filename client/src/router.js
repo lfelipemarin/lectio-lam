@@ -127,6 +127,14 @@ let router = new Router({
       component: () => import(/* webpackChunkName: "email-verify" */ './views/EmailVerify.vue')
     },
     {
+      path: '/plan-mortificacion',
+      name: 'plan-mortificacionverify',
+      // route level code-splitting
+      // this generates a separate chunk (plan-mortificacion.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "plan-mortificacion" */ './views/MortificationPlan.vue')
+    },
+    {
       path: '/404',
       name: '404',
       // route level code-splitting
