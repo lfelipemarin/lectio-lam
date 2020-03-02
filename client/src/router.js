@@ -128,11 +128,19 @@ let router = new Router({
     },
     {
       path: '/plan-mortificacion',
-      name: 'plan-mortificacionverify',
+      name: 'plan-mortificacion',
       // route level code-splitting
       // this generates a separate chunk (plan-mortificacion.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "plan-mortificacion" */ './views/MortificationPlan.vue')
+    },
+    {
+      path: '/milagros-eucaristicos',
+      name: 'milagros-eucaristicos',
+      // route level code-splitting
+      // this generates a separate chunk (milagros-eucaristicos.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "milagros-eucaristicos" */ './views/Eucharistic.vue')
     },
     {
       path: '/404',

@@ -19,7 +19,7 @@
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>
+                <v-list-item-title class="text-wrap">
                   {{ child.title }}
                 </v-list-item-title>
               </v-list-item-content>
@@ -132,6 +132,18 @@ export default {
         path: '/saints',
         title: 'Santos del Día',
         icon: 'mdi-account-heart'
+      },
+      {
+        icon: 'mdi-heart',
+        path: '',
+        title: 'Milagros Eucaristicos',
+        model: false,
+        children: [
+          { title: 'Por País', icon: 'mdi-flag', path: '/favorite-readings' },
+          { title: 'Santos, Misticos Y la Eucaristía', icon: './assets/JHS.png', path: '/favorite-saints' },
+          { title: 'Nuestra Señora Y la Eucaristía', icon: 'mdi-heart-circle', path: '/favorite-saints' },
+          { title: 'Comuniones Prodigiosas', icon: 'mdi-heart-circle', path: '/favorite-saints' },
+        ],
       },
       {
         path: '/lectio',
