@@ -36,6 +36,8 @@ export default new Vuex.Store({
       actioReminder: null
     },
     lectioArchive: null,
+    allMortifications: [],
+    weeklyMortifications: {},
     isUserLoggedIn: false,
     history: 0,
     expiryDate: null,
@@ -43,7 +45,9 @@ export default new Vuex.Store({
     isLoadingData: true
   },
   getters: {
-    isExpired: state => (new Date(state.expiryDate) < new Date())
+    isExpired: state => (new Date(state.expiryDate) < new Date()),
+    getWeeklyMortifications: state => state.weeklyMortifications,
+    getAllMortifications: state => state.allMortifications
   },
   mutations: {
     setToken (state, token) {
@@ -83,6 +87,12 @@ export default new Vuex.Store({
       } else {
         state.lectioArchive = lectioArchiveParams.lectioArchive
       }
+    },
+    setWeeklyMortifications (state, weeklyMortifications) {
+      state.weeklyMortifications = weeklyMortifications
+    },
+    setAllMortifications (state, allMortifications) {
+      state.allMortifications = allMortifications
     },
     setHistory (state, history) {
       state.history = history
@@ -139,6 +149,12 @@ export default new Vuex.Store({
     },
     setLectioArchive ({ commit }, lectioArchiveParams) {
       commit('setLectioArchive', lectioArchiveParams)
+    },
+    setWeeklyMortifications ({ commit }, weeklyMortifications) {
+      commit('setWeeklyMortifications', weeklyMortifications)
+    },
+    setAllMortifications ({ commit }, allMortifications) {
+      commit('setAllMortifications', allMortifications)
     },
     setHistory ({ commit }, history) {
       commit('setHistory', history)

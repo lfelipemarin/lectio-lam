@@ -4,8 +4,8 @@
       <v-col>
         <v-btn @click="generateRandomMorts">Generar</v-btn>
         <v-btn @click="clearRandomMorts">Limpiar</v-btn>
-        <draggable v-model="mortifications" group="people" @start="drag=true" @end="drag=false">
-          <template v-for="(mortification, i) in mortifications">
+        <draggable v-model="storeAllMortifications" group="people" @start="drag=true" @end="drag=false">
+          <template v-for="(mortification, i) in storeAllMortifications">
             <v-chip class="ma-2" color="indigo" text-color="white" draggable :key="i">
               <v-avatar left>
                 <v-icon>{{mortification.icon}}</v-icon>
@@ -23,8 +23,8 @@
           <v-list>
             <v-subheader>{{day}}</v-subheader>
             <v-list-item-group color="primary">
-              <draggable v-model="includedMortifications[day]" group="people" @start="drag=true" @end="drag=false">
-                <template v-for="(mortification, i) in includedMortifications[day]">
+              <draggable v-model="storeWeeklyMortifications[day]" group="people" @start="drag=true" @end="drag=false">
+                <template v-for="(mortification, i) in storeWeeklyMortifications[day]">
                   <v-chip class="ma-2" color="indigo" text-color="white" draggable :key="i">
                     <v-avatar left>
                       <v-icon>{{mortification.icon}}</v-icon>
@@ -44,6 +44,7 @@
 <script>
 import _ from "lodash"
 import draggable from 'vuedraggable'
+import { mapGetters } from 'vuex';
 // import lectioService from "../services/LectioService"
 
 export default {
@@ -52,6 +53,10 @@ export default {
   },
   mounted () {
     this.loading = false;
+    if (_.isEmpty(this.getWeeklyMortifications && this.getAllMortifications)) {
+      this.$store.commit('setAllMortifications', this.mortifications)
+      this.$store.commit('setWeeklyMortifications', this.includedMortifications)
+    }
   },
   data () {
     return {
@@ -73,6 +78,26 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'getWeeklyMortifications',
+      'getAllMortifications'
+    ]),
+    storeWeeklyMortifications: {
+      get () {
+        return this.$store.state.weeklyMortifications
+      },
+      set (value) {
+        this.$store.commit('setWeeklyMortifications', value)
+      }
+    },
+    storeAllMortifications: {
+      get () {
+        return this.$store.state.allMortifications
+      },
+      set (value) {
+        this.$store.commit('setAllMortifications', value)
+      }
+    },
   },
   watch: {
 
@@ -80,13 +105,17 @@ export default {
 
   methods: {
     generateRandomMorts () {
+      debugger
       this.includedMortifications = _.each(this.includedMortifications, day => {
         let randomIndex = Math.floor(Math.random() * this.mortifications.length)
         day.push(this.mortifications[randomIndex])
         this.mortifications = _.remove(this.mortifications, mortification => {
           return mortification != this.mortifications[randomIndex]
         })
+        this.$store.dispatch('setAllMortifications', _.cloneDeep(this.mortifications))
       })
+      this.$store.dispatch('setWeeklyMortifications', _.cloneDeep(this.includedMortifications))
+
 
     },
     clearRandomMorts () {
@@ -102,12 +131,13 @@ export default {
       { name: 'Comprar sólo lo necesario', icon: 'mdi-cart-off' }, { name: 'No discutir innecesariamente', icon: 'mdi-account-tie-voice' }, { name: 'No quejarnos de nada', icon: 'mdi-emoticon-cry' },
       { name: 'Hablar solo lo necesario', icon: 'mdi-volume-off' }]
       const includedMortificationsOriginal = { DOMINGO: [], LUNES: [], MARTES: [], MIÉRCOLES: [], JUEVES: [], VIERNES: [], SÁBADO: [] }
-      this.includedMortifications = includedMortificationsOriginal
-      this.mortifications = mortificationsOriginal
+      this.$store.dispatch('setWeeklyMortifications', includedMortificationsOriginal)
+      this.$store.dispatch('setAllMortifications', mortificationsOriginal)
+      this.mortifications = _.cloneDeep(mortificationsOriginal)
+      this.includedMortifications = _.cloneDeep(includedMortificationsOriginal)
     }
   }
 }
 </script>
 <style lang="sass" scoped>
-
 </style>
