@@ -51,8 +51,12 @@ export default {
   components: {
     draggable
   },
+  created () {
+    this.gapi = gapi;
+    this.handleClientLoad();
+  },
   mounted () {
-    this.loading = false;
+    this.loading = false
     if (_.isEmpty(this.getWeeklyMortifications && this.getAllMortifications)) {
       this.$store.commit('setAllMortifications', this.mortifications)
       this.$store.commit('setWeeklyMortifications', this.includedMortifications)
@@ -115,8 +119,42 @@ export default {
         this.$store.dispatch('setAllMortifications', _.cloneDeep(this.mortifications))
       })
       this.$store.dispatch('setWeeklyMortifications', _.cloneDeep(this.includedMortifications))
+    },
+    /**
+    *  On load, called to load the auth2 library and API client library.
+    */
+    handleClientLoad () {
+      this.gapi.load('client:auth2', this.initGC);
+    },
+    initGC () {
+      // Array of API discovery doc URLs for APIs used by the quickstart
+      let DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
 
+      // Authorization scopes required by the API; multiple scopes can be
+      // included, separated by spaces.
+      let SCOPES = "https://www.googleapis.com/auth/calendar.events"
 
+      this.gapi.client.init({
+        apiKey: process.env.VUE_APP_GC_API_KEY,
+        clientId: process.env.VUE_APP_GC_CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+      }).then(() => {
+        // Listen for sign-in state changes.
+        this.gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
+        this.gapi.auth2.getAuthInstance().signIn()
+
+        // Handle the initial sign-in state.
+        // updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        // authorizeButton.onclick = handleAuthClick;
+        // signoutButton.onclick = handleSignoutClick;
+      }, function (error) {
+        // appendPre(JSON.stringify(error, null, 2));
+        console.log('GC error: ', error)
+      });
+    },
+    updateSigninStatus (isSignedIn) {
+      console.log('GC signed in: ', isSignedIn)
     },
     clearRandomMorts () {
       const mortificationsOriginal = [{ name: 'Segundo heróico', icon: 'mdi-alarm' }, { name: 'Comer por separado', icon: 'mdi-pasta' }, { name: 'Pasar comidas con agua', icon: 'mdi-water' },
