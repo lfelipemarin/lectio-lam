@@ -4,6 +4,8 @@
       <v-col>
         <v-btn @click="generateRandomMorts">Generar</v-btn>
         <v-btn @click="clearRandomMorts">Limpiar</v-btn>
+        <v-btn @click="saveInGC">Guardar en Calendario de Google</v-btn>
+        <v-btn @click="handleSignOut">Cerrar sesion</v-btn>
         <draggable v-model="storeAllMortifications" group="people" @start="drag=true" @end="drag=false">
           <template v-for="(mortification, i) in storeAllMortifications">
             <v-chip class="ma-2" color="indigo" text-color="white" draggable :key="i">
@@ -37,6 +39,12 @@
           </v-list>
         </v-card>
       </template>
+      <v-snackbar v-model="snackbar" multi-line color="success" :timeout=4000>
+        Mortificaciones agregadas al Calendario de Google
+        <v-btn color="white" text @click="snackbar = false">
+          Cerrar
+        </v-btn>
+      </v-snackbar>
     </v-row>
   </v-container>
 </template>
@@ -52,6 +60,7 @@ export default {
     draggable
   },
   created () {
+    // eslint-disable-next-line
     this.gapi = gapi;
     this.handleClientLoad();
   },
@@ -78,7 +87,8 @@ export default {
       { name: 'Abstenerse de hacer chistes', icon: 'mdi-emoticon-tongue' }, { name: 'No hablar de mí', icon: 'mdi-account-check' }, { name: 'Vestirse austeramente', icon: 'mdi-human-female' },
       { name: 'Comprar sólo lo necesario', icon: 'mdi-cart-off' }, { name: 'No discutir innecesariamente', icon: 'mdi-account-tie-voice' }, { name: 'No quejarnos de nada', icon: 'mdi-emoticon-cry' },
       { name: 'Hablar solo lo necesario', icon: 'mdi-volume-off' }],
-      includedMortifications: { DOMINGO: [], LUNES: [], MARTES: [], MIÉRCOLES: [], JUEVES: [], VIERNES: [], SÁBADO: [] }
+      includedMortifications: { DOMINGO: [], LUNES: [], MARTES: [], MIÉRCOLES: [], JUEVES: [], VIERNES: [], SÁBADO: [] },
+      authorized: false
     }
   },
   computed: {
@@ -91,7 +101,7 @@ export default {
         return this.$store.state.weeklyMortifications
       },
       set (value) {
-        this.$store.commit('setWeeklyMortifications', value)
+        this.$store.dispatch('setWeeklyMortifications', _.cloneDeep(value))
       }
     },
     storeAllMortifications: {
@@ -99,17 +109,12 @@ export default {
         return this.$store.state.allMortifications
       },
       set (value) {
-        this.$store.commit('setAllMortifications', value)
+        this.$store.dispatch('setAllMortifications', _.cloneDeep(value))
       }
     },
   },
-  watch: {
-
-  },
-
   methods: {
     generateRandomMorts () {
-      debugger
       this.includedMortifications = _.each(this.includedMortifications, day => {
         let randomIndex = Math.floor(Math.random() * this.mortifications.length)
         day.push(this.mortifications[randomIndex])
@@ -132,7 +137,7 @@ export default {
 
       // Authorization scopes required by the API; multiple scopes can be
       // included, separated by spaces.
-      let SCOPES = "https://www.googleapis.com/auth/calendar.events"
+      let SCOPES = "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events"
 
       this.gapi.client.init({
         apiKey: process.env.VUE_APP_GC_API_KEY,
@@ -142,19 +147,82 @@ export default {
       }).then(() => {
         // Listen for sign-in state changes.
         this.gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
-        this.gapi.auth2.getAuthInstance().signIn()
 
-        // Handle the initial sign-in state.
-        // updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        // authorizeButton.onclick = handleAuthClick;
-        // signoutButton.onclick = handleSignoutClick;
       }, function (error) {
         // appendPre(JSON.stringify(error, null, 2));
         console.log('GC error: ', error)
       });
     },
     updateSigninStatus (isSignedIn) {
-      console.log('GC signed in: ', isSignedIn)
+      this.authorized = isSignedIn
+      if (this.authorized) {
+        this.saveInGC()
+      }
+    },
+    handleSignOut () {
+      this.gapi.auth2.getAuthInstance().signOut()
+    },
+    generateBatchEvents () {
+      let newEvent = {}
+      let index = 1
+      let events = _.map(this.storeWeeklyMortifications, (mortification) => {
+        if (mortification[0]) {
+          newEvent = {
+            'summary': mortification[0].name,
+            // 'location': '800 Howard St., San Francisco, CA 94103',
+            'description': mortification[0].name,
+            'start': {
+              'date': this.findNextWeekDay(index).format('YYYY-MM-DD'),
+              'timeZone': 'America/Bogota'
+            },
+            'end': {
+              'date': this.findNextWeekDay(index).format('YYYY-MM-DD'),
+              'timeZone': 'America/Bogota'
+            },
+            'reminders': {
+              'useDefault': false,
+              'overrides': [
+                { 'method': 'email', 'minutes': 4 * 60 },
+                { 'method': 'popup', 'minutes': 4 * 60 }
+              ]
+            }
+          }
+          index++
+          return newEvent
+        }
+      })
+      index = 1
+      const batch = this.gapi.client.newBatch();
+      events.map((r, j) => {
+        batch.add(this.gapi.client.calendar.events.insert({
+          'calendarId': 'primary',
+          'resource': events[j]
+        }))
+      })
+      batch.then(() => {
+        this.snackbar = true
+      });
+    },
+    saveInGC () {
+      this.authorized = this.gapi.auth2.getAuthInstance().isSignedIn.get()
+      if (!this.authorized) {
+        this.gapi.auth2.getAuthInstance().signIn()
+      } else {
+        this.generateBatchEvents()
+      }
+    },
+    /** 
+     * @param day number of the day I need
+    */
+    findNextWeekDay (day) {
+      const today = this.$moment().weekday();
+
+      if (today <= day) {
+        return this.$moment().weekday(day);
+      } else {
+        // otherwise, give me *next week's* instance of that same day
+        return this.$moment().add(1, 'weeks').weekday(day);
+      }
     },
     clearRandomMorts () {
       const mortificationsOriginal = [{ name: 'Segundo heróico', icon: 'mdi-alarm' }, { name: 'Comer por separado', icon: 'mdi-pasta' }, { name: 'Pasar comidas con agua', icon: 'mdi-water' },

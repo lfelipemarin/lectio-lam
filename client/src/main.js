@@ -54,6 +54,11 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
+Moment.updateLocale('es', {
+  week: {
+    dow: 6
+  }
+})
 Moment.locale('es')
 Vue.prototype.$moment = Moment
 
