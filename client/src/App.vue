@@ -141,18 +141,18 @@ export default {
         title: 'Santos del Día',
         icon: 'mdi-account-heart'
       },
-      // {
-      //   icon: 'mdi-heart',
-      //   path: '',
-      //   title: 'Milagros Eucaristicos',
-      //   model: false,
-      //   children: [
-      //     { title: 'Por País', icon: 'mdi-flag', path: '/favorite-readings' },
-      //     { title: 'Santos, Misticos Y la Eucaristía', icon: './assets/JHS.png', path: '/favorite-saints' },
-      //     { title: 'Nuestra Señora Y la Eucaristía', icon: 'mdi-heart-circle', path: '/favorite-saints' },
-      //     { title: 'Comuniones Prodigiosas', icon: 'mdi-heart-circle', path: '/favorite-saints' },
-      //   ],
-      // },
+      {
+        icon: 'mdi-alpha-j-circle',
+        path: '',
+        title: 'Milagros Eucaristicos',
+        model: false,
+        children: [
+          { title: 'Por País', icon: 'mdi-flag', path: '/favorite-readings' },
+          { title: 'Santos, Misticos Y la Eucaristía', icon: 'mdi-alpha-s-circle', path: '/favorite-saints' },
+          { title: 'Nuestra Señora Y la Eucaristía', icon: 'mdi-alpha-m-circle', path: '/favorite-saints' },
+          { title: 'Comuniones Prodigiosas', icon: 'mdi-heart-circle', path: '/favorite-saints' },
+        ],
+      },
       {
         path: '/lectio',
         title: 'Lectio Divina',
@@ -170,7 +170,7 @@ export default {
         model: false,
         children: [
           { title: 'Lecturas Favoritas', icon: 'mdi-tag-heart', path: '/favorite-readings' },
-          { title: 'Santos Favoritos', icon: 'mdi-heart-circle', path: '/favorite-saints' }
+          { title: 'Santos Favoritos', icon: 'mdi-head-heart', path: '/favorite-saints' }
         ],
       },
       {
