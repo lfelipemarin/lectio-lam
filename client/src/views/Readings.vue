@@ -1,12 +1,12 @@
 <template>
   <v-container fluid v-if="!loading">
-    <v-row>
+    <v-row class="justify-center">
       <v-col cols="1" class="arrow">
         <v-btn text icon @click="getPreviousDayReadings">
-          <v-icon>mdi-arrow-left-circle</v-icon>
+          <v-icon size="40">mdi-arrow-left-circle</v-icon>
         </v-btn>
       </v-col>
-      <v-col cols="10">
+      <v-col cols="9">
         <v-list-item>
           <v-icon left>mdi-calendar-month</v-icon>
           <v-list-item-content>
@@ -18,7 +18,7 @@
       </v-col>
       <v-col cols="1" class="arrow">
         <v-btn text icon @click="getNextDayReadings">
-          <v-icon>mdi-arrow-right-circle</v-icon>
+          <v-icon size="40">mdi-arrow-right-circle</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -255,6 +255,4 @@ export default {
   display: flex
   justify-content: center
   align-items: center
-  .v-icon
-    font-size: 40px
 </style>

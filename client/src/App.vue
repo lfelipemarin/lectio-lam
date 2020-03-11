@@ -29,7 +29,14 @@
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
-            <v-list-item-content>
+            <v-badge color="green" content="nuevo" v-if="item.new">
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ item.title }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-badge>
+            <v-list-item-content v-else>
               <v-list-item-title>
                 {{ item.title }}
               </v-list-item-title>
@@ -92,7 +99,8 @@
 
     <v-content>
       <router-view></router-view>
-      <v-btn fab large bottom right fixed small color="error" class="v-btn--report" href="mailto:lectio.divina33@gmail.com?subject=Error ó comentario">
+      <v-btn fab large bottom right fixed small color="error" class="v-btn--report"
+             href="mailto:lectio.divina33@gmail.com?subject=Error ó comentario">
         <v-icon>mdi-bug</v-icon>
       </v-btn>
       <v-snackbar v-model="snackbar" :timeout="6000" color="info" right bottom :class="snackbarClass">
@@ -126,25 +134,25 @@ export default {
       {
         path: '/readings',
         title: 'Liturgia del Día',
-        icon: 'mdi-bible'
+        icon: 'mdi-book-cross'
       },
       {
         path: '/saints',
         title: 'Santos del Día',
         icon: 'mdi-account-heart'
       },
-      {
-        icon: 'mdi-heart',
-        path: '',
-        title: 'Milagros Eucaristicos',
-        model: false,
-        children: [
-          { title: 'Por País', icon: 'mdi-flag', path: '/favorite-readings' },
-          { title: 'Santos, Misticos Y la Eucaristía', icon: './assets/JHS.png', path: '/favorite-saints' },
-          { title: 'Nuestra Señora Y la Eucaristía', icon: 'mdi-heart-circle', path: '/favorite-saints' },
-          { title: 'Comuniones Prodigiosas', icon: 'mdi-heart-circle', path: '/favorite-saints' },
-        ],
-      },
+      // {
+      //   icon: 'mdi-heart',
+      //   path: '',
+      //   title: 'Milagros Eucaristicos',
+      //   model: false,
+      //   children: [
+      //     { title: 'Por País', icon: 'mdi-flag', path: '/favorite-readings' },
+      //     { title: 'Santos, Misticos Y la Eucaristía', icon: './assets/JHS.png', path: '/favorite-saints' },
+      //     { title: 'Nuestra Señora Y la Eucaristía', icon: 'mdi-heart-circle', path: '/favorite-saints' },
+      //     { title: 'Comuniones Prodigiosas', icon: 'mdi-heart-circle', path: '/favorite-saints' },
+      //   ],
+      // },
       {
         path: '/lectio',
         title: 'Lectio Divina',
@@ -164,6 +172,12 @@ export default {
           { title: 'Lecturas Favoritas', icon: 'mdi-tag-heart', path: '/favorite-readings' },
           { title: 'Santos Favoritos', icon: 'mdi-heart-circle', path: '/favorite-saints' }
         ],
+      },
+      {
+        path: '/plan-mortificacion',
+        title: 'Plan de Mortificaciones',
+        icon: 'mdi-hand-heart',
+        new: true
       },
     ],
     options: [
@@ -232,13 +246,16 @@ export default {
   },
 }
 </script>
-<style lang="sass">
-  .v-snackbar--report
-    bottom: 88px !important
-    .v-snack__wrapper
-      min-width: 200px
-      margin-right: 0
+<style lang="sass" scoped>
+.v-snackbar--report
+  bottom: 88px !important
+  .v-snack__wrapper
+    min-width: 200px
+    margin-right: 0
 
   .v-card__text, .v-card__title
     word-break: normal !important
+
+.v-list-item__action
+  margin-left: 0 !important
 </style>

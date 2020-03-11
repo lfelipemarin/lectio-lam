@@ -1,14 +1,10 @@
 <template>
-  <v-container fluid v-if="!loading">
+  <v-container fluid>
     <v-row>
       <v-col>
-        <v-btn @click="generateRandomMorts">Generar</v-btn>
-        <v-btn @click="clearRandomMorts">Limpiar</v-btn>
-        <v-btn @click="saveInGC">Guardar en Calendario de Google</v-btn>
-        <v-btn @click="handleSignOut">Cerrar sesion</v-btn>
         <draggable v-model="storeAllMortifications" group="people" @start="drag=true" @end="drag=false">
           <template v-for="(mortification, i) in storeAllMortifications">
-            <v-chip class="ma-2" color="indigo" text-color="white" draggable :key="i">
+            <v-chip class="ma-2 text-wrap" color="indigo" text-color="white" draggable :key="i">
               <v-avatar left>
                 <v-icon>{{mortification.icon}}</v-icon>
               </v-avatar>
@@ -19,15 +15,22 @@
         </draggable>
       </v-col>
     </v-row>
+    <v-row justify="center">
+      <v-col class="text-center">
+        <v-btn class="white--text ma-2" color="primary" @click="generateRandomMorts">Generar</v-btn>
+        <v-btn class="white--text" color="primary" @click="clearRandomMorts">Limpiar</v-btn>
+        <!-- <v-btn class="white--text" color="primary" @click="handleSignOut">Cerrar sesion</v-btn> -->
+      </v-col>
+    </v-row>
     <v-row>
       <template>
-        <v-card class="mx-auto" max-width="600" width="300" tile v-for="(day, i) in days" :key="i">
+        <v-card class="mx-auto mb-3" max-width="600" width="300" tile v-for="(day, i) in days" :key="i">
           <v-list>
-            <v-subheader>{{day}}</v-subheader>
+            <v-subheader>{{dayTitle(day, i)}}</v-subheader>
             <v-list-item-group color="primary">
               <draggable v-model="storeWeeklyMortifications[day]" group="people" @start="drag=true" @end="drag=false">
                 <template v-for="(mortification, i) in storeWeeklyMortifications[day]">
-                  <v-chip class="ma-2" color="indigo" text-color="white" draggable :key="i">
+                  <v-chip class="ma-2 text-wrap" color="indigo" text-color="white" draggable :key="i">
                     <v-avatar left>
                       <v-icon>{{mortification.icon}}</v-icon>
                     </v-avatar>
@@ -45,6 +48,13 @@
           Cerrar
         </v-btn>
       </v-snackbar>
+    </v-row>
+    <v-row justify="center" v-if="canSaveToGC">
+      <v-col class="text-center">
+        <v-btn class="white--text text-wrap" color="primary" :loading="loading" :disabled="loading" @click="saveInGC">
+          Guardar en
+          Calendario de Google</v-btn>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -65,7 +75,6 @@ export default {
     this.handleClientLoad();
   },
   mounted () {
-    this.loading = false
     if (_.isEmpty(this.getWeeklyMortifications && this.getAllMortifications)) {
       this.$store.commit('setAllMortifications', this.mortifications)
       this.$store.commit('setWeeklyMortifications', this.includedMortifications)
@@ -73,12 +82,12 @@ export default {
   },
   data () {
     return {
-      loading: true,
       snackbar: false,
+      loading: false,
       days: ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'],
       mortifications: [{ name: 'Segundo heróico', icon: 'mdi-alarm' }, { name: 'Comer por separado', icon: 'mdi-pasta' }, { name: 'Pasar comidas con agua', icon: 'mdi-water' },
       { name: 'Comer sin sal', icon: 'mdi-shaker' }, { name: 'Bebidas sin azúcar', icon: 'mdi-grain' }, { name: 'Bañarse con agua fría', icon: 'mdi-shower-head' },
-      { name: 'Piedra en el zapato', icon: 'mdi-shoe-formal' }, { name: 'Dormir sin almohada', icon: 'mdi-bed-empty' }, { name: 'Dormir en el suelo', icon: 'mdi-sleep' },
+      { name: 'Piedra en el zapato', icon: 'mdi-shoe-formal' }, { name: 'Dormir sin almohada', icon: 'mdi-bed' }, { name: 'Dormir en el suelo', icon: 'mdi-sleep' },
       { name: 'No comer comidas rápidas', icon: 'mdi-food-off' }, { name: 'Evitar miradas curiosas', icon: 'mdi-eye-settings' }, { name: 'No leer noticias escandalosas', icon: 'mdi-newspaper' },
       { name: 'No escuchar conversaciones ajenas', icon: 'mdi-chat-alert-outline' }, { name: 'Apagar el TV antes del fin de una serie', icon: 'mdi-television-off' },
       { name: 'No comer dulces', icon: 'mdi-candycane' }, { name: 'No usar perfumes', icon: 'mdi-bottle-tonic' }, { name: 'No hacer pereza', icon: 'mdi-alarm-snooze' },
@@ -86,7 +95,11 @@ export default {
       { name: 'Sonreir con los demás', icon: 'mdi-emoticon-excited' }, { name: 'Saludar a los demás', icon: 'mdi-hand-right' }, { name: 'Buscar tiempo de soledad', icon: 'mdi-home-account' },
       { name: 'Abstenerse de hacer chistes', icon: 'mdi-emoticon-tongue' }, { name: 'No hablar de mí', icon: 'mdi-account-check' }, { name: 'Vestirse austeramente', icon: 'mdi-human-female' },
       { name: 'Comprar sólo lo necesario', icon: 'mdi-cart-off' }, { name: 'No discutir innecesariamente', icon: 'mdi-account-tie-voice' }, { name: 'No quejarnos de nada', icon: 'mdi-emoticon-cry' },
-      { name: 'Hablar solo lo necesario', icon: 'mdi-volume-off' }],
+      { name: 'Hablar solo lo necesario', icon: 'mdi-volume-off' }, { name: 'No usar redes sociales', icon: 'mdi-share-variant' }, { name: 'Despertar 1 hora antes para orar', icon: 'mdi-human-handsup' },
+      { name: 'Hablar de Dios a un desconocido', icon: 'mdi-forum' }, { name: 'No comer entre comidas', icon: 'mdi-food-variant-off' }, { name: 'No tomar sobremesa', icon: 'mdi-cup-water' },
+      { name: 'Dormir sin cobija', icon: 'mdi-bed-empty' }, { name: 'No ver TV', icon: 'mdi-television-classic-off' }, { name: 'No escuchar música', icon: 'mdi-music-note-off' },
+      { name: 'Dormir temprano', icon: 'mdi-power-sleep' }, { name: 'No mirarse al espejo', icon: 'mdi-mirror' }, { name: 'No tomar café o tinto', icon: 'mdi-coffee' },
+      { name: 'No prender el aire acondicionado del carro', icon: 'mdi-air-conditioner' }],
       includedMortifications: { DOMINGO: [], LUNES: [], MARTES: [], MIÉRCOLES: [], JUEVES: [], VIERNES: [], SÁBADO: [] },
       authorized: false
     }
@@ -112,9 +125,24 @@ export default {
         this.$store.dispatch('setAllMortifications', _.cloneDeep(value))
       }
     },
+    canSaveToGC () {
+      let canSave = false
+      _.forEach(this.getWeeklyMortifications, (mortification) => {
+        if (mortification[0]) {
+          canSave = true
+        }
+      })
+      return canSave
+    }
   },
   methods: {
+    dayTitle (day, dayNumber) {
+      dayNumber += 1
+      let formatedDate = `${this.findNextWeekDay(dayNumber).format('DD')} de ${this.findNextWeekDay(dayNumber).format('MMMM')}`
+      return `${day} ${formatedDate}`
+    },
     generateRandomMorts () {
+      this.clearRandomMorts()
       this.includedMortifications = _.each(this.includedMortifications, day => {
         let randomIndex = Math.floor(Math.random() * this.mortifications.length)
         day.push(this.mortifications[randomIndex])
@@ -163,6 +191,7 @@ export default {
       this.gapi.auth2.getAuthInstance().signOut()
     },
     generateBatchEvents () {
+      this.loading = true
       let newEvent = {}
       let index = 1
       let events = _.map(this.storeWeeklyMortifications, (mortification) => {
@@ -200,6 +229,7 @@ export default {
         }))
       })
       batch.then(() => {
+        this.loading = false
         this.snackbar = true
       });
     },
@@ -227,7 +257,7 @@ export default {
     clearRandomMorts () {
       const mortificationsOriginal = [{ name: 'Segundo heróico', icon: 'mdi-alarm' }, { name: 'Comer por separado', icon: 'mdi-pasta' }, { name: 'Pasar comidas con agua', icon: 'mdi-water' },
       { name: 'Comer sin sal', icon: 'mdi-shaker' }, { name: 'Bebidas sin azúcar', icon: 'mdi-grain' }, { name: 'Bañarse con agua fría', icon: 'mdi-shower-head' },
-      { name: 'Piedra en el zapato', icon: 'mdi-shoe-formal' }, { name: 'Dormir sin almohada', icon: 'mdi-bed-empty' }, { name: 'Dormir en el suelo', icon: 'mdi-sleep' },
+      { name: 'Piedra en el zapato', icon: 'mdi-shoe-formal' }, { name: 'Dormir sin almohada', icon: 'mdi-bed' }, { name: 'Dormir en el suelo', icon: 'mdi-sleep' },
       { name: 'No comer comidas rápidas', icon: 'mdi-food-off' }, { name: 'Evitar miradas curiosas', icon: 'mdi-eye-settings' }, { name: 'No leer noticias escandalosas', icon: 'mdi-newspaper' },
       { name: 'No escuchar conversaciones ajenas', icon: 'mdi-chat-alert-outline' }, { name: 'Apagar el TV antes del fin de una serie', icon: 'mdi-television-off' },
       { name: 'No comer dulces', icon: 'mdi-candycane' }, { name: 'No usar perfumes', icon: 'mdi-bottle-tonic' }, { name: 'No hacer pereza', icon: 'mdi-alarm-snooze' },
@@ -235,7 +265,11 @@ export default {
       { name: 'Sonreir con los demás', icon: 'mdi-emoticon-excited' }, { name: 'Saludar a los demás', icon: 'mdi-hand-right' }, { name: 'Buscar tiempo de soledad', icon: 'mdi-home-account' },
       { name: 'Abstenerse de hacer chistes', icon: 'mdi-emoticon-tongue' }, { name: 'No hablar de mí', icon: 'mdi-account-check' }, { name: 'Vestirse austeramente', icon: 'mdi-human-female' },
       { name: 'Comprar sólo lo necesario', icon: 'mdi-cart-off' }, { name: 'No discutir innecesariamente', icon: 'mdi-account-tie-voice' }, { name: 'No quejarnos de nada', icon: 'mdi-emoticon-cry' },
-      { name: 'Hablar solo lo necesario', icon: 'mdi-volume-off' }]
+      { name: 'Hablar solo lo necesario', icon: 'mdi-volume-off' }, { name: 'No usar redes sociales', icon: 'mdi-share-variant' }, { name: 'Despertar 1 hora antes para orar', icon: 'mdi-human-handsup' },
+      { name: 'Hablar de Dios a un desconocido', icon: 'mdi-forum' }, { name: 'No comer entre comidas', icon: 'mdi-food-variant' }, { name: 'No tomar sobremesa', icon: 'mdi-cup-water' },
+      { name: 'Dormir sin cobija', icon: 'mdi-bed-empty' }, { name: 'No ver TV', icon: 'mdi-television-classic-off' }, { name: 'No escuchar música', icon: 'mdi-music-note-off' },
+      { name: 'Dormir temprano', icon: 'mdi-power-sleep' }, { name: 'No mirarse al espejo', icon: 'mdi-mirror' }, { name: 'No tomar café o tinto', icon: 'mdi-coffee' },
+      { name: 'No prender el aire acondicionado del carro', icon: 'mdi-air-conditioner' }]
       const includedMortificationsOriginal = { DOMINGO: [], LUNES: [], MARTES: [], MIÉRCOLES: [], JUEVES: [], VIERNES: [], SÁBADO: [] }
       this.$store.dispatch('setWeeklyMortifications', includedMortificationsOriginal)
       this.$store.dispatch('setAllMortifications', mortificationsOriginal)
