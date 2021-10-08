@@ -1,12 +1,12 @@
 <template>
   <v-container grid-list-xs fill-height class="flex-column" justify-center v-if="!$store.state.isUserLoggedIn">
-    <v-row align="end" justify="center">
+    <div>
       <h1>LECTIO DIVINA</h1>
-    </v-row>
-    <v-row class="mt-3">
+    </div>
+    <div class="mt-3">
       <v-btn color="primary" class="mt-5 mr-5" to="/login">Ingresar</v-btn>
       <v-btn color="primary" class="mt-5" to="/signup">Registrarse</v-btn>
-    </v-row>
+    </div>
 
   </v-container>
   <v-container fluid v-else fill-height>

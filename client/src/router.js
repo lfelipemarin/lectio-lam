@@ -138,7 +138,7 @@ let router = new Router({
     {
       path: '/milagros-eucaristicos',
       name: 'milagros-eucaristicos',
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
       // route level code-splitting
       // this generates a separate chunk (milagros-eucaristicos.[hash].js) for this route
       // which is lazy-loaded when the route is visited.

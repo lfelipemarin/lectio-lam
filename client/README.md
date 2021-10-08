@@ -64,7 +64,7 @@ self.addEventListener('message', msg => {
 
 5. To deploy server on heroku run on functions folder:
     - git add .
-    - git commit -ma "message"
+    - git commit -am "message"
     - git push heroku master
 ```
 ### Run your tests
