@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import store from '@/store'
+import Vue from 'vue';
+import Router from 'vue-router';
+import store from '@/store';
 
-Vue.use(Router)
+Vue.use(Router);
 
 let router = new Router({
   mode: 'history',
@@ -11,7 +11,7 @@ let router = new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')
+      component: () => import(/* webpackChunkName: "home" */ './views/HomeComposition.vue'),
     },
     {
       path: '/readings',
@@ -20,37 +20,37 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (readings.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "readings" */ './views/Readings.vue')
+      component: () => import(/* webpackChunkName: "readings" */ './views/lectio/Readings.vue'),
     },
     {
       path: '/login',
       name: 'login',
       beforeEnter: (to, from, next) => {
         if (!store.state.isUserLoggedIn) {
-          next()
+          next();
         } else {
-          next('/')
+          next('/');
         }
       },
       // route level code-splitting
       // this generates a separate chunk (login.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')
+      component: () => import(/* webpackChunkName: "login" */ './views/auth/Login.vue'),
     },
     {
       path: '/signup',
       name: 'signup',
       beforeEnter: (to, from, next) => {
         if (!store.state.isUserLoggedIn) {
-          next()
+          next();
         } else {
-          next('/')
+          next('/');
         }
       },
       // route level code-splitting
       // this generates a separate chunk (signup.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "signup" */ './views/Signup.vue')
+      component: () => import(/* webpackChunkName: "signup" */ './views/auth/Signup.vue'),
     },
     {
       path: '/lectio',
@@ -60,7 +60,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (lectio.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "lectio" */ './views/Lectio.vue')
+      component: () => import(/* webpackChunkName: "lectio" */ './views/lectio/Lectio.vue'),
     },
     {
       path: '/lectio-archivo',
@@ -69,7 +69,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (lectio-archivo.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "lectio-archivo" */ './views/LectioArchive.vue')
+      component: () => import(/* webpackChunkName: "lectio-archivo" */ './views/lectio/LectioArchive.vue'),
     },
     {
       path: '/lectio-archivo/:date',
@@ -79,7 +79,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (previous-lectio.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "previous-lectio" */ './views/PreviousLectio.vue')
+      component: () => import(/* webpackChunkName: "previous-lectio" */ './views/lectio/PreviousLectio.vue'),
     },
     {
       path: '/favorite-readings',
@@ -88,7 +88,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (favorite-readings.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "favorite-readings" */ './views/FavoriteReadings.vue')
+      component: () => import(/* webpackChunkName: "favorite-readings" */ './views/favorites/FavoriteReadings.vue'),
     },
     {
       path: '/favorite-saints',
@@ -97,7 +97,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (favorite-saints.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "favorite-saints" */ './views/FavoriteSaints.vue')
+      component: () => import(/* webpackChunkName: "favorite-saints" */ './views/favorites/FavoriteSaints.vue'),
     },
     {
       path: '/saints',
@@ -106,7 +106,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (saints.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "saints" */ './views/Saints.vue')
+      component: () => import(/* webpackChunkName: "saints" */ './views/saints/Saints.vue'),
     },
     {
       path: '/saints/:id',
@@ -116,7 +116,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (saint.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "saint" */ './views/ViewSaint.vue')
+      component: () => import(/* webpackChunkName: "saint" */ './views/saints/ViewSaint.vue'),
     },
     {
       path: '/email-verify',
@@ -124,7 +124,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (email-verify.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "email-verify" */ './views/EmailVerify.vue')
+      component: () => import(/* webpackChunkName: "email-verify" */ './views/auth/EmailVerify.vue'),
     },
     {
       path: '/plan-mortificacion',
@@ -133,7 +133,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (plan-mortificacion.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "plan-mortificacion" */ './views/MortificationPlan.vue')
+      component: () => import(/* webpackChunkName: "plan-mortificacion" */ './views/MortificationPlan.vue'),
     },
     {
       path: '/milagros-eucaristicos',
@@ -142,7 +142,7 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (milagros-eucaristicos.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "milagros-eucaristicos" */ './views/Eucharistic.vue')
+      component: () => import(/* webpackChunkName: "milagros-eucaristicos" */ './views/Eucharistic.vue'),
     },
     {
       path: '/404',
@@ -150,24 +150,24 @@ let router = new Router({
       // route level code-splitting
       // this generates a separate chunk (404.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "404" */ './views/404.vue')
+      component: () => import(/* webpackChunkName: "404" */ './views/404.vue'),
     },
     {
       path: '*', // or '/index.html'
       beforeEnter: (to, from, next) => {
-        next('/')
-      }
-    }
-  ]
-})
+        next('/');
+      },
+    },
+  ],
+});
 
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   if (requiresAuth && !store.state.isUserLoggedIn) {
-    next('/login')
+    next('/login');
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;

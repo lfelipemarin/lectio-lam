@@ -10,17 +10,21 @@
         <v-card>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title class="headline text-wrap">{{`${reading.title}`}}
-              </v-list-item-title>
-              <v-list-item-subtitle class="text-wrap">{{`${reading.reference_displayed}`}}</v-list-item-subtitle>
+              <v-list-item-title class="headline text-wrap">{{ `${reading.title}` }} </v-list-item-title>
+              <v-list-item-subtitle class="text-wrap">{{ `${reading.reference_displayed}` }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-icon class="mb-4" @click="readyToDelete(reading)">mdi-close</v-icon>
           </v-list-item>
           <v-card-actions>
-            <v-chip outlined class="mt-2" color="primary" label
-                    :text-color="$vuetify.theme.dark?'white':'rgba(0, 0, 0, 0.54)'">
+            <v-chip
+              outlined
+              class="mt-2"
+              color="primary"
+              label
+              :text-color="$vuetify.theme.dark ? 'white' : 'rgba(0, 0, 0, 0.54)'"
+            >
               <v-icon left>mdi-calendar-month</v-icon>
-              {{beautyDate(reading.createdAt)}}
+              {{ beautyDate(reading.createdAt) }}
             </v-chip>
             <v-spacer></v-spacer>
             <v-btn icon @click="reading.showText = !reading.showText">
@@ -31,11 +35,10 @@
             <div v-show="reading.showText">
               <v-divider></v-divider>
               <v-card-text>
-                {{cleanText(reading.text)}}
+                {{ cleanText(reading.text) }}
               </v-card-text>
               <v-card-actions>
-                <v-btn class="white--text" color="primary" @click="sendSelectionToLectio">
-                  Lectio Divina</v-btn>
+                <v-btn class="white--text" color="primary" @click="sendSelectionToLectio"> Lectio Divina</v-btn>
                 <div class="flex-grow-1"></div>
                 <v-btn icon @click="readingSocialShare(reading)">
                   <v-icon>mdi-share-variant</v-icon>
@@ -44,15 +47,14 @@
             </div>
           </v-expand-transition>
         </v-card>
-        <v-snackbar v-model="snackbar" multi-line color="success" :timeout=4000>
-          {{message}}
+        <v-snackbar v-model="snackbar" multi-line color="success" :timeout="4000">
+          {{ message }}
           <v-btn color="white" text @click="snackbar = false">
             Cerrar
           </v-btn>
         </v-snackbar>
         <template>
           <v-row justify="center">
-
             <v-dialog v-model="dialog" max-width="290">
               <v-card>
                 <v-card-title class="headline text-wrap">¿Eliminar lectura de favoritos?</v-card-title>
@@ -98,18 +100,17 @@
 </template>
 
 <script>
-import { VueContext } from "vue-context";
-import _ from "lodash";
-import lectioService from "../services/LectioService"
+import { VueContext } from 'vue-context';
+import _ from 'lodash';
+import lectioService from '../../services/LectioService';
 
 export default {
   components: { VueContext },
-  mounted () {
-    this.loading = false
-    this.getAllFavoriteReadings()
-
+  mounted() {
+    this.loading = false;
+    this.getAllFavoriteReadings();
   },
-  data () {
+  data() {
     return {
       loading: true,
       selection: '',
@@ -120,79 +121,84 @@ export default {
       dialog: false,
       readingToDelete: {},
       searchWord: '',
-      showText: false
+      showText: false,
     };
   },
   computed: {
-    filteredList () {
-      let result = _.orderBy(this.favoriteReadings, (reading) => {
-        return reading.createdAt
-      }, ['desc'])
-      if (!this.searchWord)
-        return result
+    filteredList() {
+      let result = _.orderBy(
+        this.favoriteReadings,
+        reading => {
+          return reading.createdAt;
+        },
+        ['desc']
+      );
+      if (!this.searchWord) return result;
 
-      let filter
-      let filterValueWord
+      let filter;
+      let filterValueWord;
 
       if (this.searchWord) {
-
-        filterValueWord = this.searchWord.toLowerCase()
+        filterValueWord = this.searchWord.toLowerCase();
         filter = reading =>
           reading.title.toLowerCase().includes(filterValueWord) ||
-          reading.reference_displayed.toLowerCase().includes(filterValueWord)
+          reading.reference_displayed.toLowerCase().includes(filterValueWord);
       }
 
-      return result.filter(filter)
-    }
+      return result.filter(filter);
+    },
   },
   watch: {
-    loading (val) {
+    loading(val) {
       if (!val) {
         this.$nextTick(() => {
           this.addListeners();
         });
       }
-    }
+    },
   },
 
   methods: {
-    getAllFavoriteReadings () {
-      let user = this.$store.state.user
-      lectioService.getAllFavoriteReadings(user).onSnapshot((querySnapshot) => {
-        let favoriteReadings = []
+    getAllFavoriteReadings() {
+      let user = this.$store.state.user;
+      lectioService.getAllFavoriteReadings(user).onSnapshot(querySnapshot => {
+        let favoriteReadings = [];
         querySnapshot.forEach(doc => {
-          let reading = doc.data()
-          reading.showText = false
-          favoriteReadings.push(reading)
-        })
-        favoriteReadings = _.sortBy(favoriteReadings, (reading) => {
-          return reading.createdAt
-        })
-        this.favoriteReadings = favoriteReadings
+          let reading = doc.data();
+          reading.showText = false;
+          favoriteReadings.push(reading);
+        });
+        favoriteReadings = _.sortBy(favoriteReadings, reading => {
+          return reading.createdAt;
+        });
+        this.favoriteReadings = favoriteReadings;
 
-        this.loading = false
-      })
+        this.loading = false;
+      });
     },
-    readyToDelete (reading) {
-      this.dialog = true
-      this.readingToDelete = reading
+    readyToDelete(reading) {
+      this.dialog = true;
+      this.readingToDelete = reading;
     },
-    removeFavoriteReading () {
-      let user = this.$store.state.user
-      lectioService.deleteFavoriteReading(this.readingToDelete, user).then(() => {
-        this.message = "Lectura removida de favoritos"
-        this.dialog = false
-        this.snackbar = true
-      }).catch((error) => {
-        this.error = error
-      })
+    removeFavoriteReading() {
+      let user = this.$store.state.user;
+      lectioService
+        .deleteFavoriteReading(this.readingToDelete, user)
+        .then(() => {
+          this.message = 'Lectura removida de favoritos';
+          this.dialog = false;
+          this.snackbar = true;
+        })
+        .catch(error => {
+          this.error = error;
+        });
     },
-    beautyDate (date) {
-      return this.$moment(date).format('MMMM-DD-YYYY')
+    beautyDate(date) {
+      return this.$moment(date).format('MMMM-DD-YYYY');
     },
-    addListeners () {
-      const para = document.querySelectorAll("p");
-      let tEvents = ["mouseup"];
+    addListeners() {
+      const para = document.querySelectorAll('p');
+      let tEvents = ['mouseup'];
 
       _.each(para, par => {
         _.each(tEvents, tEvent => {
@@ -205,7 +211,7 @@ export default {
               selection = document.selection.createRange();
             }
             if (selection.toString()) {
-              this.selection = selection.toString()
+              this.selection = selection.toString();
               setTimeout(() => {
                 this.$refs.menu.open(e, selection.toString());
               }, 0);
@@ -214,40 +220,41 @@ export default {
         });
       });
     },
-    sendSelectionToLectio () {
-      this.selection = window.getSelection().toString()
+    sendSelectionToLectio() {
+      this.selection = window.getSelection().toString();
       if (this.selection) {
-        this.$router.push({ name: 'lectio', params: { copiedLectioText: this.selection } })
+        this.$router.push({ name: 'lectio', params: { copiedLectioText: this.selection } });
       } else {
-        this.message = 'Por favor selecciona una parte del texto'
-        this.snackbar = true
+        this.message = 'Por favor selecciona una parte del texto';
+        this.snackbar = true;
       }
     },
-    readingSocialShare (reading) {
+    readingSocialShare(reading) {
       if (navigator.share) {
-        navigator.share({
-          title: `${reading.title} ${reading.reference_displayed}`,
-          text: `*${reading.title} ${reading.reference_displayed}* ${this.cleanText(reading.text)}`,
-        })
+        navigator
+          .share({
+            title: `${reading.title} ${reading.reference_displayed}`,
+            text: `*${reading.title} ${reading.reference_displayed}* ${this.cleanText(reading.text)}`,
+          })
           .then(() => console.log('Successful share'))
-          .catch((error) => console.log('Error sharing', error));
+          .catch(error => console.log('Error sharing', error));
       }
     },
 
-    cleanText (text) {
-      let regex = /\[{2}.*?\]{2}/gm
-      let subst = ''
-      let result = text.replace(regex, subst)
+    cleanText(text) {
+      let regex = /\[{2}.*?\]{2}/gm;
+      let subst = '';
+      let result = text.replace(regex, subst);
 
-      subst = ' '
-      result = result.replace(regex, subst)
+      subst = ' ';
+      result = result.replace(regex, subst);
 
-      regex = /(\s)+/gm
-      result = result.replace(regex, subst)
+      regex = /(\s)+/gm;
+      result = result.replace(regex, subst);
 
-      return result.trim()
-    }
-  }
+      return result.trim();
+    },
+  },
 };
 </script>
 <style lang="sass">

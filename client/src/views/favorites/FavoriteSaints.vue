@@ -10,7 +10,6 @@
         <v-list width="100%" subheader>
           <v-subheader>MIS SANTOS FAVORITOS</v-subheader>
           <v-fade-transition group>
-
             <v-list-item v-for="saint in filteredList" :key="saint.id" two-line hover>
               <v-list-item-avatar @click="openSaintView(saint)">
                 <v-img v-if="showSaintAvatar(saint.image_links)[0]" :src="showSaintAvatar(saint.image_links)[0]">
@@ -20,7 +19,7 @@
 
               <v-list-item-content @click="openSaintView(saint)">
                 <v-list-item-title v-text="saint.name"></v-list-item-title>
-                <v-list-item-subtitle>{{saint.date_displayed}}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ saint.date_displayed }}</v-list-item-subtitle>
               </v-list-item-content>
 
               <v-list-item-icon @click="readyToDelete(saint)">
@@ -29,15 +28,14 @@
             </v-list-item>
           </v-fade-transition>
         </v-list>
-        <v-snackbar v-model="snackbar" multi-line color="success" :timeout=4000>
-          {{message}}
+        <v-snackbar v-model="snackbar" multi-line color="success" :timeout="4000">
+          {{ message }}
           <v-btn color="white" text @click="snackbar = false">
             Cerrar
           </v-btn>
         </v-snackbar>
         <template>
           <v-row justify="center">
-
             <v-dialog v-model="dialog" max-width="290">
               <v-card>
                 <v-card-title class="headline text-wrap">¿Eliminar santo de favoritos?</v-card-title>
@@ -75,14 +73,14 @@
 
 <script>
 import _ from 'lodash';
-import lectioService from "../services/LectioService"
+import lectioService from '../../services/LectioService';
 
 export default {
-  async mounted () {
-    this.loading = false
-    this.getAllFavoriteSaints()
+  async mounted() {
+    this.loading = false;
+    this.getAllFavoriteSaints();
   },
-  data () {
+  data() {
     return {
       // saints: this.$store.state.saints,
       loading: true,
@@ -91,82 +89,89 @@ export default {
       dialog: false,
       snackbar: false,
       message: '',
-      searchWord: ''
+      searchWord: '',
     };
   },
   computed: {
-    beautyDate () {
-      return `${this.$moment().format('dddd D')} de ${this.$moment().format('MMMM')} de ${this.$moment().format('YYYY')}`
+    beautyDate() {
+      return `${this.$moment().format('dddd D')} de ${this.$moment().format('MMMM')} de ${this.$moment().format(
+        'YYYY'
+      )}`;
     },
-    filteredList () {
-      let result = _.orderBy(this.favoriteSaints, (saint) => {
-        return saint.date_displayed
-      }, ['desc'])
-      if (!this.searchWord)
-        return result
-        
-      let filter
-      let filterValueWord
+    filteredList() {
+      let result = _.orderBy(
+        this.favoriteSaints,
+        saint => {
+          return saint.date_displayed;
+        },
+        ['desc']
+      );
+      if (!this.searchWord) return result;
+
+      let filter;
+      let filterValueWord;
 
       if (this.searchWord) {
-
-        filterValueWord = this.searchWord.toLowerCase()
+        filterValueWord = this.searchWord.toLowerCase();
         filter = saint =>
           saint.name.toLowerCase().includes(filterValueWord) ||
-          saint.date_displayed.toLowerCase().includes(filterValueWord)
+          saint.date_displayed.toLowerCase().includes(filterValueWord);
       }
 
-      return result.filter(filter)
-    }
+      return result.filter(filter);
+    },
   },
   methods: {
-    getAllFavoriteSaints () {
-      let user = this.$store.state.user
-      lectioService.getAllFavoriteSaints(user).onSnapshot((querySnapshot) => {
-        let favoriteSaints = []
+    getAllFavoriteSaints() {
+      let user = this.$store.state.user;
+      lectioService.getAllFavoriteSaints(user).onSnapshot(querySnapshot => {
+        let favoriteSaints = [];
         querySnapshot.forEach(doc => {
-          favoriteSaints.push(doc.data())
-        })
-        favoriteSaints = _.sortBy(favoriteSaints, (saint) => {
-          return saint.createdAt
-        })
-        this.favoriteSaints = favoriteSaints
+          favoriteSaints.push(doc.data());
+        });
+        favoriteSaints = _.sortBy(favoriteSaints, saint => {
+          return saint.createdAt;
+        });
+        this.favoriteSaints = favoriteSaints;
 
-        this.loading = false
-      })
+        this.loading = false;
+      });
     },
-    readyToDelete (saint) {
-      this.dialog = true
-      this.saintToDelete = saint
+    readyToDelete(saint) {
+      this.dialog = true;
+      this.saintToDelete = saint;
     },
-    removeFavoriteSaint () {
-      let user = this.$store.state.user
-      lectioService.deleteFavoriteSaint(this.saintToDelete, user).then(() => {
-        this.message = "Santo removido de favoritos"
-        this.dialog = false
-        this.snackbar = true
-      }).catch((error) => {
-        this.error = error
-      })
+    removeFavoriteSaint() {
+      let user = this.$store.state.user;
+      lectioService
+        .deleteFavoriteSaint(this.saintToDelete, user)
+        .then(() => {
+          this.message = 'Santo removido de favoritos';
+          this.dialog = false;
+          this.snackbar = true;
+        })
+        .catch(error => {
+          this.error = error;
+        });
     },
-    showSaintAvatar (imgObj) {
-      return _.map(imgObj, (img) => {
+    showSaintAvatar(imgObj) {
+      return _.map(imgObj, img => {
         if (img) {
-          return img
+          return img;
         }
-      })
+      });
     },
-    openSaintView (saint) {
-      this.$router.push({ path: '/saints', name: "saint", params: { id: saint.id } })
-    }
-  }
+    openSaintView(saint) {
+      this.$router.push({ path: '/saints', name: 'saint', params: { id: saint.id } });
+    },
+  },
 };
 </script>
 <style lang="sass" scoped>
-ul 
+ul
   padding: 0
 
-.v-avatar 
+.v-avatar
   i
     border: 4px solid
 
