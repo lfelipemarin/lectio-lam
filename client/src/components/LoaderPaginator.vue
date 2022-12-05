@@ -10,7 +10,6 @@
 
 <script>
 // import { VueContext } from 'vue-context'
-import _ from 'lodash'
 
 export default {
   // components: { VueContext },
