@@ -1,0 +1,127 @@
+{
+  "project_info": {
+    "project_number": "485166763553",
+    "firebase_url": "https://sizzling-heat-354.firebaseio.com",
+    "project_id": "sizzling-heat-354",
+    "storage_bucket": "sizzling-heat-354.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485166763553:android:e442d145c26c9ec8aa1d60",
+        "android_client_info": {
+          "package_name": "com.example.lectio_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485166763553-24uiac5bs6do7v5mjb6vi505o64j5cub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnUH-VbCZB1QRaMyFj748cggoKt8WIjO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485166763553-24uiac5bs6do7v5mjb6vi505o64j5cub.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485166763553-4icafr6166ige8hmcjm9uh9nisrm50j6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lectioApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485166763553:android:ac22c35ea027d68faa1d60",
+        "android_client_info": {
+          "package_name": "com.example.sixconnex_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485166763553-24uiac5bs6do7v5mjb6vi505o64j5cub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnUH-VbCZB1QRaMyFj748cggoKt8WIjO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485166763553-24uiac5bs6do7v5mjb6vi505o64j5cub.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485166763553-4icafr6166ige8hmcjm9uh9nisrm50j6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lectioApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485166763553:android:f5f792db98f220fdaa1d60",
+        "android_client_info": {
+          "package_name": "com.lectiodivina"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485166763553-01dremf2mv8asc1qdn7oemltsad1vatj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lectiodivina",
+            "certificate_hash": "64f9b6ec15e983b1a622dc9d6cd99ff334d9a121"
+          }
+        },
+        {
+          "client_id": "485166763553-24uiac5bs6do7v5mjb6vi505o64j5cub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnUH-VbCZB1QRaMyFj748cggoKt8WIjO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485166763553-24uiac5bs6do7v5mjb6vi505o64j5cub.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485166763553-4icafr6166ige8hmcjm9uh9nisrm50j6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lectioApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

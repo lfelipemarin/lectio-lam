@@ -7,6 +7,8 @@ import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 
+import 'auth/auth.dart';
+
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -73,7 +75,8 @@ class MyApp extends StatelessWidget {
                     return const SampleItemDetailsView();
                   case SampleItemListView.routeName:
                   default:
-                    return const SampleItemListView();
+                    // return const SampleItemListView();
+                    return LoginPage();
                 }
               },
             );
