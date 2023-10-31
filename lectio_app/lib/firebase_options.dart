@@ -32,10 +32,7 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return linux;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -69,8 +66,10 @@ class DefaultFirebaseOptions {
     projectId: 'sizzling-heat-354',
     databaseURL: 'https://sizzling-heat-354.firebaseio.com',
     storageBucket: 'sizzling-heat-354.appspot.com',
-    androidClientId: '485166763553-01dremf2mv8asc1qdn7oemltsad1vatj.apps.googleusercontent.com',
-    iosClientId: '485166763553-4icafr6166ige8hmcjm9uh9nisrm50j6.apps.googleusercontent.com',
+    androidClientId:
+        '485166763553-01dremf2mv8asc1qdn7oemltsad1vatj.apps.googleusercontent.com',
+    iosClientId:
+        '485166763553-4icafr6166ige8hmcjm9uh9nisrm50j6.apps.googleusercontent.com',
     iosBundleId: 'com.example.lectioApp',
   );
 
@@ -81,8 +80,20 @@ class DefaultFirebaseOptions {
     projectId: 'sizzling-heat-354',
     databaseURL: 'https://sizzling-heat-354.firebaseio.com',
     storageBucket: 'sizzling-heat-354.appspot.com',
-    androidClientId: '485166763553-01dremf2mv8asc1qdn7oemltsad1vatj.apps.googleusercontent.com',
-    iosClientId: '485166763553-vp5cfi0l5299casdpj6heif18ecinajq.apps.googleusercontent.com',
+    androidClientId:
+        '485166763553-01dremf2mv8asc1qdn7oemltsad1vatj.apps.googleusercontent.com',
+    iosClientId:
+        '485166763553-vp5cfi0l5299casdpj6heif18ecinajq.apps.googleusercontent.com',
     iosBundleId: 'com.example.lectioApp.RunnerTests',
+  );
+
+  static const FirebaseOptions linux = FirebaseOptions(
+    apiKey: 'AIzaSyBC2YelAC40HL2gddAdYr4_gONtIUvlL3U',
+    appId: '1:485166763553:web:5d0080146713de4baa1d60',
+    messagingSenderId: '485166763553',
+    projectId: 'sizzling-heat-354',
+    authDomain: 'sizzling-heat-354.firebaseapp.com',
+    databaseURL: 'https://sizzling-heat-354.firebaseio.com',
+    storageBucket: 'sizzling-heat-354.appspot.com',
   );
 }

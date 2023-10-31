@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
                   case SampleItemListView.routeName:
                   default:
                     // return const SampleItemListView();
-                    return LoginPage();
+                    return const AuthPage();
                 }
               },
             );
