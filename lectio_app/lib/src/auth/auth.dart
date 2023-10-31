@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../reports/reports_screen.dart';
 import 'auth_bloc.dart';
 import 'auth_state.dart'; // Import your authentication BLoC and related classes
 
@@ -14,16 +15,18 @@ class AuthPage extends StatelessWidget {
         title: const Text('User Authentication Example'),
       ),
       body: BlocProvider(
-        create: (context) =>
-            AuthBloc(), // Replace with your actual AuthBloc creation
-        child: const AuthContent(),
+        create: (context) => AuthBloc(),
+        child: AuthContent(),
       ),
     );
   }
 }
 
 class AuthContent extends StatelessWidget {
-  const AuthContent({super.key});
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  AuthContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +47,19 @@ class AuthContent extends StatelessWidget {
                   padding: EdgeInsets.all(16.0),
                   child: Text('OR'),
                 ),
-                const TextField(
-                  decoration: InputDecoration(labelText: 'Email'),
+                TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
                 ),
-                const TextField(
-                  decoration: InputDecoration(labelText: 'Password'),
+                TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
                   obscureText: true,
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    // Get the email and password from text fields
-                    String email =
-                        "lfelipe.marin@gmail.com"; // Replace with user input
-                    String password = "JMJ2019!"; // Replace with user input
+                    final String email = _emailController.text;
+                    final String password = _passwordController.text;
                     context.read<AuthBloc>().add(SignInWithEmailAndPassword(
                         email: email, password: password));
                   },
@@ -66,7 +69,11 @@ class AuthContent extends StatelessWidget {
             ),
           );
         } else if (state is AuthSuccess) {
-          return UserProfileWidget(user: state.user);
+          // Navigate to another screen on AuthSuccess
+          Future<void>.microtask(() {
+            Navigator.restorablePushNamed(context, ReportsScreen.routeName);
+          });
+          // return UserProfileWidget(user: state.user);
         } else if (state is AuthFailure) {
           return Center(
             child: Text('Authentication Error: ${state.error}'),
