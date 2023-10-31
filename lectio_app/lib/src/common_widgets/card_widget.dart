@@ -5,11 +5,8 @@ class CardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Material Card Example'),
-      ),
-      body: const Center(
+    return const Scaffold(
+      body: Center(
         child: Card(
           elevation: 4, // Shadow elevation
           margin: EdgeInsets.all(16), // Margin around the card
