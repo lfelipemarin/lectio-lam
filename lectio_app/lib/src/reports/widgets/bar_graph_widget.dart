@@ -27,13 +27,14 @@ class BarGraphReportWidget extends StatelessWidget {
               child: BarChart(
                 BarChartData(
                   titlesData: FlTitlesData(
-                    leftTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: true)),
-                    bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: getTitlesWidget)),
-                  ),
+                      leftTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                      bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: getTitlesWidget)),
+                      topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false))),
                   borderData: FlBorderData(
                     show: true,
                   ),
@@ -41,19 +42,16 @@ class BarGraphReportWidget extends StatelessWidget {
                     BarChartGroupData(
                       x: 1,
                       barRods: [BarChartRodData(toY: 300, color: Colors.blue)],
-                      showingTooltipIndicators: [0],
                     ),
                     BarChartGroupData(
                       x: 2,
                       barRods: [BarChartRodData(toY: 450, color: Colors.green)],
-                      showingTooltipIndicators: [0],
                     ),
                     BarChartGroupData(
                       x: 3,
                       barRods: [
                         BarChartRodData(toY: 600, color: Colors.orange),
                       ],
-                      showingTooltipIndicators: [0],
                     ),
                     // Add more data as needed
                   ],

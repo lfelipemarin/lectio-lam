@@ -57,7 +57,7 @@ class ReportsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Reports'),
+          title: const Text('Reportes de Lectio'),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -68,7 +68,7 @@ class ReportsScreen extends StatelessWidget {
                     BarGraphReportWidget(getTitlesWidget: monthsTitlesWidget),
               ),
               CardWidget(
-                title: 'Tus lectios mensuales',
+                title: 'Compromisos mensuales',
                 cardBody:
                     BarGraphReportWidget(getTitlesWidget: monthsTitlesWidget),
               ),
