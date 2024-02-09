@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReportsService {
-  final CollectionReference lectiosCollection =
-      FirebaseFirestore.instance.collection('lectios');
-
-  Future<List<DocumentSnapshot>> getLectios() async {
+  Future<List<DocumentSnapshot>> getLectios(String? userEmail) async {
+    log(userEmail!);
+    final CollectionReference lectiosCollection =
+        FirebaseFirestore.instance.collection('users/$userEmail/lectios');
     final querySnapshot = await lectiosCollection.get();
     return querySnapshot.docs;
   }

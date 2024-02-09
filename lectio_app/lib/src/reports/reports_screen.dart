@@ -1,79 +1,54 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../common_widgets/card_widget.dart';
-import 'widgets/bar_graph_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lectio_app/src/auth/auth_bloc.dart';
+import 'package:lectio_app/src/reports/reports_bloc.dart';
+import 'package:lectio_app/src/reports/reports_event.dart';
+import 'package:lectio_app/src/reports/reports_state.dart';
+import 'package:lectio_app/src/reports/widgets/bar_graph_report_widget.dart';
 
-class ReportsScreen extends StatelessWidget {
-  const ReportsScreen({super.key});
+class ReportsScreen extends StatefulWidget {
+  const ReportsScreen({Key? key}) : super(key: key);
 
   static const routeName = '/reports';
 
-  Widget monthsTitlesWidget(double month, TitleMeta meta) {
-    String monthText = '';
-    switch (month.toInt()) {
-      case 1:
-        monthText = 'Jan';
-        break;
-      case 2:
-        monthText = 'Feb';
-        break;
-      case 3:
-        monthText = 'Mar';
-        break;
-      case 4:
-        monthText = 'Apr';
-        break;
-      case 5:
-        monthText = 'May';
-        break;
-      case 6:
-        monthText = 'Jun';
-        break;
-      case 7:
-        monthText = 'Jul';
-        break;
-      case 8:
-        monthText = 'Aug';
-        break;
-      case 9:
-        monthText = 'Sep';
-        break;
-      case 10:
-        monthText = 'Oct';
-        break;
-      case 11:
-        monthText = 'Nov';
-        break;
-      case 12:
-        monthText = 'Dec';
-        break;
-      default:
-        monthText = '';
-    }
-    return Text(monthText);
+  @override
+  _ReportsScreenState createState() => _ReportsScreenState();
+}
+
+class _ReportsScreenState extends State<ReportsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Dispatch FetchLectios event when entering the screen
+    context.read<ReportsBloc>().add(FetchLectios());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Reportes de Lectio'),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              CardWidget(
-                title: 'Tus lectios mensuales',
-                cardBody:
-                    BarGraphReportWidget(getTitlesWidget: monthsTitlesWidget),
-              ),
-              CardWidget(
-                title: 'Compromisos mensuales',
-                cardBody:
-                    BarGraphReportWidget(getTitlesWidget: monthsTitlesWidget),
-              ),
-            ],
-          ),
-        ));
+      appBar: AppBar(
+        title: Text('Reports'),
+      ),
+      body: BlocBuilder<ReportsBloc, ReportsState>(
+        builder: (context, state) {
+          if (state is LectiosLoaded) {
+            // Extract data from state and pass it to BarGraphReportWidget
+            final reportData = state.lectios.map((doc) => doc.data()).toList();
+            return BarGraphReportWidget(
+              getTitlesWidget: (value, meta) {
+                // Your logic to return title widget based on value and meta
+                return Text('${value.toInt()}');
+              },
+              reportData: reportData,
+            );
+          } else if (state is FetchError) {
+            return Center(child: Text('Error: ${state.error}'));
+          } else {
+            // You can show a loading indicator or some placeholder widget here
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
   }
 }

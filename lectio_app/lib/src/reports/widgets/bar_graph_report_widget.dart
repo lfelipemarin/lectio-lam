@@ -1,16 +1,25 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 typedef TitlesWidgetCallback = Widget Function(double value, TitleMeta meta);
 
 class BarGraphReportWidget extends StatelessWidget {
-  // final List<BarChartGroupData> reportData;
+  final List<dynamic> reportData;
   final TitlesWidgetCallback getTitlesWidget;
-  // const BarGraphReportWidget({super.key, required this.reportData});
-  const BarGraphReportWidget({super.key, required this.getTitlesWidget});
+
+  const BarGraphReportWidget({
+    Key? key,
+    required this.getTitlesWidget,
+    required this.reportData,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Log the reportData
+    log('Report Data: $reportData');
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,17 +36,18 @@ class BarGraphReportWidget extends StatelessWidget {
               child: BarChart(
                 BarChartData(
                   titlesData: FlTitlesData(
-                      leftTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
-                      bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: getTitlesWidget)),
-                      topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false))),
-                  borderData: FlBorderData(
-                    show: true,
+                    leftTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: getTitlesWidget,
+                      ),
+                    ),
+                    topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
                   ),
+                  borderData: FlBorderData(show: true),
                   barGroups: [
                     BarChartGroupData(
                       x: 1,

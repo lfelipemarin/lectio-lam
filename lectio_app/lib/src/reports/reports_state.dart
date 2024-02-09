@@ -12,4 +12,6 @@ class FetchError extends ReportsState {
   final String error;
 
   FetchError(this.error);
+
+  get message => null;
 }

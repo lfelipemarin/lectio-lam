@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../reports/reports_screen.dart';
 import 'auth_bloc.dart';
+import 'auth_event.dart';
 import 'auth_state.dart'; // Import your authentication BLoC and related classes
 
 class AuthPage extends StatelessWidget {
@@ -71,7 +72,7 @@ class AuthContent extends StatelessWidget {
         } else if (state is AuthSuccess) {
           // Navigate to another screen on AuthSuccess
           Future<void>.microtask(() {
-            Navigator.restorablePushNamed(context, ReportsScreen.routeName);
+            Navigator.popAndPushNamed(context, ReportsScreen.routeName);
           });
           // return UserProfileWidget(user: state.user);
         } else if (state is AuthFailure) {
